@@ -1,0 +1,9 @@
+# Taste
+- Berkomunikasi dalam Bahasa Indonesia dan mengharapkan balasan/penjelasan juga dalam Bahasa Indonesia. Confidence: 0.7
+- Prefers reference/admin data (categories, employees, departments, packages, locations) grouped under a single "Pengaturan" (Settings) sidebar entry that expands as a dropdown/accordion, with each entity as its own sub-page/route, rather than one combined "Master Data" page. Confidence: 0.6
+- Wants the page header (title + action buttons) and the search/filter bar to stay fixed/sticky while the list scrolls — explicitly asks that search and filters "tidak bisa ikut di scroll" (must not scroll away with the content). Confidence: 0.65
+- Prefers large list page sizes (~100 rows per page) so the "next" pagination control only appears after scrolling through many rows, instead of short pages. Confidence: 0.6
+- Prefers consistent, identically-behaving search/filter + pagination UX across comparable list pages (e.g., wants the SIM Card feature to have "the same filter" as the asset list) rather than bespoke per-page implementations. Confidence: 0.6
+- Expects a data-management capability introduced for one list page to be rolled out uniformly to every comparable master/list entity — e.g. CSV export/import requested for SIM Card, Data Internet, Employee, Department, and Location (plus the existing Aset page) all at once, not one page at a time. Confidence: 0.65
+- Prefers a dedicated main Dashboard as the app landing page (root route redirects to it), with summary/recap statistics consolidated there rather than on the list pages. Confidence: 0.5
+- Prefers simple numeric-only business identifiers (plain digits, e.g. `1001`) over formatted alphanumeric codes with letters/prefixes (e.g. `INT-2026-001`), and expects the input to restrict typing to digits. Confidence: 0.5

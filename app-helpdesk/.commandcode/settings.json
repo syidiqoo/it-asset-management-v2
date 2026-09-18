@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "powershell",
+      "Shell(npx.cmd:*)",
+      "Shell(robocopy:*)",
+      "Shell(rmdir:*)",
+      "Shell(dir:*)",
+      "Shell(npm.cmd:*)",
+      "Shell(curl.exe:*)",
+      "Shell(for:*)",
+      "Shell(/:*)",
+      "Shell(do:*)",
+      "Shell(findstr:*)",
+      "Shell(del /q public\\file.svg public\\globe.svg public\\next.svg public\\vercel.svg public\\window.svg && dir /b public && rmdir public 2>nul & echo done)",
+      "Shell(del:*)",
+      "Shell(mkdir .tmp-csv-test 2>nul & npx.cmd tsc lib/csv.ts --outDir .tmp-csv-test --module commonjs --target es2020 --skipLibCheck & node -e \"const {parseCsv}=require('./.tmp-csv-test/csv.js'); const t='A,B,C\\r\\n\\\"1,5\\\",\\\"he said \\\"\\\"hi\\\"\\\"\\\",x\\r\\n2,,3\\r\\n\\r\\n4,5,6\\r\\n'; console.log(JSON.stringify(parseCsv(t)));\")",
+      "Shell(git:*)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}
