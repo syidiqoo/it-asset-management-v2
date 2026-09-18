@@ -17,15 +17,14 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "IT Helpdesk — Manajemen Aset IT",
-  description:
-    "Aplikasi manajemen aset IT kantor dan inventaris SIM card.",
+  title: "IT Helpdesk — IT Asset Management",
+  description: "Office IT asset and SIM card inventory management app.",
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="id"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">

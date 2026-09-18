@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(kill:*)",
+      "Shell(npm:*)",
+      "powershell",
+      "Shell(npm run lint 2>&1; npm run build 2>&1)",
+      "Shell(node --version)",
+      "Shell(npx prisma --version 2>&1; npm view prisma version 2>&1; npm view @prisma/client version 2>&1)",
+      "Shell(npx prisma --version 2>&1)",
+      "Shell(dir:*)",
+      "Shell(findstr:*)",
+      "Shell(node node_modules/eslint/bin/eslint.js . 2>&1)",
+      "Shell(dir node_modules\\eslint 2>&1; echo ===BIN===; dir node_modules\\.bin 2>&1 | findstr /i eslint)",
+      "Shell(type:*)",
+      "Shell(rmdir /s /q node_modules 2>nul & del /q package-lock.json 2>nul & npm install)",
+      "Shell(if:*)",
+      "Shell(else:*)",
+      "Shell(npx prisma validate 2>&1)",
+      "Shell(npx prisma generate 2>&1)",
+      "Shell(curl -s -o nul -w login:%{http_code}\\n http://localhost:3000/login)",
+      "Shell(curl -s -o nul -w assets:%{http_code}\\n http://localhost:3000/assets)",
+      "Shell(sc:*)",
+      "Shell(set:*)",
+      "Shell(C:\\Program Files\\PostgreSQL\\17\\bin\\psql.exe:*)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

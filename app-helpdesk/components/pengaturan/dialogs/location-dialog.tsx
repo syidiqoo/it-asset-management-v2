@@ -52,9 +52,9 @@ function validateCoordinate(
 ): string | null {
   if (!value.trim()) return null
   const numeric = Number(value)
-  if (!Number.isFinite(numeric)) return `${label} harus berupa angka.`
+  if (!Number.isFinite(numeric)) return `${label} must be a number.`
   if (numeric < -limit || numeric > limit) {
-    return `${label} harus antara -${limit} dan ${limit}.`
+    return `${label} must be between -${limit} and ${limit}.`
   }
   return null
 }
@@ -63,7 +63,7 @@ type LocationDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   location: Location | null
-  onSubmit: (input: LocationInput) => string | null
+  onSubmit: (input: LocationInput) => string | null | Promise<string | null>
 }
 
 export function LocationDialog({
@@ -97,7 +97,7 @@ function LocationDialogForm({
     setForm((previous) => ({ ...previous, [key]: value }))
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const nextErrors: FormErrors = {}
@@ -106,7 +106,7 @@ function LocationDialogForm({
     if (codeError) nextErrors.code = codeError
 
     if (!form.address.trim()) {
-      nextErrors.address = "Alamat lengkap wajib diisi."
+      nextErrors.address = "Full address is required."
     }
 
     const latitudeError = validateCoordinate(form.latitude, "Latitude", 90)
@@ -121,7 +121,7 @@ function LocationDialogForm({
     }
     setErrors({})
 
-    const message = onSubmit({
+    const message = await onSubmit({
       code: normalizeLocationCode(form.code),
       address: form.address.trim(),
       latitude: form.latitude.trim() ? Number(form.latitude) : null,
@@ -140,18 +140,18 @@ function LocationDialogForm({
     <>
       <DialogHeader>
         <DialogTitle>
-          {location ? "Edit Location" : "Tambah Location"}
+          {location ? "Edit Location" : "Add Location"}
         </DialogTitle>
         <DialogDescription>
-          Kode location bernilai {normalizeLocationCode(String(LOCATION_CODE_MIN))}
+          Location code is {normalizeLocationCode(String(LOCATION_CODE_MIN))}
           {"–"}
-          {LOCATION_CODE_MAX} dan harus unik.
+          {LOCATION_CODE_MAX} and must be unique.
         </DialogDescription>
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="location-code">Kode</Label>
+          <Label htmlFor="location-code">Code</Label>
           <Input
             id="location-code"
             value={form.code}
@@ -165,7 +165,7 @@ function LocationDialogForm({
             <p className="text-xs text-destructive">{errors.code}</p>
           ) : (
             <p className="text-xs text-muted-foreground">
-              Contoh: 001, 002, 100.
+              Example: 001, 002, 100.
             </p>
           )}
         </div>
@@ -187,7 +187,7 @@ function LocationDialogForm({
         </div>
 
         <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="location-address">Alamat Lengkap</Label>
+          <Label htmlFor="location-address">Full Address</Label>
           <Textarea
             id="location-address"
             value={form.address}
@@ -215,18 +215,18 @@ function LocationDialogForm({
             <p className="text-xs text-destructive">{errors.longitude}</p>
           ) : (
             <p className="text-xs text-muted-foreground">
-              Koordinat boleh dikosongkan.
+              Coordinates may be left empty.
             </p>
           )}
         </div>
 
         <DialogFooter className="sm:col-span-2">
           <Button type="button" variant="outline" onClick={onDone}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit">
             <Save />
-            Simpan
+            Save
           </Button>
         </DialogFooter>
       </form>

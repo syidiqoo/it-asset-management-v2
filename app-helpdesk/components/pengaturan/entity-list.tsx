@@ -24,7 +24,7 @@ export function EntityList({
   if (items.length === 0) {
     return (
       <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-        Belum ada data.
+        No data yet.
       </p>
     )
   }
@@ -33,8 +33,8 @@ export function EntityList({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="pl-4">Nama</TableHead>
-          <TableHead className="pr-4 text-right">Aksi</TableHead>
+          <TableHead className="pl-4">Name</TableHead>
+          <TableHead className="pr-4 text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

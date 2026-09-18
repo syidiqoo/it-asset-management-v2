@@ -64,7 +64,7 @@ type InternetDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   item: InternetData | null
-  onSubmit: (input: InternetDataInput) => string | null
+  onSubmit: (input: InternetDataInput) => string | null | Promise<string | null>
 }
 
 export function InternetDialog({
@@ -99,7 +99,7 @@ function InternetDialogForm({
     setForm((previous) => ({ ...previous, [key]: value }))
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const nextErrors: FormErrors = {}
@@ -108,27 +108,27 @@ function InternetDialogForm({
     if (internetIdError) nextErrors.internetId = internetIdError
 
     if (!form.locationId) {
-      nextErrors.locationId = "Lokasi wajib dipilih."
+      nextErrors.locationId = "Location is required."
     }
     if (!form.service.trim()) {
-      nextErrors.service = "Layanan wajib diisi."
+      nextErrors.service = "Service is required."
     }
     if (!form.customerName.trim()) {
-      nextErrors.customerName = "Nama pelanggan wajib diisi."
+      nextErrors.customerName = "Customer name is required."
     }
 
     const bandwidth = Number(form.bandwidth)
     if (!form.bandwidth.trim()) {
-      nextErrors.bandwidth = "Bandwidth wajib diisi."
+      nextErrors.bandwidth = "Bandwidth is required."
     } else if (!Number.isFinite(bandwidth) || bandwidth <= 0) {
-      nextErrors.bandwidth = "Bandwidth harus lebih besar dari 0."
+      nextErrors.bandwidth = "Bandwidth must be greater than 0."
     }
 
     const monthlyCost = Number(form.monthlyCost)
     if (!form.monthlyCost.trim()) {
-      nextErrors.monthlyCost = "Biaya bulanan wajib diisi."
+      nextErrors.monthlyCost = "Monthly cost is required."
     } else if (!Number.isFinite(monthlyCost) || monthlyCost < 0) {
-      nextErrors.monthlyCost = "Biaya bulanan tidak boleh negatif."
+      nextErrors.monthlyCost = "Monthly cost cannot be negative."
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -137,7 +137,7 @@ function InternetDialogForm({
     }
     setErrors({})
 
-    const message = onSubmit({
+    const message = await onSubmit({
       internetId: normalizeInternetId(form.internetId),
       locationId: Number(form.locationId),
       service: form.service.trim(),
@@ -164,16 +164,16 @@ function InternetDialogForm({
     <>
       <DialogHeader>
         <DialogTitle>
-          {item ? "Edit Data Internet" : "Tambah Data Internet"}
+          {item ? "Edit Internet Data" : "Add Internet Data"}
         </DialogTitle>
         <DialogDescription>
-          ID Internet harus unik dan lokasi dipilih dari master Location.
+          Internet ID must be unique and location is selected from Location master.
         </DialogDescription>
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="internet-id">ID Internet</Label>
+          <Label htmlFor="internet-id">Internet ID</Label>
           <Input
             id="internet-id"
             value={form.internetId}
@@ -187,12 +187,12 @@ function InternetDialogForm({
           {errors.internetId ? (
             <p className="text-xs text-destructive">{errors.internetId}</p>
           ) : (
-            <p className="text-xs text-muted-foreground">Hanya angka.</p>
+            <p className="text-xs text-muted-foreground">Numbers only.</p>
           )}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="internet-service">Layanan</Label>
+          <Label htmlFor="internet-service">Service</Label>
           <Input
             id="internet-service"
             value={form.service}
@@ -205,7 +205,7 @@ function InternetDialogForm({
         </div>
 
         <div className="space-y-1.5 sm:col-span-2">
-          <Label>Lokasi</Label>
+          <Label>Location</Label>
           <Select
             items={store.locations.map((location) => ({
               label: formatLocationLabel(location),
@@ -215,7 +215,7 @@ function InternetDialogForm({
             onValueChange={(value) => set("locationId", value ?? "")}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Pilih lokasi" />
+              <SelectValue placeholder="Select location" />
             </SelectTrigger>
             <SelectContent>
               {store.locations.map((location) => (
@@ -231,7 +231,7 @@ function InternetDialogForm({
         </div>
 
         <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="internet-customer">Nama Pelanggan</Label>
+          <Label htmlFor="internet-customer">Customer Name</Label>
           <Input
             id="internet-customer"
             value={form.customerName}
@@ -266,10 +266,10 @@ function InternetDialogForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="internet-cost">Biaya Bulanan</Label>
+          <Label htmlFor="internet-cost">Monthly Cost</Label>
           <div className="relative">
             <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-sm text-muted-foreground">
-              Rp
+              $
             </span>
             <Input
               id="internet-cost"
@@ -291,11 +291,11 @@ function InternetDialogForm({
 
         <DialogFooter className="sm:col-span-2">
           <Button type="button" variant="outline" onClick={onDone}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit">
             <Save />
-            Simpan
+            Save
           </Button>
         </DialogFooter>
       </form>

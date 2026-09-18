@@ -5,7 +5,7 @@ import { parseFilterValues } from "@/lib/filters"
 import { INTERNET_FILTER_NAMES } from "@/lib/internet"
 
 export const metadata: Metadata = {
-  title: "Data Internet — IT Helpdesk",
+  title: "Internet Data — IT Helpdesk",
 }
 
 export default async function DataInternetPage(

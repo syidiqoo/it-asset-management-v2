@@ -29,7 +29,10 @@ type EmployeeDialogProps = {
   onOpenChange: (open: boolean) => void
   employee: Employee | null
   departments: Department[]
-  onSubmit: (name: string, departmentId: number | null) => string | null
+  onSubmit: (
+    name: string,
+    departmentId: number | null
+  ) => string | null | Promise<string | null>
 }
 
 export function EmployeeDialog({
@@ -67,16 +70,16 @@ function EmployeeDialogForm({
     [departments]
   )
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const trimmed = name.trim()
     if (!trimmed) {
-      setError("Nama employee wajib diisi.")
+      setError("Employee name is required.")
       return
     }
 
-    const message = onSubmit(trimmed, department ? Number(department) : null)
+    const message = await onSubmit(trimmed, department ? Number(department) : null)
     if (message) {
       setError(message)
       return
@@ -89,16 +92,16 @@ function EmployeeDialogForm({
     <>
       <DialogHeader>
         <DialogTitle>
-          {employee ? "Edit Employee" : "Tambah Employee"}
+          {employee ? "Edit Employee" : "Add Employee"}
         </DialogTitle>
         <DialogDescription>
-          Employee dipakai sebagai pemegang aset dan SIM card.
+          Employees are used as asset and SIM card holders.
         </DialogDescription>
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <Label htmlFor="employee-name">Nama Employee</Label>
+          <Label htmlFor="employee-name">Employee Name</Label>
           <Input
             id="employee-name"
             value={name}
@@ -111,7 +114,7 @@ function EmployeeDialogForm({
           <Label>Department</Label>
           <Select
             items={[
-              { label: "— Tanpa department —", value: "" },
+              { label: "— No department —", value: "" },
               ...departmentOptions.map((node) => ({
                 label: node.path,
                 value: String(node.id),
@@ -121,10 +124,10 @@ function EmployeeDialogForm({
             onValueChange={(value) => setDepartment(value ?? "")}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="— Tanpa department —" />
+              <SelectValue placeholder="— No department —" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">— Tanpa department —</SelectItem>
+              <SelectItem value="">— No department —</SelectItem>
               {departmentOptions.map((node) => (
                 <SelectItem key={node.id} value={String(node.id)}>
                   {node.path}
@@ -138,11 +141,11 @@ function EmployeeDialogForm({
 
         <DialogFooter className="-mx-4">
           <Button type="button" variant="outline" onClick={onDone}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit">
             <Save />
-            Simpan
+            Save
           </Button>
         </DialogFooter>
       </form>

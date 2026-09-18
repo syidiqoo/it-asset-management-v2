@@ -20,7 +20,12 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { flattenDepartments } from "@/lib/departments"
-import { ADMIN_NAME } from "@/lib/mock-data"
+import {
+  UPLOAD_KINDS,
+  uploadAccept,
+  uploadHint,
+  type UploadKind,
+} from "@/lib/uploads"
 import {
   CONDITIONS,
   type Asset,
@@ -28,10 +33,10 @@ import {
   type Condition,
 } from "@/lib/types"
 
-const IMAGE_ACCEPT = ".png,.jpg,.jpeg,.webp,.gif"
-const IMAGE_MAX_SIZE = 2 * 1024 * 1024
-const DOCUMENT_ACCEPT = ".pdf,.doc,.docx,.xls,.xlsx,.txt"
-const DOCUMENT_MAX_SIZE = 5 * 1024 * 1024
+const IMAGE_ACCEPT = uploadAccept("image")
+const IMAGE_MAX_SIZE = UPLOAD_KINDS.image.maxSize
+const DOCUMENT_ACCEPT = uploadAccept("document")
+const DOCUMENT_MAX_SIZE = UPLOAD_KINDS.document.maxSize
 
 type FormState = {
   categoryId: string
@@ -41,7 +46,6 @@ type FormState = {
   employeeId: string
   departmentId: string
   condition: Condition
-  recordDate: string
   purchaseDate: string
   note: string
 }
@@ -62,7 +66,6 @@ function initialState(asset?: Asset): FormState {
       employeeId: "",
       departmentId: "",
       condition: "Good",
-      recordDate: today(),
       purchaseDate: "",
       note: "",
     }
@@ -77,18 +80,25 @@ function initialState(asset?: Asset): FormState {
     departmentId:
       asset.departmentId === null ? "" : String(asset.departmentId),
     condition: asset.condition,
-    recordDate: asset.recordDate,
     purchaseDate: asset.purchaseDate ?? "",
     note: asset.note ?? "",
   }
 }
 
-function resolveUrl(
-  file: File | null,
-  cleared: boolean,
-  current: string | null | undefined
-) {
-  if (file) return URL.createObjectURL(file)
+async function uploadFile(file: File, kind: UploadKind): Promise<string> {
+  const body = new FormData()
+  body.append("kind", kind)
+  body.append("file", file)
+
+  const response = await fetch("/api/files", { method: "POST", body })
+  const data = await response.json().catch(() => null)
+  if (!response.ok) {
+    throw new Error(data?.error ?? "Upload failed.")
+  }
+  return data.url as string
+}
+
+function resolveUrl(cleared: boolean, current: string | null | undefined) {
   if (cleared) return null
   return current ?? null
 }
@@ -125,6 +135,8 @@ export function AssetForm({ asset }: { asset?: Asset }) {
 
   const [form, setForm] = React.useState<FormState>(() => initialState(asset))
   const [errors, setErrors] = React.useState<FormErrors>({})
+  const [formError, setFormError] = React.useState<string | null>(null)
+  const [saving, setSaving] = React.useState(false)
   const [imageFile, setImageFile] = React.useState<File | null>(null)
   const [imageCleared, setImageCleared] = React.useState(false)
   const [docFile, setDocFile] = React.useState<File | null>(null)
@@ -142,24 +154,16 @@ export function AssetForm({ asset }: { asset?: Asset }) {
     [store.departments]
   )
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const nextErrors: FormErrors = {}
-    if (!form.categoryId) nextErrors.categoryId = "Kategori wajib dipilih."
-    if (!form.name.trim()) nextErrors.name = "Nama aset wajib diisi."
+    if (!form.categoryId) nextErrors.categoryId = "Category is required."
+    if (!form.name.trim()) nextErrors.name = "Asset name is required."
 
     const code = form.code.trim()
     if (!code) {
-      nextErrors.code = "Code wajib diisi."
-    } else if (
-      store.assets.some(
-        (item) =>
-          item.id !== asset?.id &&
-          item.code.trim().toLowerCase() === code.toLowerCase()
-      )
-    ) {
-      nextErrors.code = "Code sudah dipakai aset lain."
+      nextErrors.code = "Code is required."
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -176,17 +180,36 @@ export function AssetForm({ asset }: { asset?: Asset }) {
       employeeId: form.employeeId ? Number(form.employeeId) : null,
       departmentId: form.departmentId ? Number(form.departmentId) : null,
       condition: form.condition,
-      imageUrl: resolveUrl(imageFile, imageCleared, asset?.imageUrl),
-      docUrl: resolveUrl(docFile, docCleared, asset?.docUrl),
-      recordDate: form.recordDate || today(),
+      imageUrl: resolveUrl(imageCleared, asset?.imageUrl),
+      docUrl: resolveUrl(docCleared, asset?.docUrl),
+      recordDate: asset?.recordDate ?? today(),
       purchaseDate: form.purchaseDate || null,
       note: form.note.trim() || null,
     }
 
-    if (asset) {
-      store.updateAsset(asset.id, input)
-    } else {
-      store.createAsset(input)
+    setSaving(true)
+    setFormError(null)
+
+    try {
+      if (imageFile) input.imageUrl = await uploadFile(imageFile, "image")
+      if (docFile) input.docUrl = await uploadFile(docFile, "document")
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Upload failed.")
+      setSaving(false)
+      return
+    }
+
+    try {
+      if (asset) {
+        await store.updateAsset(asset.id, input)
+      } else {
+        await store.createAsset(input)
+      }
+    } catch (err) {
+      setErrors({ code: err instanceof Error ? err.message : "Save failed." })
+      return
+    } finally {
+      setSaving(false)
     }
 
     router.push("/assets")
@@ -197,14 +220,14 @@ export function AssetForm({ asset }: { asset?: Asset }) {
       <Card size="sm">
         <CardContent className="space-y-4">
           <div className="space-y-0.5">
-            <p className="text-sm font-medium">Informasi Aset</p>
+            <p className="text-sm font-medium">Asset Information</p>
             <p className="text-xs text-muted-foreground">
-              Kolom bertanda wajib harus diisi sebelum menyimpan.
+              Required fields must be filled before saving.
             </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Kategori" error={errors.categoryId}>
+            <Field label="Category" error={errors.categoryId}>
               <Select
                 items={store.categories.map((category) => ({
                   label: category.name,
@@ -214,7 +237,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
                 onValueChange={(value) => set("categoryId", value ?? "")}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Pilih kategori" />
+                  <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
                   {store.categories.map((category) => (
@@ -226,7 +249,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
               </Select>
             </Field>
 
-            <Field label="Kondisi">
+            <Field label="Condition">
               <Select
                 items={CONDITIONS.map((condition) => ({
                   label: condition,
@@ -250,7 +273,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
               </Select>
             </Field>
 
-            <Field label="Nama Aset" htmlFor="asset-name" error={errors.name}>
+            <Field label="Asset Name" htmlFor="asset-name" error={errors.name}>
               <Input
                 id="asset-name"
                 value={form.name}
@@ -263,7 +286,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
               label="Code"
               htmlFor="asset-code"
               error={errors.code}
-              hint="Kode unik inventaris, contoh AST-2026-001."
+              hint="Unique inventory code, e.g. AST-2026-001."
             >
               <Input
                 id="asset-code"
@@ -284,17 +307,10 @@ export function AssetForm({ asset }: { asset?: Asset }) {
               />
             </Field>
 
-            <Field label="Updated By">
-              <Input value={ADMIN_NAME} disabled readOnly />
-              <p className="text-xs text-muted-foreground">
-                Terisi otomatis dari admin yang login.
-              </p>
-            </Field>
-
             <Field label="Employee">
               <Select
                 items={[
-                  { label: "— Tanpa pemegang —", value: "" },
+                  { label: "— No holder —", value: "" },
                   ...store.employees.map((employee) => ({
                     label: employee.name,
                     value: String(employee.id),
@@ -304,10 +320,10 @@ export function AssetForm({ asset }: { asset?: Asset }) {
                 onValueChange={(value) => set("employeeId", value ?? "")}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="— Tanpa pemegang —" />
+                  <SelectValue placeholder="— No holder —" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">— Tanpa pemegang —</SelectItem>
+                  <SelectItem value="">— No holder —</SelectItem>
                   {store.employees.map((employee) => (
                     <SelectItem key={employee.id} value={String(employee.id)}>
                       {employee.name}
@@ -320,7 +336,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
             <Field label="Department">
               <Select
                 items={[
-                  { label: "— Tanpa department —", value: "" },
+                  { label: "— No department —", value: "" },
                   ...departmentOptions.map((department) => ({
                     label: department.path,
                     value: String(department.id),
@@ -330,10 +346,10 @@ export function AssetForm({ asset }: { asset?: Asset }) {
                 onValueChange={(value) => set("departmentId", value ?? "")}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="— Tanpa department —" />
+                  <SelectValue placeholder="— No department —" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">— Tanpa department —</SelectItem>
+                  <SelectItem value="">— No department —</SelectItem>
                   {departmentOptions.map((department) => (
                     <SelectItem
                       key={department.id}
@@ -344,15 +360,6 @@ export function AssetForm({ asset }: { asset?: Asset }) {
                   ))}
                 </SelectContent>
               </Select>
-            </Field>
-
-            <Field label="Record Date" htmlFor="asset-record-date">
-              <Input
-                id="asset-record-date"
-                type="date"
-                value={form.recordDate}
-                onChange={(event) => set("recordDate", event.target.value)}
-              />
             </Field>
 
             <Field label="Purchase Date" htmlFor="asset-purchase-date">
@@ -368,64 +375,63 @@ export function AssetForm({ asset }: { asset?: Asset }) {
       </Card>
 
       <Card size="sm">
-        <CardContent className="space-y-2">
-          <p className="text-sm font-medium">Catatan</p>
-          <Textarea
-            value={form.note}
-            onChange={(event) => set("note", event.target.value)}
-            placeholder="Kondisi khusus, riwayat perbaikan, atau keterangan lain."
-            rows={3}
-          />
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium">Notes</p>
+              <Textarea
+                className="min-h-24 flex-1"
+                value={form.note}
+                onChange={(event) => set("note", event.target.value)}
+                placeholder="Special condition, repair history, or other remarks."
+              />
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-sm font-medium">Files</p>
+              <FileUploadField
+                id="asset-image"
+                title="Asset Image"
+                hint={uploadHint("image")}
+                accept={IMAGE_ACCEPT}
+                maxSize={IMAGE_MAX_SIZE}
+                kind="image"
+                initialUrl={asset?.imageUrl}
+                onFileChange={(file) => {
+                  setImageFile(file)
+                  if (file === null) setImageCleared(true)
+                }}
+              />
+              <FileUploadField
+                id="asset-document"
+                title="Supporting Document"
+                hint={uploadHint("document")}
+                accept={DOCUMENT_ACCEPT}
+                maxSize={DOCUMENT_MAX_SIZE}
+                kind="document"
+                initialUrl={asset?.docUrl}
+                onFileChange={(file) => {
+                  setDocFile(file)
+                  if (file === null) setDocCleared(true)
+                }}
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
-      <Card size="sm">
-        <CardContent className="space-y-4">
-          <div className="space-y-0.5">
-            <p className="text-sm font-medium">Berkas</p>
-            <p className="text-xs text-muted-foreground">
-              Gambar maksimal 2 MB, dokumen maksimal 5 MB.
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <FileUploadField
-              id="asset-image"
-              title="Gambar Aset"
-              hint="PNG, JPG, WEBP, atau GIF (maks 2 MB)"
-              accept={IMAGE_ACCEPT}
-              maxSize={IMAGE_MAX_SIZE}
-              kind="image"
-              initialUrl={asset?.imageUrl}
-              onFileChange={(file) => {
-                setImageFile(file)
-                if (file === null) setImageCleared(true)
-              }}
-            />
-            <FileUploadField
-              id="asset-document"
-              title="Dokumen Pendukung"
-              hint="PDF, DOC, DOCX, XLS, XLSX, atau TXT (maks 5 MB)"
-              accept={DOCUMENT_ACCEPT}
-              maxSize={DOCUMENT_MAX_SIZE}
-              kind="document"
-              initialUrl={asset?.docUrl}
-              onFileChange={(file) => {
-                setDocFile(file)
-                if (file === null) setDocCleared(true)
-              }}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      {formError ? (
+        <p className="text-xs text-destructive">{formError}</p>
+      ) : null}
 
       <div className="flex items-center justify-end gap-2">
         <Button variant="outline" render={<Link href="/assets" />}>
           <X />
-          Batal
+          Cancel
         </Button>
-        <Button type="submit">
+        <Button type="submit" disabled={saving}>
           <Save />
-          Simpan Aset
+          {saving ? "Saving..." : "Save Asset"}
         </Button>
       </div>
     </form>

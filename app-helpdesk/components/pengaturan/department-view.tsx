@@ -4,6 +4,7 @@ import * as React from "react"
 import { Plus } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { StoreState } from "@/components/store-state"
 import { CsvActions } from "@/components/csv-actions"
 import { PageHeader } from "@/components/page-header"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
@@ -13,13 +14,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { csvFileName, downloadCsv } from "@/lib/csv"
 import {
-  departmentSubtreeDepth,
   flattenDepartments,
   MAX_DEPARTMENT_LEVEL,
 } from "@/lib/departments"
 import type { DepartmentNode } from "@/lib/types"
 
-const CSV_COLUMNS = ["Nama", "Parent"]
+const CSV_COLUMNS = ["Name", "Parent"]
 
 export function DepartmentView() {
   const store = useDataStore()
@@ -31,49 +31,28 @@ export function DepartmentView() {
   const [pendingDelete, setPendingDelete] =
     React.useState<DepartmentNode | null>(null)
 
-  const submit = (name: string, parentId: number | null) => {
+  const submit = async (name: string, parentId: number | null) => {
     const editing = dialog.item
 
-    if (
-      store.departments.some(
-        (item) =>
-          item.id !== editing?.id &&
-          item.name.trim().toLowerCase() === name.toLowerCase()
-      )
-    ) {
-      return "Nama department sudah dipakai."
+    try {
+      if (editing) await store.updateDepartment(editing.id, name, parentId)
+      else await store.createDepartment(name, parentId)
+    } catch (err) {
+      return err instanceof Error ? err.message : "Save failed."
     }
-
-    if (parentId !== null) {
-      const parent = flattenDepartments(store.departments).find(
-        (node) => node.id === parentId
-      )
-      if (!parent) return "Parent department tidak ditemukan."
-
-      const depth = editing
-        ? departmentSubtreeDepth(store.departments, editing.id)
-        : 0
-
-      if (parent.level + depth >= MAX_DEPARTMENT_LEVEL) {
-        return `Maksimal ${MAX_DEPARTMENT_LEVEL} level department.`
-      }
-    }
-
-    if (editing) store.updateDepartment(editing.id, name, parentId)
-    else store.createDepartment(name, parentId)
     return null
   }
 
   const deleteBlockReason = (node: DepartmentNode) => {
-    if (node.children.length > 0) return "Masih punya sub-department."
+    if (node.children.length > 0) return "Still has sub-departments."
     if (store.employees.some((item) => item.departmentId === node.id)) {
-      return "Masih dipakai oleh employee."
+      return "Still used by employees."
     }
     if (store.assets.some((item) => item.departmentId === node.id)) {
-      return "Masih dipakai oleh aset."
+      return "Still used by assets."
     }
     if (store.simCards.some((item) => item.departmentId === node.id)) {
-      return "Masih dipakai oleh SIM card."
+      return "Still used by SIM cards."
     }
     return null
   }
@@ -92,18 +71,23 @@ export function DepartmentView() {
     )
   }
 
+  const importCsv = async (rows: string[][]) => {
+    return store.importDepartments(rows)
+  }
+
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
       <PageHeader
         title="Department"
-        description={`Struktur divisi bertingkat, maksimal ${MAX_DEPARTMENT_LEVEL} level.`}
+        description={`Nested division structure, maximum ${MAX_DEPARTMENT_LEVEL} levels.`}
         actions={
           <>
             <CsvActions
               columns={CSV_COLUMNS}
               onExport={exportCsv}
-              fileHint="Kolom Parent boleh dikosongkan untuk department level 1."
-              note="File harus punya baris header sesuai kolom di atas. Data master yang belum ada akan dibuat otomatis. Penulisan ke database belum aktif pada tahap UI ini."
+              fileHint="Columns: Name, Parent — or the sample format: ID, Nama, Induk."
+              note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose name already exists are skipped."
+              onImport={importCsv}
             />
             <Button
               size="sm"
@@ -112,12 +96,18 @@ export function DepartmentView() {
               }
             >
               <Plus />
-              Tambah Department
+              Add Department
             </Button>
           </>
         }
       />
 
+      <StoreState
+        loading={store.loading}
+        error={store.error}
+        onRetry={store.refresh}
+        empty={false}
+      >
       <Card size="sm" className="py-0">
         <CardContent className="px-0">
           <DepartmentTree
@@ -133,6 +123,7 @@ export function DepartmentView() {
           />
         </CardContent>
       </Card>
+      </StoreState>
 
       <DepartmentDialog
         open={dialog.open}
@@ -150,10 +141,16 @@ export function DepartmentView() {
         onOpenChange={(open) => {
           if (!open) setPendingDelete(null)
         }}
-        title={`Hapus ${pendingDelete?.name}?`}
-        description={`Department ${pendingDelete?.path ?? ""} akan dihapus. Tindakan ini tidak dapat dibatalkan.`}
-        onConfirm={() => {
-          if (pendingDelete) store.deleteDepartment(pendingDelete.id)
+        title={`Delete ${pendingDelete?.name}?`}
+        description={`Department ${pendingDelete?.path ?? ""} will be deleted. This action cannot be undone.`}
+        onConfirm={async () => {
+          if (pendingDelete) {
+            try {
+              await store.deleteDepartment(pendingDelete.id)
+            } catch {
+              return
+            }
+          }
           setPendingDelete(null)
         }}
       />

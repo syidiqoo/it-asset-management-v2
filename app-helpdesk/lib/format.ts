@@ -1,8 +1,8 @@
 import type { Condition } from "@/lib/types"
 
-const dateFormatter = new Intl.DateTimeFormat("id-ID", {
-  day: "numeric",
-  month: "short",
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
   year: "numeric",
 })
 
@@ -26,9 +26,9 @@ export function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-const currencyFormatter = new Intl.NumberFormat("id-ID", {
+const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
-  currency: "IDR",
+  currency: "USD",
   maximumFractionDigits: 0,
 })
 

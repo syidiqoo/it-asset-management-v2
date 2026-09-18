@@ -23,7 +23,7 @@ type NameDialogProps = {
   label: string
   placeholder?: string
   initialValue?: string
-  onSubmit: (value: string) => string | null
+  onSubmit: (value: string) => string | null | Promise<string | null>
 }
 
 export function NameDialog({ open, onOpenChange, ...props }: NameDialogProps) {
@@ -50,16 +50,16 @@ function NameDialogForm({
   const [value, setValue] = React.useState(initialValue ?? "")
   const [error, setError] = React.useState<string | null>(null)
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const trimmed = value.trim()
     if (!trimmed) {
-      setError(`${label} wajib diisi.`)
+      setError(`${label} is required.`)
       return
     }
 
-    const message = onSubmit(trimmed)
+    const message = await onSubmit(trimmed)
     if (message) {
       setError(message)
       return
@@ -87,11 +87,11 @@ function NameDialogForm({
 
         <DialogFooter className="-mx-4 mt-2">
           <Button type="button" variant="outline" onClick={onDone}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit">
             <Save />
-            Simpan
+            Save
           </Button>
         </DialogFooter>
       </form>

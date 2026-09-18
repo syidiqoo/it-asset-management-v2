@@ -98,20 +98,12 @@ function SimCardForm({
     [store.departments]
   )
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const phoneNumber = form.phoneNumber.trim()
     if (!phoneNumber) {
-      setError("No Handphone wajib diisi.")
-      return
-    }
-    if (
-      store.simCards.some(
-        (item) => item.id !== card?.id && item.phoneNumber === phoneNumber
-      )
-    ) {
-      setError("No Handphone sudah terdaftar.")
+      setError("Phone Number is required.")
       return
     }
 
@@ -124,10 +116,15 @@ function SimCardForm({
       clsRoaming: form.clsRoaming.trim() || null,
     }
 
-    if (card) {
-      store.updateSimCard(card.id, input)
-    } else {
-      store.createSimCard(input)
+    try {
+      if (card) {
+        await store.updateSimCard(card.id, input)
+      } else {
+        await store.createSimCard(input)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed.")
+      return
     }
 
     onDone()
@@ -136,16 +133,15 @@ function SimCardForm({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>{card ? "Edit SIM Card" : "Tambah SIM Card"}</DialogTitle>
+        <DialogTitle>{card ? "Edit SIM Card" : "Add SIM Card"}</DialogTitle>
         <DialogDescription>
-          No Handphone harus unik. Employee, Department, dan Package dipilih
-          dari master data.
+          Phone Number must be unique. Employee, Department, and Package are selected from master data.
         </DialogDescription>
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="sim-phone">No Handphone</Label>
+          <Label htmlFor="sim-phone">Phone Number</Label>
           <Input
             id="sim-phone"
             value={form.phoneNumber}
@@ -160,7 +156,7 @@ function SimCardForm({
           <Label>Employee</Label>
           <Select
             items={[
-              { label: "— Tanpa pemegang —", value: "" },
+              { label: "— No holder —", value: "" },
               ...store.employees.map((employee) => ({
                 label: employee.name,
                 value: String(employee.id),
@@ -170,10 +166,10 @@ function SimCardForm({
             onValueChange={(value) => set("employeeId", value ?? "")}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="— Tanpa pemegang —" />
+              <SelectValue placeholder="— No holder —" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">— Tanpa pemegang —</SelectItem>
+              <SelectItem value="">— No holder —</SelectItem>
               {store.employees.map((employee) => (
                 <SelectItem key={employee.id} value={String(employee.id)}>
                   {employee.name}
@@ -187,7 +183,7 @@ function SimCardForm({
           <Label>Department</Label>
           <Select
             items={[
-              { label: "— Tanpa department —", value: "" },
+              { label: "— No department —", value: "" },
               ...departmentOptions.map((department) => ({
                 label: department.path,
                 value: String(department.id),
@@ -197,10 +193,10 @@ function SimCardForm({
             onValueChange={(value) => set("departmentId", value ?? "")}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="— Tanpa department —" />
+              <SelectValue placeholder="— No department —" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">— Tanpa department —</SelectItem>
+              <SelectItem value="">— No department —</SelectItem>
               {departmentOptions.map((department) => (
                 <SelectItem key={department.id} value={String(department.id)}>
                   {department.path}
@@ -214,7 +210,7 @@ function SimCardForm({
           <Label>Package</Label>
           <Select
             items={[
-              { label: "— Tanpa package —", value: "" },
+              { label: "— No package —", value: "" },
               ...store.simPackages.map((item) => ({
                 label: item.name,
                 value: String(item.id),
@@ -224,10 +220,10 @@ function SimCardForm({
             onValueChange={(value) => set("packageId", value ?? "")}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="— Tanpa package —" />
+              <SelectValue placeholder="— No package —" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">— Tanpa package —</SelectItem>
+              <SelectItem value="">— No package —</SelectItem>
               {store.simPackages.map((item) => (
                 <SelectItem key={item.id} value={String(item.id)}>
                   {item.name}
@@ -259,11 +255,11 @@ function SimCardForm({
 
         <DialogFooter className="sm:col-span-2">
           <Button type="button" variant="outline" onClick={onDone}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit">
             <Save />
-            Simpan
+            Save
           </Button>
         </DialogFooter>
       </form>

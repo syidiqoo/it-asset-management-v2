@@ -1,4 +1,4 @@
-export function parseCsv(text: string): string[][] {
+function tokenize(text: string): string[][] {
   const rows: string[][] = []
   let row: string[] = []
   let field = ""
@@ -41,7 +41,23 @@ export function parseCsv(text: string): string[][] {
     rows.push(row)
   }
 
-  return rows.filter((item) => item.some((cell) => cell.trim() !== ""))
+  return rows
+}
+
+function unwrapRow(row: string[], columns: number): string[] {
+  if (columns < 2 || row.length !== 1) return row
+  const nested = tokenize(row[0])
+  if (nested.length === 1 && nested[0].length === columns) return nested[0]
+  return row
+}
+
+export function parseCsv(text: string): string[][] {
+  if (text.charCodeAt(0) === 0xfeff) text = text.slice(1)
+  const rows = tokenize(text)
+  const columns = rows[0]?.length ?? 0
+  return rows
+    .map((row) => unwrapRow(row, columns))
+    .filter((item) => item.some((cell) => cell.trim() !== ""))
 }
 
 export function csvFileName(prefix: string): string {

@@ -10,6 +10,7 @@ import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
 import { Pagination } from "@/components/pagination"
 import { StickyHeader } from "@/components/sticky-header"
+import { StoreState } from "@/components/store-state"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -41,18 +42,17 @@ import { formatCurrency } from "@/lib/format"
 import {
   filterInternetData,
   INTERNET_PAGE_SIZE,
-  normalizeInternetId,
 } from "@/lib/internet"
 import { formatLocationLabel, locationLabelById } from "@/lib/locations"
 import type { InternetData, InternetDataInput } from "@/lib/types"
 
 const CSV_COLUMNS = [
-  "ID Internet",
-  "Lokasi",
-  "Layanan",
+  "Internet ID",
+  "Location",
+  "Service",
   "Bandwidth (Mbps)",
-  "Nama Pelanggan",
-  "Biaya Bulanan",
+  "Customer Name",
+  "Monthly Cost",
 ]
 
 export function DataInternetView({
@@ -89,14 +89,14 @@ export function DataInternetView({
     {
       type: "search",
       name: "q",
-      label: "Pencarian",
-      placeholder: "ID internet, pelanggan, layanan",
+      label: "Search",
+      placeholder: "Internet ID, customer, service",
     },
     {
       type: "select",
       name: "location",
-      label: "Lokasi",
-      allLabel: "Semua lokasi",
+      label: "Location",
+      allLabel: "All locations",
       options: store.locations.map((location) => ({
         label: formatLocationLabel(location),
         value: String(location.id),
@@ -105,8 +105,8 @@ export function DataInternetView({
     {
       type: "select",
       name: "service",
-      label: "Layanan",
-      allLabel: "Semua layanan",
+      label: "Service",
+      allLabel: "All services",
       options: serviceOptions,
     },
   ]
@@ -123,21 +123,15 @@ export function DataInternetView({
     return query ? `/data-internet?${query}` : "/data-internet"
   }
 
-  const submit = (input: InternetDataInput) => {
+  const submit = async (input: InternetDataInput) => {
     const editingItem = editing
 
-    if (
-      store.internetData.some(
-        (item) =>
-          item.id !== editingItem?.id &&
-          normalizeInternetId(item.internetId) === input.internetId
-      )
-    ) {
-      return "ID Internet sudah dipakai."
+    try {
+      if (editingItem) await store.updateInternetData(editingItem.id, input)
+      else await store.createInternetData(input)
+    } catch (err) {
+      return err instanceof Error ? err.message : "Save failed."
     }
-
-    if (editingItem) store.updateInternetData(editingItem.id, input)
-    else store.createInternetData(input)
     return null
   }
 
@@ -153,7 +147,7 @@ export function DataInternetView({
 
   const exportCsv = () => {
     downloadCsv(
-      csvFileName("data-internet"),
+      csvFileName("internet-data"),
       CSV_COLUMNS,
       filtered.map((item) => [
         item.internetId,
@@ -170,19 +164,19 @@ export function DataInternetView({
     <div className="flex flex-col">
       <StickyHeader>
         <PageHeader
-          title="Data Internet"
-          description="Langganan internet per lokasi beserta bandwidth dan biaya bulanannya."
+          title="Internet Data"
+          description="Internet subscriptions per location with bandwidth and monthly costs."
           actions={
             <>
               <CsvActions
                 columns={CSV_COLUMNS}
                 onExport={exportCsv}
-                fileHint="Format CSV, baris pertama adalah nama kolom."
-                note="File harus punya baris header sesuai kolom di atas. Data master yang belum ada akan dibuat otomatis. Penulisan ke database belum aktif pada tahap UI ini."
+                fileHint="CSV format, first row is the header."
+                note="File must have a header row matching the columns above. Missing master data will be auto-created. Database writes are not enabled in this UI stage."
               />
               <Button size="sm" onClick={openCreate}>
                 <Plus />
-                Tambah Data Internet
+                Add Internet Data
               </Button>
             </>
           }
@@ -191,6 +185,13 @@ export function DataInternetView({
       </StickyHeader>
 
       <div className="flex flex-col gap-4 p-4 md:p-6">
+        <StoreState
+          loading={store.loading}
+          error={store.error}
+          onRetry={store.refresh}
+          empty={false}
+        >
+          <div className="contents">
         {pageItems.length === 0 ? (
           <Card size="sm">
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
@@ -199,15 +200,15 @@ export function DataInternetView({
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">
-                  Tidak ada data internet ditemukan
+                  No internet data found
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Ubah kata kunci atau reset filter untuk melihat data lainnya.
+                  Change keywords or reset filters to see other data.
                 </p>
               </div>
               <Button size="sm" onClick={openCreate}>
                 <Plus />
-                Tambah Data Internet
+                Add Internet Data
               </Button>
             </CardContent>
           </Card>
@@ -217,13 +218,13 @@ export function DataInternetView({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="pl-4">ID Internet</TableHead>
-                    <TableHead>Lokasi</TableHead>
-                    <TableHead>Layanan</TableHead>
+                    <TableHead className="pl-4">Internet ID</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Service</TableHead>
                     <TableHead className="text-right">Bandwidth</TableHead>
-                    <TableHead>Nama Pelanggan</TableHead>
-                    <TableHead className="text-right">Biaya Bulanan</TableHead>
-                    <TableHead className="pr-4 text-right">Aksi</TableHead>
+                    <TableHead>Customer Name</TableHead>
+                    <TableHead className="text-right">Monthly Cost</TableHead>
+                    <TableHead className="pr-4 text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -250,7 +251,7 @@ export function DataInternetView({
                               <Button
                                 variant="ghost"
                                 size="icon-sm"
-                                aria-label={`Aksi untuk ${item.internetId}`}
+                                aria-label={`Actions for ${item.internetId}`}
                               />
                             }
                           >
@@ -267,7 +268,7 @@ export function DataInternetView({
                               onClick={() => setTarget(item)}
                             >
                               <Trash2 />
-                              Hapus
+                              Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -286,10 +287,12 @@ export function DataInternetView({
             pageCount={pageCount}
             total={filtered.length}
             pageSize={INTERNET_PAGE_SIZE}
-            unit="data internet"
+            unit="internet records"
             buildHref={buildHref}
           />
         ) : null}
+          </div>
+        </StoreState>
       </div>
 
       <InternetDialog
@@ -307,28 +310,34 @@ export function DataInternetView({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Hapus data internet ini?</DialogTitle>
+            <DialogTitle>Delete this internet record?</DialogTitle>
             <DialogDescription>
               Data{" "}
               <span className="font-medium text-foreground">
                 {target?.internetId}
               </span>{" "}
-              milik {target?.customerName} akan dihapus. Tindakan ini tidak
-              dapat dibatalkan.
+              for {target?.customerName} will be deleted. This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setTarget(null)}>
-              Batal
+              Cancel
             </Button>
             <Button
               variant="destructive"
-              onClick={() => {
-                if (target) store.deleteInternetData(target.id)
+              onClick={async () => {
+                if (target) {
+                  try {
+                    await store.deleteInternetData(target.id)
+                  } catch {
+                    return
+                  }
+                }
                 setTarget(null)
               }}
             >
-              Hapus
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

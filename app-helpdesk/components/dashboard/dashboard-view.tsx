@@ -4,6 +4,7 @@ import * as React from "react"
 import { Boxes, Building2, MapPin, Smartphone, Users, Wifi } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { StoreState } from "@/components/store-state"
 import { StatGrid, type Stat } from "@/components/dashboard/stat-grid"
 import { PageHeader } from "@/components/page-header"
 import { CONDITIONS, type Condition } from "@/lib/types"
@@ -28,7 +29,7 @@ export function DashboardView() {
   }, [store.assets])
 
   const assetStats: Stat[] = [
-    { label: "Total Aset", value: store.assets.length, icon: Boxes },
+    { label: "Total Assets", value: store.assets.length, icon: Boxes },
     ...CONDITIONS.map((condition) => ({
       label: condition,
       value: counts[condition],
@@ -38,7 +39,7 @@ export function DashboardView() {
 
   const inventoryStats: Stat[] = [
     { label: "SIM Card", value: store.simCards.length, icon: Smartphone },
-    { label: "Data Internet", value: store.internetData.length, icon: Wifi },
+    { label: "Internet Data", value: store.internetData.length, icon: Wifi },
     { label: "Location", value: store.locations.length, icon: MapPin },
     { label: "Employee", value: store.employees.length, icon: Users },
     { label: "Department", value: store.departments.length, icon: Building2 },
@@ -48,22 +49,31 @@ export function DashboardView() {
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <PageHeader
         title="Dashboard"
-        description="Ringkasan aset IT dan inventaris kantor."
+        description="Summary of IT assets and office inventory."
       />
 
+      <StoreState
+        loading={store.loading}
+        error={store.error}
+        onRetry={store.refresh}
+        empty={false}
+      >
+        <div className="contents">
       <section className="space-y-3">
         <h2 className="text-sm font-medium text-muted-foreground">
-          Rekap Aset
+          Asset Summary
         </h2>
         <StatGrid stats={assetStats} columns={5} />
       </section>
 
       <section className="space-y-3">
         <h2 className="text-sm font-medium text-muted-foreground">
-          Inventaris Lain
+          Other Inventory
         </h2>
         <StatGrid stats={inventoryStats} columns={5} />
       </section>
+        </div>
+      </StoreState>
     </div>
   )
 }

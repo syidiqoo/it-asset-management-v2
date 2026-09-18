@@ -34,7 +34,10 @@ type DepartmentDialogProps = {
   department: DepartmentNode | null
   departments: Department[]
   defaultParentId: number | null
-  onSubmit: (name: string, parentId: number | null) => string | null
+  onSubmit: (
+    name: string,
+    parentId: number | null
+  ) => string | null | Promise<string | null>
 }
 
 export function DepartmentDialog({
@@ -86,16 +89,16 @@ function DepartmentDialogForm({
     ? (parentOptions.find((node) => String(node.id) === parent)?.level ?? 1)
     : 0
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const trimmed = name.trim()
     if (!trimmed) {
-      setError("Nama department wajib diisi.")
+      setError("Department name is required.")
       return
     }
 
-    const message = onSubmit(trimmed, parent ? Number(parent) : null)
+    const message = await onSubmit(trimmed, parent ? Number(parent) : null)
     if (message) {
       setError(message)
       return
@@ -108,17 +111,17 @@ function DepartmentDialogForm({
     <>
       <DialogHeader>
         <DialogTitle>
-          {department ? "Edit Department" : "Tambah Department"}
+          {department ? "Edit Department" : "Add Department"}
         </DialogTitle>
         <DialogDescription>
-          Department bisa bertingkat lewat parent, maksimal{" "}
-          {MAX_DEPARTMENT_LEVEL} level.
+          Departments can nest via parent, maximum{" "}
+          {MAX_DEPARTMENT_LEVEL} levels.
         </DialogDescription>
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <Label htmlFor="department-name">Nama Department</Label>
+          <Label htmlFor="department-name">Department Name</Label>
           <Input
             id="department-name"
             value={name}
@@ -131,7 +134,7 @@ function DepartmentDialogForm({
           <Label>Parent Department</Label>
           <Select
             items={[
-              { label: "— Tanpa parent (level 1) —", value: "" },
+              { label: "— No parent (level 1) —", value: "" },
               ...parentOptions.map((node) => ({
                 label: node.path,
                 value: String(node.id),
@@ -141,10 +144,10 @@ function DepartmentDialogForm({
             onValueChange={(value) => setParent(value ?? "")}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="— Tanpa parent —" />
+              <SelectValue placeholder="— No parent —" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">— Tanpa parent (level 1) —</SelectItem>
+              <SelectItem value="">— No parent (level 1) —</SelectItem>
               {parentOptions.map((node) => (
                 <SelectItem key={node.id} value={String(node.id)}>
                   {node.path}
@@ -153,7 +156,7 @@ function DepartmentDialogForm({
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
-            Department ini akan berada di level {parentLevel + 1}.
+            This department will be at level {parentLevel + 1}.
           </p>
         </div>
 
@@ -161,11 +164,11 @@ function DepartmentDialogForm({
 
         <DialogFooter className="-mx-4">
           <Button type="button" variant="outline" onClick={onDone}>
-            Batal
+            Cancel
           </Button>
           <Button type="submit">
             <Save />
-            Simpan
+            Save
           </Button>
         </DialogFooter>
       </form>

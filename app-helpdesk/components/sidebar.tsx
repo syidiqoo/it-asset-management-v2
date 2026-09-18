@@ -16,20 +16,20 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { ADMIN_NAME } from "@/lib/mock-data"
+import { useSessionUser, useSignOut } from "@/components/use-session-user"
 import { cn } from "@/lib/utils"
 
 const SETTINGS_PREFIX = "/pengaturan"
 
 const MAIN_ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/assets", label: "Data Aset", icon: Boxes },
+  { href: "/assets", label: "Asset Data", icon: Boxes },
   { href: "/sim-cards", label: "SIM Card", icon: Smartphone },
-  { href: "/data-internet", label: "Data Internet", icon: Wifi },
+  { href: "/data-internet", label: "Internet Data", icon: Wifi },
 ]
 
 const SETTINGS_ITEMS: { href: string; label: string }[] = [
-  { href: `${SETTINGS_PREFIX}/kategori`, label: "Kategori" },
+  { href: `${SETTINGS_PREFIX}/kategori`, label: "Category" },
   { href: `${SETTINGS_PREFIX}/employee`, label: "Employee" },
   { href: `${SETTINGS_PREFIX}/department`, label: "Department" },
   { href: `${SETTINGS_PREFIX}/sim-package`, label: "SIM Package" },
@@ -64,7 +64,7 @@ function Brand() {
       </div>
       <div className="leading-tight">
         <p className="text-sm font-semibold">IT Helpdesk</p>
-        <p className="text-xs text-muted-foreground">Manajemen Aset IT</p>
+        <p className="text-xs text-muted-foreground">IT Asset Management</p>
       </div>
     </div>
   )
@@ -106,7 +106,7 @@ function SettingsToggle({
       className={itemClassName(active)}
     >
       <Database className="size-4 shrink-0" />
-      <span className="whitespace-nowrap">Pengaturan</span>
+      <span className="whitespace-nowrap">Settings</span>
       <ChevronDown
         className={cn(
           "ml-auto size-4 shrink-0 transition-transform",
@@ -119,6 +119,8 @@ function SettingsToggle({
 
 export function Sidebar() {
   const pathname = usePathname()
+  const sessionUser = useSessionUser()
+  const signOut = useSignOut()
   const [override, setOverride] = React.useState<{
     path: string
     open: boolean
@@ -207,7 +209,7 @@ export function Sidebar() {
               AD
             </div>
             <div className="min-w-0 leading-tight">
-              <p className="truncate text-sm font-medium">{ADMIN_NAME}</p>
+              <p className="truncate text-sm font-medium">{sessionUser?.name ?? "—"}</p>
               <p className="truncate text-xs text-muted-foreground">
                 Administrator
               </p>
@@ -217,9 +219,10 @@ export function Sidebar() {
             variant="ghost"
             size="sm"
             className="w-full justify-start text-muted-foreground"
+            onClick={signOut}
           >
             <LogOut />
-            Keluar
+            Log out
           </Button>
         </div>
       </aside>

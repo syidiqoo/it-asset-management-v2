@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  assets Asset[]
+}
+
+model Department {
+  id        Int          @id @default(autoincrement())
+  name      String
+  parentId  Int?
+  parent    Department?  @relation("DeptChildren", fields: [parentId], references: [id], onDelete: Restrict)
+  children  Department[] @relation("DeptChildren")
+  employees Employee[]
+  assets    Asset[]
+  simCards  SimCard[]
+  createdAt DateTime     @default(now())
+
+  @@index([parentId])
+}
+
+model Employee {
+  id           Int         @id @default(autoincrement())
+  name         String
+  departmentId Int?
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  assets       Asset[]
+  simCards     SimCard[]
+  createdAt    DateTime    @default(now())
+
+  @@index([departmentId])
+}
+
+model Asset {
+  id           Int        @id @default(autoincrement())
+  categoryId   Int
+  category     Category   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  name         String
+  code         String     @unique
+  serialNumber String?
+  employeeId   Int?
+  employee     Employee?  @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  departmentId Int?
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  condition    String     @default("Good")
+  imageUrl     String?
+  docUrl       String?
+  recordDate   DateTime   @db.Date
+  purchaseDate DateTime?  @db.Date
+  note         String?
+  updatedBy    String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([categoryId])
+  @@index([employeeId])
+  @@index([departmentId])
+  @@index([condition])
+}
+
+model SimPackage {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  simCards SimCard[]
+}
+
+model SimCard {
+  id           Int         @id @default(autoincrement())
+  phoneNumber  String      @unique
+  employeeId   Int?
+  employee     Employee?   @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  departmentId Int?
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  packageId    Int?
+  package      SimPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  clsDomestic  String?
+  clsRoaming   String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([employeeId])
+  @@index([departmentId])
+  @@index([packageId])
+}
+
+model Location {
+  id        Int            @id @default(autoincrement())
+  code      String         @unique
+  address   String
+  latitude  Float?
+  longitude Float?
+  createdAt DateTime       @default(now())
+  internet  InternetData[]
+}
+
+model InternetData {
+  id            Int       @id @default(autoincrement())
+  internetId    String    @unique
+  locationId    Int?
+  location      Location? @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  service       String
+  bandwidthMbps Int
+  customerName  String
+  monthlyCost   Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([locationId])
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+model FileBlob {
+  id        Int      @id @default(autoincrement())
+  fileName  String
+  mimeType  String
+  size      Int
+  kind      String
+  data      Bytes
+  createdAt DateTime @default(now())
+}

@@ -38,7 +38,7 @@ export function ItemActions({
               variant="ghost"
               size="icon-sm"
               disabled
-              aria-label={`Hapus ${label}`}
+              aria-label={`Delete ${label}`}
             >
               <Trash2 />
             </Button>
@@ -49,7 +49,7 @@ export function ItemActions({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label={`Hapus ${label}`}
+          aria-label={`Delete ${label}`}
           onClick={onDelete}
         >
           <Trash2 />

@@ -4,6 +4,7 @@ import * as React from "react"
 import { Plus } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { StoreState } from "@/components/store-state"
 import { CsvActions } from "@/components/csv-actions"
 import { PageHeader } from "@/components/page-header"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
@@ -20,10 +21,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { csvFileName, downloadCsv } from "@/lib/csv"
-import { departmentPath } from "@/lib/departments"
+import { departmentName, departmentPath } from "@/lib/departments"
 import type { Employee } from "@/lib/types"
 
-const CSV_COLUMNS = ["Nama", "Department"]
+const CSV_COLUMNS = ["Name", "Department"]
 
 export function EmployeeView() {
   const store = useDataStore()
@@ -33,20 +34,24 @@ export function EmployeeView() {
   }>({ open: false, item: null })
   const [pendingDelete, setPendingDelete] = React.useState<Employee | null>(null)
 
-  const submit = (name: string, departmentId: number | null) => {
+  const submit = async (name: string, departmentId: number | null) => {
     const editing = dialog.item
 
-    if (editing) store.updateEmployee(editing.id, name, departmentId)
-    else store.createEmployee(name, departmentId)
+    try {
+      if (editing) await store.updateEmployee(editing.id, name, departmentId)
+      else await store.createEmployee(name, departmentId)
+    } catch (err) {
+      return err instanceof Error ? err.message : "Save failed."
+    }
     return null
   }
 
   const blockReason = (id: number) => {
     if (store.assets.some((asset) => asset.employeeId === id)) {
-      return "Employee masih memegang aset."
+      return "Employee still holds assets."
     }
     if (store.simCards.some((card) => card.employeeId === id)) {
-      return "Employee masih memegang SIM card."
+      return "Employee still holds SIM cards."
     }
     return null
   }
@@ -62,40 +67,51 @@ export function EmployeeView() {
     )
   }
 
+  const importCsv = async (rows: string[][]) => {
+    return store.importEmployees(rows)
+  }
+
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
       <PageHeader
         title="Employee"
-        description="Pemegang aset dan SIM card."
+        description="Asset and SIM card holders."
         actions={
           <>
             <CsvActions
               columns={CSV_COLUMNS}
               onExport={exportCsv}
-              fileHint="Format CSV, baris pertama adalah nama kolom."
-              note="File harus punya baris header sesuai kolom di atas. Data master yang belum ada akan dibuat otomatis. Penulisan ke database belum aktif pada tahap UI ini."
+              fileHint="Columns: Name, Department — or the sample format: ID, Nama, ..., Posisi."
+              note="Import is all-or-nothing: one bad row cancels the whole process. Department must already exist; rows whose name already exists are skipped."
+              onImport={importCsv}
             />
             <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
               <Plus />
-              Tambah Employee
+              Add Employee
             </Button>
           </>
         }
       />
 
+      <StoreState
+        loading={store.loading}
+        error={store.error}
+        onRetry={store.refresh}
+        empty={false}
+      >
       <Card size="sm" className="py-0">
         <CardContent className="px-0">
           {store.employees.length === 0 ? (
             <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-              Belum ada data.
+              No data yet.
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="pl-4">Nama</TableHead>
+                  <TableHead className="pl-4">Name</TableHead>
                   <TableHead>Department</TableHead>
-                  <TableHead className="pr-4 text-right">Aksi</TableHead>
+                  <TableHead className="pr-4 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -105,7 +121,7 @@ export function EmployeeView() {
                       {employee.name}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {departmentPath(
+                      {departmentName(
                         store.departments,
                         employee.departmentId
                       ) ?? "—"}
@@ -127,6 +143,7 @@ export function EmployeeView() {
           )}
         </CardContent>
       </Card>
+      </StoreState>
 
       <EmployeeDialog
         open={dialog.open}
@@ -143,10 +160,16 @@ export function EmployeeView() {
         onOpenChange={(open) => {
           if (!open) setPendingDelete(null)
         }}
-        title={`Hapus ${pendingDelete?.name}?`}
-        description="Employee akan dihapus dari master data. Tindakan ini tidak dapat dibatalkan."
-        onConfirm={() => {
-          if (pendingDelete) store.deleteEmployee(pendingDelete.id)
+        title={`Delete ${pendingDelete?.name}?`}
+        description="Employee will be removed from master data. This action cannot be undone."
+        onConfirm={async () => {
+          if (pendingDelete) {
+            try {
+              await store.deleteEmployee(pendingDelete.id)
+            } catch {
+              return
+            }
+          }
           setPendingDelete(null)
         }}
       />

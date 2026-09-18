@@ -12,12 +12,12 @@ export function normalizeInternetId(value: string): string {
 
 export function validateInternetId(value: string): string | null {
   const trimmed = value.trim()
-  if (!trimmed) return "ID Internet wajib diisi."
+  if (!trimmed) return "Internet ID is required."
   if (!/^\d+$/.test(trimmed)) {
-    return "ID Internet hanya boleh berisi angka."
+    return "Internet ID must contain only digits."
   }
   if (!normalizeInternetId(trimmed)) {
-    return "ID Internet tidak boleh hanya berisi angka 0."
+    return "Internet ID cannot be only zeros."
   }
   return null
 }

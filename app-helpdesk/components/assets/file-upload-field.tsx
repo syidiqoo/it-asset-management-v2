@@ -5,11 +5,7 @@ import { FileText, ImageIcon, Trash2, Upload } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { formatFileSize } from "@/lib/format"
-
-function extensionOf(fileName: string) {
-  const index = fileName.lastIndexOf(".")
-  return index === -1 ? "" : fileName.slice(index).toLowerCase()
-}
+import { fileExtension } from "@/lib/uploads"
 
 export function FileUploadField({
   id,
@@ -44,12 +40,12 @@ export function FileUploadField({
       .split(",")
       .map((item) => item.trim().toLowerCase())
 
-    if (!allowed.includes(extensionOf(selected.name))) {
-      setError(`Format berkas tidak didukung. Gunakan ${accept}.`)
+    if (!allowed.includes(fileExtension(selected.name))) {
+      setError(`Unsupported file format. Use ${accept}.`)
       return
     }
     if (selected.size > maxSize) {
-      setError(`Ukuran berkas melebihi batas ${formatFileSize(maxSize)}.`)
+      setError(`File exceeds ${formatFileSize(maxSize)} limit.`)
       return
     }
 
@@ -91,7 +87,7 @@ export function FileUploadField({
           onClick={() => inputRef.current?.click()}
         >
           <Upload />
-          Pilih berkas
+          Choose file
         </Button>
       </div>
 
@@ -100,7 +96,7 @@ export function FileUploadField({
           {kind === "image" && previewUrl ? (
             <div
               role="img"
-              aria-label="Pratinjau gambar"
+              aria-label="Image preview"
               className="size-16 shrink-0 rounded-md border bg-muted bg-cover bg-center"
               style={{ backgroundImage: `url(${previewUrl})` }}
             />
@@ -111,17 +107,17 @@ export function FileUploadField({
           )}
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">
-              {file ? file.name : "Berkas terlampir"}
+              {file ? file.name : "Attached file"}
             </p>
             <p className="text-xs text-muted-foreground">
-              {file ? formatFileSize(file.size) : "Tersimpan"}
+              {file ? formatFileSize(file.size) : "Saved"}
             </p>
           </div>
           <Button
             type="button"
             variant="ghost"
             size="icon-sm"
-            aria-label={`Hapus ${title}`}
+            aria-label={`Remove ${title}`}
             onClick={clear}
           >
             <Trash2 />
@@ -130,7 +126,7 @@ export function FileUploadField({
       ) : (
         <div className="flex items-center gap-2 rounded-lg border border-dashed bg-muted/20 px-3 py-4 text-xs text-muted-foreground">
           <ImageIcon className="size-4" />
-          Belum ada berkas dipilih.
+          No file selected yet.
         </div>
       )}
 

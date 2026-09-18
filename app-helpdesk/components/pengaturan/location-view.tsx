@@ -4,6 +4,7 @@ import * as React from "react"
 import { Plus } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { StoreState } from "@/components/store-state"
 import { CsvActions } from "@/components/csv-actions"
 import { PageHeader } from "@/components/page-header"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
@@ -24,7 +25,7 @@ import { csvFileName, downloadCsv } from "@/lib/csv"
 import { formatCoordinates, LOCATION_CODE_MAX } from "@/lib/locations"
 import type { Location, LocationInput } from "@/lib/types"
 
-const CSV_COLUMNS = ["Kode", "Alamat Lengkap", "Latitude", "Longitude"]
+const CSV_COLUMNS = ["Code", "Full Address", "Latitude", "Longitude"]
 
 export function LocationView() {
   const store = useDataStore()
@@ -34,19 +35,15 @@ export function LocationView() {
   }>({ open: false, item: null })
   const [pendingDelete, setPendingDelete] = React.useState<Location | null>(null)
 
-  const submit = (input: LocationInput) => {
+  const submit = async (input: LocationInput) => {
     const editing = dialog.item
 
-    if (
-      store.locations.some(
-        (item) => item.id !== editing?.id && item.code === input.code
-      )
-    ) {
-      return `Kode ${input.code} sudah dipakai location lain.`
+    try {
+      if (editing) await store.updateLocation(editing.id, input)
+      else await store.createLocation(input)
+    } catch (err) {
+      return err instanceof Error ? err.message : "Save failed."
     }
-
-    if (editing) store.updateLocation(editing.id, input)
-    else store.createLocation(input)
     return null
   }
 
@@ -69,37 +66,43 @@ export function LocationView() {
     <div className="flex flex-col gap-4 p-4 md:p-6">
       <PageHeader
         title="Location"
-        description={`Lokasi aset dengan kode 001–${LOCATION_CODE_MAX}, alamat lengkap, dan titik koordinat.`}
+        description={`Asset locations with codes 001–${LOCATION_CODE_MAX}, full addresses, and coordinates.`}
         actions={
           <>
             <CsvActions
               columns={CSV_COLUMNS}
               onExport={exportCsv}
-              fileHint="Koordinat boleh dikosongkan."
-              note="File harus punya baris header sesuai kolom di atas. Data master yang belum ada akan dibuat otomatis. Penulisan ke database belum aktif pada tahap UI ini."
+              fileHint="Coordinates may be left empty."
+              note="File must have a header row matching the columns above. Missing master data will be created automatically. Database writes are not yet enabled at this UI stage."
             />
             <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
               <Plus />
-              Tambah Location
+              Add Location
             </Button>
           </>
         }
       />
 
+      <StoreState
+        loading={store.loading}
+        error={store.error}
+        onRetry={store.refresh}
+        empty={false}
+      >
       <Card size="sm" className="py-0">
         <CardContent className="px-0">
           {store.locations.length === 0 ? (
             <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-              Belum ada data.
+              No data yet.
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="pl-4">Kode</TableHead>
-                  <TableHead>Alamat Lengkap</TableHead>
-                  <TableHead>Koordinat</TableHead>
-                  <TableHead className="pr-4 text-right">Aksi</TableHead>
+                  <TableHead className="pl-4">Code</TableHead>
+                  <TableHead>Full Address</TableHead>
+                  <TableHead>Coordinates</TableHead>
+                  <TableHead className="pr-4 text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -132,6 +135,7 @@ export function LocationView() {
           )}
         </CardContent>
       </Card>
+      </StoreState>
 
       <LocationDialog
         open={dialog.open}
@@ -147,10 +151,16 @@ export function LocationView() {
         onOpenChange={(open) => {
           if (!open) setPendingDelete(null)
         }}
-        title={`Hapus location ${pendingDelete?.code}?`}
-        description="Location akan dihapus dari master data. Tindakan ini tidak dapat dibatalkan."
-        onConfirm={() => {
-          if (pendingDelete) store.deleteLocation(pendingDelete.id)
+        title={`Delete location ${pendingDelete?.code}?`}
+        description="Location will be removed from master data. This action cannot be undone."
+        onConfirm={async () => {
+          if (pendingDelete) {
+            try {
+              await store.deleteLocation(pendingDelete.id)
+            } catch {
+              return
+            }
+          }
           setPendingDelete(null)
         }}
       />

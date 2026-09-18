@@ -1,0 +1,372 @@
+﻿No,Kategori Inventaris,Asset Name,Code,Serial Number,User,Username,Department,Condition,Date,Purchase Date,Updated By,Note
+1,Laptop,MacBook Pro 13.3 5G/8C CPU/10C GPU/24GB/1TB-ITP,002-B/III/2023-1,KYT76W62Q4,Unknown,,Unknown,Good,2023-05-20,,IT Administrator,
+2,Laptop,MacBook Air 2022 13.6 STL/8C GPU/8GB/256GB ITP,006-B/III/2023,NFJDGVX42C,Unknown,,Unknown,Good,2023-05-21,,IT Administrator,
+3,Laptop,Dell XPS 13 7390 Touch I5 10210U 8GB 256ssd W10 13.3FHD,008-B/V/2021,D20Z8Y2,Unknown,,Unknown,Good,2023-05-22,2021-05-24,IT Administrator,Converter
+4,Laptop,Dell XPS 13 7390 Touch I5 10210U 8GB 256ssd W10 13.3FHD,009-B/V/2021,H7WQYY2,Unknown,,Unknown,Good,2023-05-23,2021-05-24,IT Administrator,KEYBOARD DAN TOUCHPAD RUSAK
+5,Laptop,Dell Inspiron 15 3521 - i3 - 4GB - Black,017-B/III/2023,BW551X1,Unknown,,Unknown,Good,2023-05-24,,IT Administrator,
+"6,Laptop,""Macbook Pro 2020 13"""""",021-B/III/2023,C02DQ676ML85,Unknown,,Unknown,Good,2023-05-25,,IT Administrator,"
+7,Laptop,Macbook Pro 13 Retina - i7 - 16GB,022-B/III/2023,C02MK1Q6FH05,Unknown,,Unknown,Good,2023-05-26,,IT Administrator,
+8,Laptop,Dell Inspiron 3501 i5 Gen 11 - RAM 16GB - SSD 512 - 3005 - Black,019-B/VI/2021,H7XL0H3,Unknown,,Unknown,Good,2023-05-27,,IT Administrator,
+9,Laptop,Dell Inspiron 3501 i5 Gen 11 - RAM 16GB - SSD 512 - 3005 - Black,020-B/VI/2021,2DX5KA01,Unknown,,Unknown,Good,2023-05-28,,IT Administrator,
+10,Laptop,Dell Inspiron 3501 i5 Gen 11 - RAM 16GB - SSD 512 - 3005 - Black,003-B/VI/2022,F8XL0H3,Unknown,,Unknown,Good,2023-05-29,,IT Administrator,
+11,Laptop,Macbook Pro 2019 - i7 RAM 16,005-B/VI/2022,C02DWF0CMD6M,Unknown,,Unknown,Good,2023-05-30,,IT Administrator,
+12,Laptop,Dell XPS 13 7390 - I5 11210 8GB 256ssd W10 13.3FHD Touch Win,006-B/VI/2022,BX611J3,Unknown,,Unknown,Good,2023-05-31,2021-11-22,IT Administrator,
+13,Laptop,Dell XPS 13 7390 - I5 11210 8GB 256ssd W10 13.3FHD Touch Win,010-B/VI/2022,3PKP0J3,Unknown,,Unknown,Good,2023-06-01,2021-11-22,IT Administrator,
+14,Laptop,HP Pavilion 14-dv0517TX - RAM 16 GB,011-B/VI/2022,5CD1379VHX,Unknown,,Unknown,Good,2023-06-02,2022-02-11,IT Administrator,
+15,Laptop,HP Pavilion 14-dv0517TX - RAM 16 GB,013-B/VI/2022,5CD1379VDD,Unknown,,Unknown,Good,2023-06-03,2022-02-11,IT Administrator,EX HILMAN TRUSWIKA
+16,Printer,Epson L360,015-B/V/2023,X3GW517213,Unknown,,Unknown,Good,2026-08-24,,IT Administrator,
+17,PC,Dell OptiPlex 3000,IT-PC-001,DL3000-8891,Unknown,,IT,Good,2026-09-14,2023-06-20,IT Administrator,Workstation admin server
+18,Phone,Samsung Galaxy A54,IT-PH-001,R58T99887KL,Unknown,,Marketing,Good,2026-09-14,2024-01-10,IT Administrator,Untuk keperluan campaign
+19,Printer,Epson L3250,IT-PR-001,X7Y2Z00012,Unknown,,Operations,Under Repair,2026-09-14,2021-11-05,IT Administrator,Sedang diperbaiki di service center
+20,Phone,Xiaomi Redmi Note 12,IT-PH-002,XM12-445902,Unknown,,HR,Good,2026-09-14,2024-03-02,IT Administrator,Baru
+21,PC,Lenovo ThinkCentre M70q,IT-PC-002,TC70Q-3391,Unknown,,Finance,Good,2026-09-14,2023-09-12,IT Administrator,Untuk input jurnal bulanan
+22,Phone,Oppo A78,IT-PH-003,OPA78-7781,Unknown,,Operations > Base Padang > Unit Gunungsitoli,Fair,2026-09-14,2023-11-20,IT Administrator,Perangkat unit Gunung Sitoli
+23,Phone,Samsung A04,IT-HP-009,QWERTY1234,Unknown,,Operations > Base Padang > Unit Tello,Good,2026-09-14,,IT Administrator,
+24,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,017-B/VI/2022,5GLGYH3,Unknown,,Unknown,Good,2023-06-04,2022-09-02,IT Administrator,EX GOJO
+25,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,026-B/III/2023,5NVJHK3,Unknown,,Unknown,Under Repair,2023-06-05,2023-06-24,IT Administrator,
+26,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,018-B/VI/2022,DXQDYH3,Unknown,,Unknown,Good,2023-06-06,2022-09-02,IT Administrator,
+27,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,019-B/VI/2022,CNMCYH3,Unknown,,Unknown,Good,2023-06-07,2022-09-02,IT Administrator,
+28,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,022-B/VI/2022,G37GYH3,Unknown,,Unknown,Good,2023-06-08,2022-10-14,IT Administrator,
+29,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,023-B/VI/2022,HK2CYH3,Unknown,,Unknown,Good,2023-06-09,2022-10-14,IT Administrator,
+30,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,025-B/VI/2022,8VBBYH3,Unknown,,Unknown,Good,2023-06-10,2022-10-14,IT Administrator,manokwari-laptop-01@outlook.com / susiair312
+31,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,026-B/VI/2022,9HCDYH3,Unknown,,Unknown,Good,2023-06-11,2022-10-14,IT Administrator,
+32,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,030-B/VI/2022,58KDYH3,Unknown,,Unknown,Good,2023-06-12,2022-11-24,IT Administrator,CAMERA AND PORT POWER
+33,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,031-B/VI/2022,7KLGYH3,Unknown,,Unknown,Good,2023-06-13,2022-11-24,IT Administrator,
+34,Laptop,Dell Inspiron 15 Gen 11 - RAM 16GB - SSD 512 - 3000 - Black,004-B/V/2022,7FQL0H3,Unknown,,Unknown,Good,2023-06-14,,IT Administrator,
+35,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,008-B/III/2023,1YVTHK3,Unknown,,Unknown,Good,2023-06-15,2023-05-13,IT Administrator,
+36,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,010-B/III/2023,7P0VHK3,Unknown,,Unknown,Good,2023-06-16,2023-05-13,IT Administrator,
+37,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,011-B/III/2023,J2CVHK3,Unknown,,Unknown,Good,2023-06-17,2023-05-13,IT Administrator,
+38,Laptop,Macbook Pro 2021 - M1 Pro - 16GB,013-B/III/2023,JY9W0W424V,Unknown,,Unknown,Good,2023-06-18,,IT Administrator,Laptop direct from Ibu Susi
+39,Laptop,Dell XPS 13 7390 - I5 10210 8GB 256ssd W10 13.3FHD Touch Win,003-B/XI/2020,G4XX1Z2,Unknown,,Unknown,Good,2023-06-19,2021-11-22,IT Administrator,
+40,Laptop,LAPTOP Dell XPS 13 7390 - i5-10210U - 8GB,004-B/XI/2020,80C7YY2,Unknown,,Unknown,Good,2023-06-20,2021-11-22,IT Administrator,
+41,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,012-B/III/2023,HJJTHK3,Unknown,,Unknown,Good,2023-06-21,2023-05-13,IT Administrator,
+42,Laptop,Laptop Dell Latitude 15 3510 I3 10110 4GB 1TB W10 15.6 - BLACK,012-C/VI/2021,G9W5863,Unknown,,Unknown,Good,2023-06-22,2021-06-22,IT Administrator,
+43,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,025-B/III/2023,47Q1ZK3,Unknown,,Unknown,Good,2023-06-23,2023-06-24,IT Administrator,
+44,Laptop,Dell Vostro 3405 AMD R3 - 512GB - 8GB RAM,027-B/III/2023,92ZJNJ3,Unknown,,Unknown,Good,2023-06-24,2023-07-27,IT Administrator,
+45,Laptop,Dell Vostro 3405 AMD R3 - 512GB - 8GB RAM,028-B/III/2023,B56KNJ3,Unknown,,Unknown,Good,2023-06-25,2023-07-27,IT Administrator,
+46,Laptop,Dell Vostro 3405 AMD R3 - 512GB - 8GB RAM,029-B/III/2023,J87KNJ3,Unknown,,Unknown,Good,2023-06-26,2023-07-27,IT Administrator,
+47,Laptop,Macbook Air 2019,020-B/III/2023,FVFXPID9JK78,Unknown,,Unknown,Good,2023-06-27,,IT Administrator,EX - ERNESTO CHIEF PILOT
+48,Laptop,Dell Vostro 3405 AMD R3 - 1TB - 8GB RAM,001-B/XI/2023,G3SLZK3,Unknown,,Unknown,Good,2023-06-28,2023-11-11,IT Administrator,EX CHARTER
+49,Laptop,Dell Vostro 3405 AMD R3 - 1TB - 8GB RAM,003-B/XI/2023,CHYSZK3,Unknown,,Unknown,Good,2023-06-29,2023-11-11,IT Administrator,
+50,Laptop,Dell Vostro 3405 AMD R3 - 1TB - 8GB RAM,004-B/XI/2023,C63GZK3,Unknown,,Unknown,Good,2023-06-30,2023-11-11,IT Administrator,Broken Charger
+"51,Laptop,""Macbook Pro 2019 13"""" Space Gray - 512 GB - 8GB RAM"",007-A/VI/2024,C02ZV20VLVDD,Unknown,,Unknown,Good,2023-07-01,,IT Administrator,EX MEDIA SARA"
+52,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,001-A/I/2024,D2DFZK3,Unknown,,Unknown,Good,2023-07-02,2024-01-01,IT Administrator,
+53,Laptop,Dell XPS 13 9315 - i7 1250 - 16GB RAM,002-B/VII/2023,31W75X3,Unknown,,Unknown,Good,2023-07-03,2023-07-27,IT Administrator,
+54,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,003-A/I/2024,6DRLZK3,Unknown,,Unknown,Good,2023-07-04,2024-01-01,IT Administrator,
+55,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,005-A/I/2024,7TRLZK3,Unknown,,Unknown,Good,2023-07-05,2024-01-01,IT Administrator,
+56,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,009-A/I/2024,68DFZK3,Unknown,,Unknown,Good,2023-07-06,2024-01-01,IT Administrator,
+57,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,008-A/I/2024,87T7ZK3,Unknown,,Unknown,Good,2023-07-07,2024-01-01,IT Administrator,
+58,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,010-A/I/2024,6RRLZK3,Unknown,,Unknown,Good,2023-07-08,2024-01-01,IT Administrator,
+59,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,001-A/III/2024,9Z2GZK3,Unknown,,Unknown,Good,2023-07-09,2024-03-15,IT Administrator,
+60,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,002-A/III/2024,243GZK3,Unknown,,Unknown,Good,2023-07-10,2024-03-15,IT Administrator,
+61,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,003-A/III/2024,DBDFZK3,Unknown,,Unknown,Under Repair,2023-07-11,2024-03-15,IT Administrator,Pink Screen but still works
+62,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,004-A/III/2024,F38LZK3,Unknown,,Unknown,Good,2023-07-12,2024-03-15,IT Administrator,
+63,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,005-A/III/2024,6RKFZK3,Unknown,,Unknown,Good,2023-07-13,2024-03-15,IT Administrator,
+64,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,008-A/III/2024,HVKFZK3,Unknown,,Unknown,Good,2023-07-14,2024-03-15,IT Administrator,
+65,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,004-A/I/2024,JT8GZK3,Unknown,,Unknown,Good,2023-07-15,2024-01-01,IT Administrator,EX ALFARIZ LEGAL
+66,Laptop,Dell Vostro 3405 AMD R3 - 512 - 8GB RAM,009-A/III/2024,9KRLZK3,Unknown,,Unknown,Good,2023-07-16,2024-03-21,IT Administrator,
+67,Laptop,Dell Vostro 3405 AMD R3 - 512 - 8GB RAM,010-A/III/2024,F0WCJK3,Unknown,,Unknown,Good,2023-07-17,2024-03-21,IT Administrator,
+68,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,007-A/III/2024,GXKFZK3,Unknown,,Unknown,Good,2023-07-18,2024-03-22,IT Administrator,
+69,Laptop,Dell Vostro 3405 AMD R3 - 512 - 8GB RAM,011-A/III/2026,31TSZK3,Unknown,,Unknown,Good,2023-07-19,2024-03-22,IT Administrator,
+70,Laptop,Dell Vostro 3405 AMD R3 - 512GB - 8GB RAM,002-A/IV/2024,7F3TZK3,Unknown,,Unknown,Good,2023-07-20,2024-06-04,IT Administrator,
+71,Laptop,Asus Vivobook GO 14 - R3 - 512GB - 8GB RAM,001-A/VI/2024,RCN0CV09914951A,Unknown,,Unknown,Good,2023-07-21,2024-03-06,IT Administrator,
+72,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,003-A/VI/2024,PF4LB2DT,Unknown,,Unknown,Good,2023-07-22,2024-06-13,IT Administrator,
+73,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,004-A/VI/2024,PF4H20RY,Unknown,,Unknown,Under Repair,2023-07-23,2024-06-13,IT Administrator,
+74,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/VI/2024,PF4HEQ19,Unknown,,Unknown,Good,2023-07-24,2026-07-04,IT Administrator,
+75,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,009-A/VI/2024,PF4K6X90,Unknown,,Unknown,Good,2023-07-25,2024-06-27,IT Administrator,
+76,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,005-A/VI/2024,PF4LB6MP,Unknown,,Unknown,Good,2023-07-26,2024-06-13,IT Administrator,
+77,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,008-A/VI/2024,PF4KKNPF,Unknown,,Unknown,Good,2023-07-27,2024-06-27,IT Administrator,
+78,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,006-A/VI/2024,PF4HEQ4G,Unknown,,Unknown,Good,2023-07-28,2024-06-13,IT Administrator,
+79,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,001-A/VII/2024,PF4YY7PD,Unknown,,Unknown,Good,2023-07-29,2024-07-25,IT Administrator,
+80,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/VII/2024,PF4YYC5E,Unknown,,Unknown,Good,2023-07-30,2024-07-25,IT Administrator,
+81,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,003-A/VII/2024,PF4YXW9W,Unknown,,Unknown,Good,2023-07-31,2024-07-25,IT Administrator,
+82,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,001-A/VIII/2024,PF4Z31KT,Unknown,,Unknown,Good,2023-08-01,2024-08-28,IT Administrator,
+83,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/VIII/2024,PF4Z6KNK,Unknown,,Unknown,Good,2023-08-02,2024-08-28,IT Administrator,
+84,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,003-A/VIII/2024,PF4Z2J15,Unknown,,Unknown,Good,2023-08-03,2024-08-28,IT Administrator,
+85,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,004-A/VIII/2024,PF4Z2DEZ,Unknown,,Unknown,Good,2023-08-04,2024-08-28,IT Administrator,AAQILAH MEUTIA ALIIFA
+86,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,005-A/VIII/2024,PF4Z0WE9,Unknown,,Unknown,Good,2023-08-05,2024-08-28,IT Administrator,
+87,Laptop,Dell Inspiron i5 Gen 11 - RAM 16GB - SSD 512 - 3005 - Black,018-B/VI/2021,3C9JPH3,Unknown,,Unknown,Good,2023-08-06,,IT Administrator,
+88,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,001-A/X/2024,PF4XR949,Unknown,,Unknown,Good,2023-08-07,2024-10-31,IT Administrator,
+89,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/X/2024,PF4W4489,Unknown,,Unknown,Good,2023-08-08,2024-10-31,IT Administrator,
+90,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,001-A/XI/2024,PF4XHPPH,Unknown,,Unknown,Good,2023-08-09,2024-11-07,IT Administrator,Beli baru di ternate
+91,Laptop,Dell XPS 13 7390 Touch I5 10210U 8GB 256ssd W10 13.3FHD,010-B/V/2021,HWK4YY2,Unknown,,Unknown,Good,2023-08-10,2021-05-24,IT Administrator,REPAIRED
+92,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,009-B/III/2023,FDJTHK3,Unknown,,Unknown,Good,2023-08-11,2023-05-13,IT Administrator,LAPTOP EX WIDODO
+93,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,007-A/I/2024,CRKFZK3,Unknown,,Unknown,Good,2023-08-12,2024-01-01,IT Administrator,PAKAI LCD BEKAS BANDUNG
+94,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,002-A/I/2025,MP2HQ1R1,Unknown,,Unknown,Good,2023-08-13,2025-01-25,IT Administrator,
+95,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,001-A/II/2025,MP2HQ1RM,Unknown,,Unknown,Good,2023-08-14,2025-01-25,IT Administrator,
+96,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/II/2025,PF5165B0,Unknown,,Unknown,Good,2023-08-15,2025-02-01,IT Administrator,
+97,Laptop,Dell Vostro 3405 AMD R3 - 512GB - 8GB RAM,001-A/IV/2024,G15TZK3,Unknown,,Unknown,Good,2023-08-16,2024-06-04,IT Administrator,
+98,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,005-A/II/2025,MP2HQ3LB,Unknown,,Unknown,Good,2023-08-17,2025-02-07,IT Administrator,
+99,Laptop,Dell Vostro 3405 AMD R3 - 1TB - 8GB RAM,005-B/XI/2023,8YKFZK3,Unknown,,Unknown,Good,2023-08-18,2023-11-11,IT Administrator,
+100,Laptop,Dell Vostro 3405 AMD R3 - 1TB - 8GB RAM,002-B/XI/2023,1SRLZK3,Unknown,,Unknown,Good,2023-08-19,2023-11-11,IT Administrator,EX ZULFA
+101,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,001-A/XII/2024,PF4XQ49A,Unknown,,Unknown,Good,2023-08-20,2024-10-31,IT Administrator,
+102,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,028-B/VI/2022,1DJBYH3,Unknown,,Unknown,Good,2023-08-21,2022-11-24,IT Administrator,
+103,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/XII/2024,PF4XQ4A0,Unknown,,Unknown,Good,2023-08-22,2024-10-31,IT Administrator,
+104,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,024-B/VI/2022,J67GYH3,Unknown,,Unknown,Good,2023-08-23,2022-10-14,IT Administrator,BC TANAH MERAH
+105,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,003-A/II/2025,PF4WDL7M,Unknown,,Unknown,Good,2023-08-24,2025-02-07,IT Administrator,
+106,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,003-A/V/2025,MP2DXQGV,Unknown,,Unknown,Good,2023-08-25,2025-05-03,IT Administrator,
+107,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/V/2025,PF4WDE08,Unknown,,Unknown,Good,2023-08-26,2025-05-03,IT Administrator,
+108,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,002-A/VII/2025,PF59R4P1,Unknown,,Unknown,Good,2023-08-27,2025-05-03,IT Administrator,
+109,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,020-B/VI/2022,14SGYH3,Unknown,,Unknown,Under Repair,2023-08-28,2022-09-02,IT Administrator,
+110,Laptop,Dell XPS 13 7390 - I5 10210 8GB 256ssd W10 13.3FHD Touch Win,007-B/XI/2020,3WXMYY2,Unknown,,Unknown,Good,2023-08-29,2021-11-22,IT Administrator,EX JIHAN
+111,Laptop,Lenovo Ideapad Slim 3 i3-1215U - 512 - 8GB,001-A/IX/2025,PF5BDD3A,Unknown,,Unknown,Good,2023-08-30,2025-09-12,IT Administrator,
+112,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,002-A/IX/2025,PF5KJVH6,Unknown,,Unknown,Good,2023-08-31,2025-09-25,IT Administrator,
+113,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,003-A/X/2025,PF5MBZE0,Unknown,,Unknown,Good,2023-09-01,2025-10-07,IT Administrator,
+114,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,002-A/X/2025,PF5MBNWV,Unknown,,Unknown,Good,2023-09-02,2025-10-07,IT Administrator,
+115,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,003-A/IX/2025,MP2NM0E7,Unknown,,Unknown,Good,2023-09-03,2025-05-03,IT Administrator,
+116,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,001-A/X/2025,PF5MC2Q6,Unknown,,Unknown,Good,2023-09-04,2025-10-07,IT Administrator,
+117,Printer,Epson L385,014-B/V/2023,X21K00733,Unknown,,Unknown,Good,2026-08-23,,IT Administrator,
+118,Laptop,Lenovo Ideapad Slim 5 14IAH10 - 512 - 16GB,001-A/XII/2025,YX0G254V,Unknown,,Unknown,Good,2023-09-05,2025-10-16,IT Administrator,
+119,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,002-A/XII/2025,PF5XQXCJ,Unknown,,Unknown,Good,2023-09-06,2025-12-29,IT Administrator,
+120,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,003-A/XII/2025,PF5XNFMT,Unknown,,Unknown,Good,2023-09-07,2025-12-29,IT Administrator,
+121,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,004-A/XII/2025,PF5XQR5W,Unknown,,Unknown,Good,2023-09-08,2025-12-29,IT Administrator,
+122,Laptop,Dell Vostro 3405 AMD R3 - 256 - 16GB RAM,002-A/I/2024,5LXFZK3,Unknown,,Unknown,Good,2023-09-09,2024-01-01,IT Administrator,
+123,Laptop,Laptop Dell Latitude 15 3510 I3 10110 4GB 1TB W10 15.6 - BLACK,013-C/VI/2021,98Y5863,Unknown,,Unknown,Good,2023-09-10,2021-06-22,IT Administrator,EX RAMONA
+124,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,032-B/VI/2022,GCMMGJ3,Unknown,,Unknown,Good,2023-09-11,2022-11-24,IT Administrator,
+125,Laptop,Dell XPS 13 9315 - i7 1250 - 16GB RAM,003-B/VII/2023,H3WTRV3,Unknown,,Unknown,Good,2023-09-12,2023-07-27,IT Administrator,FARREL ABYANSAH
+126,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,001-A/IV/2026,PF5XZZNZ,Unknown,,Unknown,Good,2023-09-13,2026-04-15,IT Administrator,
+127,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,003-A/IV/2026,PF611W8B,Unknown,,Unknown,Good,2023-09-14,2026-04-15,IT Administrator,
+128,Laptop,Dell Vostro 3405 AMD R5 - 512GB - 8GB RAM,024-B/III/2023,5J1DZK3,Unknown,,Unknown,Good,2023-09-15,,IT Administrator,
+129,Laptop,Dell XPS 13 7390 I5 10210U 8GB 256ssd W10 13.3FHD,017-B/VI/2021,29Z82Z2,Unknown,,Unknown,Good,2023-09-16,2021-05-24,IT Administrator,EX DIAN MEILIN CHARTER
+130,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,002-A/IV/2026,PF5XSMB1,Unknown,,Unknown,Good,2023-09-17,2026-04-15,IT Administrator,
+131,Laptop,Dell Vostro 15 3510 - i7 1165G7 - 512GB - 8GB RAM,004-A/IV/2026,SF5V0JK3,Unknown,,Unknown,Good,2023-09-18,,IT Administrator,
+132,Laptop,Lenovo Ideapad Slim 5 14IAH10 - 512 - 16GB,004-A/X/2025,YX0G25N8,Unknown,,Unknown,Good,2023-09-19,2025-10-16,IT Administrator,
+133,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,004-A/II/2025,MP2HQ3KB,Unknown,,Unknown,Good,2023-09-20,2025-02-07,IT Administrator,
+134,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,001-A/I/2025,MP2NXREH,Unknown,,Unknown,Good,2023-09-21,2025-01-07,IT Administrator,RINGGONANDYO ISNUBROTO
+135,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,001-A/VII/2026,PF60KNJV,Unknown,,Unknown,Good,2023-09-22,2026-07-09,IT Administrator,
+136,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,002-A/VII/2026,PF60R8L1,Unknown,,Unknown,Good,2023-09-23,2026-07-09,IT Administrator,
+137,Laptop,Lenovo Ideapad Slim 3 i3-1315U - 512 - 8GB,003-A/VII/2026,PF60NG15,Unknown,,Unknown,Good,2023-09-24,2026-07-09,IT Administrator,
+138,Laptop,Dell XPS 13 7390 - I5 11210 8GB 256ssd W10 13.3FHD Touch Win,008-B/VI/2022,JV3T5D3,Unknown,,Unknown,Under Repair,2023-09-25,2021-11-22,IT Administrator,Converter
+139,Laptop,Lenovo Ideapad Slim 5 14IMH9 - 512 - 16GB,003-A/XII/2024,MP2NXN3H,Unknown,,Unknown,Under Repair,2023-09-26,2024-12-16,IT Administrator,KLAIM WARRANTY
+140,Phone,Iphone 8 - Black,023-B/VI/2023,C8QWKWZ6JC67,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+141,Phone,Iphone 8 - Black,055-B/VI/2023,C7CVH7Q7JC6C,Unknown,,Unknown,Good,2026-09-14,,IT Administrator,-
+142,Phone,Ipad 7 2019 - Rose Gold,026-B/VI/2023,MW792LL/A,Unknown,,Unknown,Good,2026-09-14,,IT Administrator,-
+143,Phone,Iphone 8 - Black,028-B/VI/2023,FFMZN9JJN1N0,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+144,Phone,Realme C2,029-B/VI/2023,RMX1941EX,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+145,Phone,Samsung Galaxy A02 Black 3/32,030-B/VI/2023,RR8RC0AH8QT,Unknown,,Unknown,Good,2026-09-14,2026-03-11,IT Administrator,-
+146,Phone,Samsung Galaxy A13Black 3/32,031-B/VI/2023,RRT407NRHK,Unknown,,Unknown,Good,2026-09-14,2026-08-03,IT Administrator,-
+147,Phone,Samsung Galaxy A13Black 3/32,001-B/IV/2024,RR8T406QD4D,Unknown,,Unknown,Good,2026-09-14,2026-06-08,IT Administrator,-
+148,Phone,Samsung Galaxy A13 Black 3/32,032-B/VI/2023,R9RT105XJ8A,Unknown,,Unknown,Good,2026-09-14,2026-06-18,IT Administrator,-
+149,Phone,Samsung Galaxy A13 Black 4/128,005-B/VI/2023,RR8T406Q9CR,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+150,Phone,Samsung Galaxy A04 4/64,024-B/VI/2022-2,R9CTA02748F,Unknown,,Unknown,Good,2024-07-12,2026-06-01,IT Administrator,-
+151,Phone,Samsung Galaxy A04 4/64,025-B/VI/2022-2,R9CTA006XCP,Unknown,,Unknown,Good,2026-09-14,2026-08-07,IT Administrator,-
+152,Phone,Samsung Galaxy A04 4/64,023-B/VI/2022-2,R9CTA05A73E,Unknown,,Unknown,Good,2026-09-14,2026-08-13,IT Administrator,-
+153,Phone,Samsung Galaxy A04 4/64,027-B/VI/2022,R9CT901BGMX,Unknown,,Unknown,Good,2026-09-14,2026-07-02,IT Administrator,-
+154,Phone,Samsung Galaxy A04 4/64,026-B/VI/2022-2,R9CTA025GJX,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+155,Phone,Samsung Galaxy A02,006-B/VI/2023,RRBR9050HEW,Unknown,,Unknown,Good,2026-09-14,2026-07-23,IT Administrator,-
+156,Phone,Samsung Galaxy A04 4/64 - GREEN,018-B/VI/2023,R9CW203LB0B,Unknown,,Unknown,Good,2023-06-05,2026-06-05,IT Administrator,-
+157,Phone,Samsung Galaxy A04 4/64 - COPPER,019-B/VI/2023,R9CW400DSBY,Unknown,,Unknown,Good,2023-05-06,2026-07-29,IT Administrator,-
+158,Phone,SAMSUNG GALAXY A04 - BLACK,059-B/VI/2023,R9CTA034CZE,Unknown,,Unknown,Good,2026-09-14,2026-08-07,IT Administrator,-
+159,Phone,IPAD MINI,062-B/VI/2023,DMPCH056LMV8,Unknown,,Unknown,Good,2026-09-14,,IT Administrator,-
+160,Phone,Samsung Galaxy A13,034-B/VI/2023,RR8T403239P,Unknown,,Unknown,Good,2026-09-14,2026-05-31,IT Administrator,-
+161,Phone,HP Samsung Galaxy A12,040-B/VI/2023,RR8RC0DBX5T,Unknown,,Unknown,Good,2026-09-14,2026-07-29,IT Administrator,-
+162,Phone,HP IPHONE X - Black,041-B/VI/2023,FK1XR7M6JCL8,Unknown,,Unknown,Good,2026-09-14,2026-05-07,IT Administrator,-
+163,Phone,HP IPHONE SE - BLACK,042-B/VI/2023,RY6RX4TFJX,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+164,Phone,HP SAMSUNG GALAXY A12,044-B/VI/2023,RR8RC02KEDP,Unknown,,Unknown,Good,2026-09-14,2026-06-04,IT Administrator,-
+165,Phone,HP SAMSUNG GALAXY A04,049-B/VI/2023,R9CTA00MX8F,Unknown,,Unknown,Good,2026-09-14,2026-06-18,IT Administrator,-
+166,Phone,HP IPHONE SE - BLACK,050-B/VI/2023,FFMDF05BPMFK,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+167,Phone,SAMSUNG GALAXY A10S,052-B/VI/2023,R9CN800PV0J,Unknown,,Unknown,Good,2026-09-14,2026-07-04,IT Administrator,-
+168,Phone,HP PHONE 11 PRO,054-B/VI/2023,F17ZM0K7N6YC,Unknown,,Unknown,Good,2026-09-14,2026-08-03,IT Administrator,-
+169,Phone,SAMSUNG GALAXY A04 - GREEN,065-B/VI/2023,R9CW600942B,Unknown,,Unknown,Good,2023-07-16,2026-07-02,IT Administrator,-
+170,Phone,SAMSUNG GALAXY A04 - BLACK,066-B/VI/2023,R9CW601EXDT,Unknown,,Unknown,Good,2023-07-20,2026-08-07,IT Administrator,-
+171,Phone,SAMSUNG GALAXY A04 - BLACK,069-B/VI/2023,R9CW601EJ4Z,Unknown,,Unknown,Good,2023-07-20,2026-07-02,IT Administrator,-
+172,Phone,SAMSUNG GALAXY A04 - COPPER,070-B/VI/2023,R9CW700BH1D,Unknown,,Unknown,Good,2023-07-20,2026-07-02,IT Administrator,-
+173,Phone,SAMSUNG GALAXY A04 - COPPER,073-B/VI/2023,R9CW700BEXD,Unknown,,Unknown,Good,2023-07-20,2026-08-13,IT Administrator,-
+174,Phone,SAMSUNG GALAXY A04 - BLACK,074-B/VI/2023,R9CW601EE4V,Unknown,,Unknown,Good,2023-07-20,2026-06-01,IT Administrator,-
+175,Phone,SAMSUNG GALAXY A04 - COPPER,076-B/VI/2023,R9CW6025X8T,Unknown,,Unknown,Good,2023-07-20,2026-06-03,IT Administrator,-
+176,Phone,SAMSUNG GALAXY A04 - COPPER,079-B/VI/2023,R9CW6025WMP,Unknown,,Unknown,Good,2023-07-20,2026-07-29,IT Administrator,-
+177,Phone,SAMSUNG GALAXY A04 - BLACK,080-B/VI/2023,R9CW601ECND,Unknown,,Unknown,Good,2023-07-20,2026-06-01,IT Administrator,-
+178,Phone,SAMSUNG GALAXY A04 - BLACK,001-B/IX/2023,R9CW6022Q0T,Unknown,,Unknown,Good,2023-09-12,2026-06-03,IT Administrator,-
+179,Phone,SAMSUNG GALAXY A04 - COPPER,002-B/IX/2023,R9CW600TCTR,Unknown,,Unknown,Good,2023-09-12,2026-07-04,IT Administrator,-
+180,Phone,SAMSUNG GALAXY A04 - BLACK,004-B/IX/2023,R9CW6022PHV,Unknown,,Unknown,Good,2023-09-12,2026-07-03,IT Administrator,-
+181,Phone,SAMSUNG GALAXY A04 - GREEN,005-B/IX/2023,R9CW700ECSV,Unknown,,Unknown,Good,2023-09-12,2026-08-04,IT Administrator,-
+182,Phone,SAMSUNG GALAXY A04E - LIGHT BLUE,006-B/XI/2023,R9RW900WH2H,Unknown,,Unknown,Good,2023-11-14,2026-08-07,IT Administrator,-
+183,Phone,SAMSUNG GALAXY A04E - BLACK,007-B/XI/2023,R9RW604AXYN,Unknown,,Unknown,Good,2023-11-14,2026-08-13,IT Administrator,-
+184,Phone,SAMSUNG GALAXY A04E - COPPER,008-B/XI/2023,R9RW700GCRK,Unknown,,Unknown,Good,2023-11-14,2026-05-11,IT Administrator,-
+185,Phone,SAMSUNG GALAXY A04E - COPPER,010-B/XI/2023,R9RW3052GRJ,Unknown,,Unknown,Good,2023-11-14,2026-08-07,IT Administrator,-
+186,Phone,SAMSUNG GALAXY A04E - COPPER,001-B/XII/2023,R9RW701TM8A,Unknown,,Unknown,Good,2023-12-13,2026-07-06,IT Administrator,-
+187,Phone,SAMSUNG GALAXY A04E - LIGHT BLUE,002-B/XII/2023,R9RW801D1XX,Unknown,,Unknown,Good,2023-12-13,2026-05-15,IT Administrator,-
+188,Phone,SAMSUNG GALAXY A04E - COPPER,003-B/XII/2023,R9RW701QKVR,Unknown,,Unknown,Good,2023-12-13,2026-06-01,IT Administrator,-
+189,Phone,SAMSUNG GALAXY A04E - COPPER,004-B/XII/2023,R9RW901729E,Unknown,,Unknown,Good,2023-12-27,2026-08-07,IT Administrator,-
+190,Phone,IPHONE 11 128GB - WHITE,001-B/I/2024,DX3LJ0N6N73F,Unknown,,Unknown,Good,2024-01-29,2026-07-23,IT Administrator,-
+191,Phone,SAMSUNG GALAXY A04E - COPPER,001-B/II/2024,R9RW901679X,Unknown,,Unknown,Good,2024-02-07,2026-07-02,IT Administrator,-
+192,Phone,IPAD MINI,063-B/VI/2023,DMPCH045LMV8,Unknown,,Unknown,Good,2024-02-08,2024-07-22,IT Administrator,-
+193,Phone,SAMSUNG GALAXY A04E - BLACK,002-B/III/2024,R9RW702NRFJ,Unknown,,Unknown,Good,2024-03-01,2026-08-04,IT Administrator,-
+194,Phone,SAMSUNG GALAXY A05 - GREEN,003-B/III/2024,R9CX105PZMR,Unknown,,Unknown,Good,2024-03-19,2026-04-24,IT Administrator,-
+195,Phone,SAMSUNG GALAXY A05 - BLACK,004-B/III/2024,R9CX101875A,Unknown,,Unknown,Good,2024-03-19,2026-07-29,IT Administrator,-
+196,Phone,SAMSUNG GALAXY A05 - GREEN,005-B/III/2024,R9CWC02N2CJ,Unknown,,Unknown,Good,2024-03-19,2026-07-02,IT Administrator,-
+197,Phone,SAMSUNG GALAXY A05 - BLACK,008-B/III/2024,R9CX103MH7Y,Unknown,,Unknown,Good,2024-03-19,2026-07-03,IT Administrator,-
+198,Phone,SAMSUNG GALAXY A05 - GREEN,003-B/IV/2024,R9CX1046CHD,Unknown,,Unknown,Good,2024-04-06,2026-08-13,IT Administrator,-
+199,Phone,SAMSUNG GALAXY A05 - GREEN,002-B/IV/2024,R9CX201DQXL,Unknown,,Unknown,Good,2024-04-06,2026-08-13,IT Administrator,-
+200,Phone,SAMSUNG GALAXY A05 - GREEN,001-B/V/2024,R9CX30E3PZV,Unknown,,Unknown,Good,2024-05-06,2026-08-07,IT Administrator,-
+201,Phone,IPHONE 11 64GB - BLACK,003-B/V/2024,DX3L55TFN735,Unknown,,Unknown,Good,2024-05-07,2026-06-03,IT Administrator,-
+202,Phone,SAMSUNG GALAXY A05 - BLACK,004-B/VI/2024,R9CX50EGMVJ,Unknown,,Unknown,Good,2024-06-07,2026-07-06,IT Administrator,-
+203,Phone,SAMSUNG GALAXY A05 - BLACK,001-B/VI/2024,R9CX50ETM9R,Unknown,,Unknown,Good,2024-06-07,2026-07-06,IT Administrator,-
+204,Phone,SAMSUNG GALAXY A05 - GREEN,002-B/VI/2024,R9CX404D28J,Unknown,,Unknown,Good,2024-06-07,2026-08-07,IT Administrator,-
+205,Phone,SAMSUNG GALAXY A05 - SILVER,003-B/VI/2024,R9CX402CD2W,Unknown,,Unknown,Good,2024-06-07,2026-08-04,IT Administrator,-
+206,Phone,SAMSUNG GALAXY A05 - SILVER,005-B/VI/2024,R9CX402AAMM,Unknown,,Unknown,Good,2024-06-07,2026-08-07,IT Administrator,-
+207,Phone,SAMSUNG GALAXY A05 - SILVER,008-B/VI/2024,R9CX50TDHNW,Unknown,,Unknown,Good,2024-06-27,2026-05-29,IT Administrator,-
+208,Phone,SAMSUNG GALAXY A13,010-B/VI/2024,RR8T500YBSW,Unknown,,Unknown,Good,2026-09-14,2026-05-31,IT Administrator,-
+209,Phone,IPHONE 11,001-B/VII/2024,DX3K972YN73F,Unknown,,Unknown,Good,2026-09-14,2026-08-07,IT Administrator,-
+210,Phone,SAMSUNG GALAXY A05 - GREEN,009-B/VI/2024,R9CX404D22Z,Unknown,,Unknown,Good,2024-06-27,2026-08-04,IT Administrator,-
+211,Phone,SAMSUNG GALAXY A13,002-B/VII/2024,RR8T3078H7F,Unknown,,Unknown,Good,2026-09-14,2026-03-07,IT Administrator,-
+212,Phone,IPHONE SE - BLACK,007-B/VII/2024,FFMDFD45PMFK,Unknown,,Unknown,Good,2026-09-14,2026-07-06,IT Administrator,-
+213,Phone,SAMSUNG GALAXY A05 - BLACK,001-B/VIII/2024,R9CX704XQND,Unknown,,Unknown,Good,2024-08-02,2026-07-06,IT Administrator,-
+214,Phone,SAMSUNG GALAXY A05,002-B/VIII/2024,R9CX700WRHW,Unknown,,Unknown,Good,2024-08-16,2025-11-27,IT Administrator,-
+215,Phone,SAMSUNG GALAXY A05 - GREEN,003-B/VIII/2024,R9CX50TNBCW,Unknown,,Unknown,Good,2024-08-15,2026-07-03,IT Administrator,-
+216,Phone,SAMSUNG GALAXY A05 - BLACK,005-B/VIII/2024,R9CX401FWQX,Unknown,,Unknown,Good,2024-08-15,2026-06-03,IT Administrator,-
+217,Phone,SAMSUNG GALAXY A05 - GREEN,006-B/VIII/2024,R9CX704C6YT,Unknown,,Unknown,Good,2024-08-15,2026-06-03,IT Administrator,-
+218,Phone,SAMSUNG GALAXY A05 - SILVER,007-B/VIII/2024,R9CX704C8MR,Unknown,,Unknown,Good,2024-08-15,2026-08-13,IT Administrator,-
+219,Phone,SAMSUNG GALAXY A05 - GREEN,002-B/X/2024,R9CX4046X1P,Unknown,,Unknown,Good,2024-10-31,2026-05-31,IT Administrator,-
+220,Phone,Samsung Galaxy A06 4/64 - BLACK,006-B/X/2024,R9RX803PKQX,Unknown,,Unknown,Good,2024-11-03,2026-07-02,IT Administrator,-
+221,Phone,Samsung Galaxy A06 4/64 - BLACK,003-B/X/2024,R9RX804EEYR,Unknown,,Unknown,Good,2024-10-31,2026-05-13,IT Administrator,-
+222,Phone,Samsung Galaxy A06 4/64 - BLACK,004-B/X/2024,R9RX804CQKH,Unknown,,Unknown,Good,2024-11-01,2026-08-03,IT Administrator,-
+223,Phone,Samsung Galaxy A06 4/64 - BLACK,005-B/X/2024,R9RX804EQBP,Unknown,,Unknown,Good,2024-11-02,2026-08-03,IT Administrator,-
+224,Phone,Samsung Galaxy A06 4/64 - BLACK,007-B/X/2024,R9RX803TBRA,Unknown,,Unknown,Good,2024-11-04,2026-07-06,IT Administrator,-
+225,Phone,Samsung Galaxy S21,001-B/XI/2024,RRCR9003X4W,Unknown,,Unknown,Good,2026-09-14,2024-11-25,IT Administrator,-
+226,Phone,Samsung Galaxy A06 4/64 - BLACK,002-B/XI/2024,R9RX904AQ1F,Unknown,,Unknown,Good,2024-11-25,2026-08-13,IT Administrator,-
+227,Phone,Samsung Galaxy A06 4/64 - BLACK,001-B/XII/2024,R9RXA01TCJR,Unknown,,Unknown,Good,2024-12-06,2026-06-01,IT Administrator,-
+228,Phone,Samsung Galaxy A06 4/64 - BLACK,002-B/XII/2024,R9RXA01GBCD,Unknown,,Unknown,Good,2024-12-06,2026-06-01,IT Administrator,-
+229,Phone,Samsung Galaxy A55,003-B/XII/2024,RRCXA064Y5W,Unknown,,Unknown,Good,2024-12-06,2026-07-02,IT Administrator,-
+230,Phone,Samsung Galaxy A55,001-B/I/2025,RRCXC02PLCH,Unknown,,Unknown,Good,2024-12-06,2026-08-04,IT Administrator,-
+231,Phone,Samsung Galaxy A06 4/64 - BLACK,002-B/I/2025,R9RXB01RPLH,Unknown,,Unknown,Good,2025-01-10,2026-08-07,IT Administrator,-
+232,Phone,Samsung Galaxy A06 4/64 - BLACK,001-B/II/2025,R9RY1020ZQX,Unknown,,Unknown,Good,2025-02-03,2026-05-26,IT Administrator,-
+233,Phone,Samsung Galaxy A06 4/64 - BLACK,002-B/II/2025,R9RY104VEDF,Unknown,,Unknown,Good,2025-02-03,2026-05-26,IT Administrator,-
+234,Phone,SAMSUNG GALAXY A05 - SILVER,002-B/V/2024,R9CX400QEXE,Unknown,,Unknown,Good,2024-05-06,2026-07-02,IT Administrator,-
+235,Phone,SAMSUNG GALAXY A05 - GREEN,007-B/III/2024,R9CWC047E3Т,Unknown,,Unknown,Good,2024-03-19,2026-07-02,IT Administrator,-
+236,Phone,Samsung Galaxy A04 4/64,023-B/VI/2022-3,R9CTA02699W,Unknown,,Unknown,Good,2026-09-14,2026-07-02,IT Administrator,-
+237,Phone,SAMSUNG GALAXY A04 - BLACK,068-B/VI/2023,R9CW601FE7V,Unknown,,Unknown,Good,2023-07-16,2026-08-07,IT Administrator,-
+238,Phone,Samsung Galaxy A06 4/64 - BLACK,004-B/II/2025,R9RXB04P9TN,Unknown,,Unknown,Good,2025-04-23,2026-05-31,IT Administrator,-
+239,Phone,SAMSUNG GALAXY A04 - BLACK,072-B/VI/2023,R9CW601EWSP,Unknown,,Unknown,Good,2023-07-20,2026-07-29,IT Administrator,-
+240,Phone,Samsung Galaxy A55,005-B/II/2025,RRCY107PH9K,Unknown,,Unknown,Good,2025-04-23,2026-08-06,IT Administrator,-
+241,Phone,Samsung Galaxy A06 4/64 - BLACK,003-B/II/2025,R9RXB04T4LF,Unknown,,Unknown,Good,2025-04-28,2026-06-03,IT Administrator,-
+242,Phone,Samsung Galaxy A06 4/64 - BLACK,007-B/II/2025,R9RY10233WR,Unknown,,Unknown,Good,2025-06-25,2026-07-02,IT Administrator,-
+243,Phone,Samsung Galaxy A55,006-B/II/2025,RRCY107PHHR,Unknown,,Unknown,Good,2025-07-04,2026-08-07,IT Administrator,-
+244,Phone,SAMSUNG GALAXY A04E - LIGHT BLUE,009-B/XI/2023,R9RW900WXXX,Unknown,,Unknown,Good,2023-11-14,2026-08-07,IT Administrator,-
+245,Phone,Samsung Galaxy A07 4/64,001-B/IX/2025,R9RY8023KKN,Unknown,,Unknown,Good,2025-09-12,2026-08-07,IT Administrator,-
+246,Phone,Samsung Galaxy A07 4/64,002-B/IX/2025,R9RY909T8WE,Unknown,,Unknown,Good,2025-09-12,2026-07-02,IT Administrator,-
+247,Phone,IPHONE 11 128GB - BLACK,004-B/VII/2024,DX3MK2C8N73D,Unknown,,Unknown,Good,2024-07-23,2026-07-03,IT Administrator,-
+248,Phone,Samsung Galaxy A07 4/64,001-B/XII/2025,R9RY908WVHD,Unknown,,Unknown,Good,2025-12-18,2026-07-02,IT Administrator,-
+249,Phone,SAMSUNG GALAXY A05 - BLACK,004-B/VIII/2024,R9CX4038GAL,Unknown,,Unknown,Good,2024-08-15,2026-07-03,IT Administrator,-
+250,Phone,IPHONE 14,004-B/IV/2026,YMW9HM7DWM,Unknown,,Unknown,Good,2026-09-14,2026-08-03,IT Administrator,-
+251,Phone,IPHONE 12,005-B/IV/2026,FFXHH0PP0F0V,Unknown,,Unknown,Good,2026-09-14,2026-06-18,IT Administrator,-
+252,Phone,SAMSUNG GALAXY A04 - GREEN,003-B/IX/2023,R9CW60095ZY,Unknown,,Unknown,Good,2023-09-12,2026-07-03,IT Administrator,-
+253,Phone,SAMSUNG GALAXY A07 BLACK 4/64,001-B/III/2026,R9RL2041NXY,Unknown,,Unknown,Good,2026-03-20,2026-07-06,IT Administrator,-
+254,Phone,SAMSUNG GALAXY A07 BLACK 4/64,002/B/III/2026,R9RL203ZR5V,Unknown,,Unknown,Good,2026-03-26,2026-05-13,IT Administrator,-
+255,Phone,SAMSUNG GALAXY A07 BLACK 4/64,003/B/III/2026,R9RL203ZD9Z,Unknown,,Unknown,Good,2026-03-26,2026-05-13,IT Administrator,-
+256,Phone,SAMSUNG GALAXY A07 BLACK 4/128,001-B/IV/2026,R9RL4022KNH,Unknown,,Unknown,Good,2026-04-27,2026-05-06,IT Administrator,-
+257,Phone,SAMSUNG GALAXY A07 BLACK 4/128,002-B/IV/2026,R9RL4022HKN,Unknown,,Unknown,Good,2026-04-27,2026-06-17,IT Administrator,-
+258,Phone,SAMSUNG GALAXY A07 BLACK 4/128,003-B/IV/2026,R9RL4022JYW,Unknown,,Unknown,Good,2026-04-27,2026-08-13,IT Administrator,-
+259,Phone,SAMSUNG GALAXY A05 - SILVER,001-B/X/2024,R9CWB04DLXA,Unknown,,Unknown,Good,2024-10-28,2026-06-18,IT Administrator,-
+260,Phone,SAMSUNG GALAXY A07 - BLACK,001-B/V/2026,R9RL402HHFF,Unknown,,Unknown,Good,2026-05-28,2026-06-18,IT Administrator,-
+261,Phone,IPHONE 11,001-B/VI/2026,FFWKD9NHN73F,Unknown,,Unknown,Good,2026-09-14,2026-08-04,IT Administrator,-
+262,Phone,SAMSUNG GALAXY A07 - BLACK,003-B/V/2026,R9RL402HMRB,Unknown,,Unknown,Good,2026-05-28,2026-07-17,IT Administrator,-
+263,Phone,SAMSUNG GALAXY A07 - BLACK,002-B/V/2026,R9RL402K8GD,Unknown,,Unknown,Good,2026-05-28,2026-08-06,IT Administrator,-
+264,Phone,SAMSUNG GALAXY A57,001-B/VIII/2026,RRGL605WPMW,Unknown,,Unknown,Good,2026-07-31,2026-08-06,IT Administrator,-
+265,Phone,SAMSUNG GALAXY A57,002-B/VIII/2026,RRGL605WP6X,Unknown,,Unknown,Good,2026-07-31,2026-08-04,IT Administrator,-
+266,PC,DESKTOP PC LENOVO 10102 - i3 - 4GB,SA-PND-IT/001/00,962QSL1,Unknown,,Unknown,Good,2026-06-04,,IT Administrator,
+267,PC,PC (NO-BRAND),SA-PND-IT/001/00-2,E588HRHZ702960J,Unknown,,Unknown,Good,2026-05-31,,IT Administrator,
+268,PC,DESKTOP DELL INSPIRON ONE 2310 - i3 - 6GB,SA-PND-IT/001/0023,66Q33P1,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+269,PC,PC BUILD UP i3-12100 8/512,001-D/IV/2026,JAM0XB103117,Unknown,,Unknown,Good,2026-04-15,,IT Administrator,WIN11 PRO : FK8N6-WRPW8-XCVJT-6Y777-YY49G
+270,PC,PC BUILD UP i3-12100 8/512,002-D/IV/2026,JAM0XB103111,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+271,PC,LENOVO IDEACENTRE AIO 3 24IAP7,001-D/XII/2024,MP2A9AF7,Unknown,,Unknown,Good,2026-07-03,,IT Administrator,PURCHASE 12122024
+272,PC,LENOVO IDEACENTRE AIO 3 24IAP7,002-D/XII/2024,MP2A9AFH,Unknown,,Unknown,Good,2026-07-03,,IT Administrator,PURCHASE 12122024
+273,PC,LENOVO IDEACENTRE AIO 3 24IAP7,003-D/XII/2024,MP2A89TV,Unknown,,Unknown,Good,2026-07-03,,IT Administrator,PURCHASE 12122024
+274,PC,DESKTOP LENOVO 10102 - i3 3000 - 4GB,SA-PND-IT/001/0108,VS80150080,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+275,PC,DESKTOP DELL INSPIRON ONE 2310 - i3 - 6GB,SA-PND-IT/001/00-3,69133P1,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+276,PC,LENOVO IDEACENTRE TOWER 08IRR9,001-D/I/2026,YLT1BK5A,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+277,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM - 4GB,SA-PND-IT/001/00-4,PWGBE020051150124B3000,Unknown,,Unknown,Good,2026-07-31,,IT Administrator,
+278,PC,DESKTOP GATEWAY ZX4930 - Intel Pentium - 6GB,SA-PND-IT/001/0070,PWGBE02005115012793000,Unknown,,Unknown,Good,2026-07-31,,IT Administrator,
+279,PC,DESKTOP DELL INSPIRON ONE 2310 - i3 - 4GB,SA-PND-IT/001/00-5,68G33P1,Unknown,,Unknown,Good,2026-05-12,,IT Administrator,
+280,PC,DEKSTOP LENOVO 10102 - i3 - 8GB,SA-PND-IT/001/0037,VS80472108,Unknown,,Unknown,Good,2026-07-31,,IT Administrator,
+281,PC,DESKTIOP DELL INSPIRON ONE 2310,SA-PND-IT/001/00-6,6FH23P1,Unknown,,Unknown,Good,2026-07-31,,IT Administrator,
+282,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM,SA-PND-IT/001/00-7,68Z23P1,Unknown,,Unknown,Good,2026-07-31,,IT Administrator,
+283,PC,DESKTIOP DELL INSPIRON ONE 2310 - i3 - 3GB,SA-PND-IT/001/00-8,HYYX2P1,Unknown,,Unknown,Good,2026-07-31,,IT Administrator,
+284,PC,DESKTOP PC LENOVO 10102 - i3 - 4GB,SA-PND-IT/001/00-9,VS80148947,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+285,PC,DESKTOP LENOVO - i3 - 4GB,SA-PND-IT/001/0104,VS80257632,Unknown,,Unknown,Good,2026-07-31,,IT Administrator,
+286,PC,LENOVO IDEACENTRE AIO 3 24IAP7,001-D/IX/2025,MP2Z1TF2,Unknown,,Unknown,Good,2026-07-04,,IT Administrator,PURCHASE 08/09/2025
+287,PC,LENOVO IDEACENTRE AIO 3 24IAP7,002-D/V/2025,MP2AWKJ5,Unknown,,Unknown,Good,2026-07-03,,IT Administrator,PURCHASE 08/09/2025
+288,PC,LENOVO IDEACENTRE TOWER 08IRR9,002-D/I/2026,YLT1BK55,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+289,PC,LENOVO IDEACENTRE AIO 3 24IAP7,001-D/X/2025,MP2Z1P73,Unknown,,Unknown,Good,2026-07-03,,IT Administrator,03/10/2025
+290,PC,DESKTOP GATEWAY - INTEL PENTIUM - 2GB,SA-PND-IT/001/0076,PWGBE020051150122A3000,Unknown,,Unknown,Good,2026-07-03,,IT Administrator,
+291,PC,DESKTOP LENOVO 10102 - i3 - 4GB,SA-PND-IT/001/00-10,VS80158259,Unknown,,Unknown,Good,2026-07-03,,IT Administrator,
+"292,PC,""iMAC 2019 - 27"""" i9 - RAM 40GB - 2TB"",007-B/III/2023,C02Z41Q4JV40,Unknown,,Unknown,Good,2026-03-11,,IT Administrator,"
+293,PC,DESKTOP DELL INSPIRON ONE 2310 - i3 - 6GB,SA-PND-IT/001/00xx,66Q23P1,Unknown,,Unknown,Good,2026-07-04,,IT Administrator,
+294,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM,SA-PND-IT/001/00-11,PWGBE0200612900C173000,Unknown,,Unknown,Good,2026-07-04,,IT Administrator,
+295,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM,SA-PND-IT/001/00-12,PWGBE02005115012133000,Unknown,,Unknown,Good,2026-07-04,,IT Administrator,
+296,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM,SA-PND-IT/001/00-13,PWGBE02005115012723000,Unknown,,Unknown,Good,2026-07-04,,IT Administrator,
+297,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM,SA-PND-IT/001/00-14,PWGBE02006127024FF3000,Unknown,,Unknown,Good,2026-07-04,,IT Administrator,
+298,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM,SA-PND-IT/001/0069,PWGBE02006127024D23000,Unknown,,Unknown,Good,2026-07-04,,IT Administrator,
+299,PC,DESKTOP GATEWAY ZX4930 - Intel Pentium - 4GB,SA-PND-IT/001/0071,PWGBE02006127024DA3000,Unknown,,Unknown,Good,2026-05-12,,IT Administrator,
+300,PC,DESKTOP GATEWAY ZX4930 - INTEL PENTIUM,SA-PND-IT/001/00-15,PWGBE02006127025183000,Unknown,,Unknown,Good,2026-05-12,,IT Administrator,
+301,PC,LENOVO IDEACENTRE AIO 3 24IAP7,002-D/IX/2025,MP2Z1RC6,Unknown,,Unknown,Good,2026-05-12,,IT Administrator,PURCHASE 08/09/2025
+302,PC,DESKTOP LENOVO 10102 - i3 3000 - 4GB,SA-PND-IT/001/0109,VS80472124,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+303,PC,DESKTOP LENOVO IDEACENTRE B320 - i3 - 8GB,SA-PND-IT/001/00-16,VS50182461,Unknown,,Unknown,Good,2026-07-06,,IT Administrator,
+304,PC,SET PC CUSTOM - i7-14700 - 16GB,001-D/VIII/2026,07E4410940942Q21E051750,Unknown,,Unknown,Good,2026-08-10,,IT Administrator,PURCHASE 07/08/2026
+305,PC,SET PC CUSTOM - i7-14700 - 16GB,002-D/VIII/2026,07E4410273615Q21E496757,Unknown,,Unknown,Good,2026-08-10,,IT Administrator,PURCHASE 07/08/2026
+306,PC,SET PC CUSTOM - i7-14700 - 16GB,003-D/VIII/2026,07E4410124177Q21E052077,Unknown,,Unknown,Good,2026-08-10,,IT Administrator,PURCHASE 07/08/2026
+307,PC,SET PC CUSTOM - i7-14700 - 16GB,004-D/VIII/2026,0WK5HNCL400836B,Unknown,,Unknown,Good,2026-08-10,,IT Administrator,PURCHASE 07/08/2026
+308,PC,SET PC CUSTOM - i7-14700 - 16GB,005-D/VIII/2026,07E4410051004Q21E045830,Unknown,,Unknown,Good,2026-08-10,,IT Administrator,PURCHASE 07/08/2026
+309,Printer,Epson L4260,002-B/V/2023,X8SS013782,Unknown,,Unknown,Good,2026-08-11,,IT Administrator,
+310,Printer,Epson L4260,003-B/V/2023,X8SS013801,Unknown,,Unknown,Good,2026-08-12,,IT Administrator,
+311,Printer,HP Laserjet Pro MFP M28w,004-B/V/2023,VNC2L14863,Unknown,,Unknown,Good,2026-08-13,,IT Administrator,
+312,Printer,Epson L4260,005-B/V/2023,X8SS015684,Unknown,,Unknown,Good,2026-08-14,,IT Administrator,
+313,Printer,Epson L4160,006-B/V/2023,X4E2041871,Unknown,,Unknown,Good,2026-08-15,,IT Administrator,
+314,Printer,ID Card Printer Zebra ZXP Series 3,006-B/V/2023-2,Z3J190400662,Unknown,,Unknown,Good,2026-08-16,,IT Administrator,
+315,Printer,ID Card Printer Zebra ZXP Series 3,007-B/V/2023,Z3J185200725,Unknown,,Unknown,Good,2026-08-17,,IT Administrator,
+316,Printer,HP Laserjet P1102,008-B/V/2023,VNF6H48798,Unknown,,Unknown,Good,2026-08-18,,IT Administrator,
+317,Printer,HP Laserjet pro mfp M28,009-B/V/2023,VNC3L14757,Unknown,,Unknown,Good,2026-08-19,,IT Administrator,
+318,Printer,Epson L4260,010-B/V/2023,X8SS015133,Unknown,,Unknown,Good,2026-08-20,,IT Administrator,
+319,Printer,HP Laserjet P1102,011-B/V/2023,VNF8M48432,Unknown,,Unknown,Good,2026-08-21,,IT Administrator,
+320,Printer,HP Laserjet P1102,012-B/V/2023,VNF6H43758,Unknown,,Unknown,Good,2026-08-22,,IT Administrator,
+321,Printer,Epson L360,SA-BTJ-IT/002/0002,X3GW194089,Unknown,,Unknown,Good,2026-08-25,,IT Administrator,
+322,Printer,EPSON L3210,016-B/V/2023,XAGK118374,Unknown,,Unknown,Good,2026-08-26,,IT Administrator,
+323,Printer,Canon IP2770,018-B/V/2023,KNFR83376,Unknown,,Unknown,Good,2026-08-27,,IT Administrator,
+324,Printer,Brother DCPT310,019-B/V/2023,E78655G9H674302,Unknown,,Unknown,Good,2026-08-28,,IT Administrator,
+325,Printer,Printer HP 1102,038-B/V/V2023,VNC3C20676,Unknown,,Unknown,Good,2026-08-29,,IT Administrator,
+326,Printer,Printer Boarding Pass,020-B/V/2023,NK6F002499,Unknown,,Unknown,Good,2026-08-30,,IT Administrator,
+327,Printer,PRINTER CANON MP237,SA-MKW-IT/002/0001,CN010006121499,Unknown,,Unknown,Good,2026-08-31,,IT Administrator,
+328,Printer,PRINTER EPSON L360,021-B/V/2023,X3GW154660,Unknown,,Unknown,Good,2026-09-01,,IT Administrator,
+329,Printer,Printer Boarding Pass,042-B/V/2023,J54F015700,Unknown,,Unknown,Good,2026-09-02,,IT Administrator,
+330,Printer,PRINTER EPSON L3210,022-B/V/2023,X8HT001352,Unknown,,Unknown,Good,2026-09-03,,IT Administrator,
+331,Printer,PRINTER EPSON M129H,023-B/V/2023,NK6F002499,Unknown,,Unknown,Good,2026-09-04,,IT Administrator,
+332,Printer,PRINTER EPSON L3110,024-B/V/2023,X21K00733,Unknown,,Unknown,Good,2026-09-05,,IT Administrator,
+333,Printer,PRINTER CANON PIXMA G2770,025-B/V/2023,QC3-5062,Unknown,,Unknown,Good,2026-09-06,,IT Administrator,Ex Tanah Merah
+334,Printer,PRINTER EPSON L3860,026-B/V/2023,X3GW391160,Unknown,,Unknown,Good,2026-09-07,,IT Administrator,
+335,Printer,PRINTER EPSON L3216,027-B/V/2023,X8H5005530,Unknown,,Unknown,Good,2026-09-08,,IT Administrator,
+336,Printer,PRINTER EPSON L3256,028-B/V/2023,X8JW013847,Unknown,,Unknown,Good,2026-09-09,,IT Administrator,
+337,Printer,PRINTER EPSON L3510,029-B/V/2023,X5EM109457,Unknown,,Unknown,Good,2026-09-10,,IT Administrator,
+338,Printer,PRINTER EPSON L3210,030-B/V/2023,XAGK291156,Unknown,,Unknown,Good,2026-09-11,,IT Administrator,
+339,Printer,PRINTER CANON MP237,031-B/V/2023,CN-010-005 845 353,Unknown,,Unknown,Good,2026-09-12,,IT Administrator,?
+340,Printer,PRINTER EPSON L3110,040-B/V/2023,EP-017-19-0226-726,Unknown,,Unknown,Good,2026-09-13,,IT Administrator,
+341,Printer,EPSON L3210,041-B/V/2023,XAGK485597Q,Unknown,,Unknown,Good,2026-09-14,,IT Administrator,
+342,Printer,PRINTER L3210,032-B/V/2023,-,Unknown,,Unknown,Good,2026-09-15,,IT Administrator,
+343,Printer,Printer Panda PRJ-58B,033-B/V/2023,-,Unknown,,Unknown,Good,2026-09-16,,IT Administrator,geoffrey office
+344,Printer,Printer Panda PRJ-58B,034-B/V/2023,-,Unknown,,Unknown,Good,2026-09-17,,IT Administrator,geoffrey office
+345,Printer,Epson L4260,035-B/V/2023,X8SS017269,Unknown,,Unknown,Good,2026-09-18,,IT Administrator,
+346,Printer,Epson L4260,036-B/V/2023,X8SS917369,Unknown,,Unknown,Good,2026-09-19,,IT Administrator,
+347,Printer,Epson L4260,037-B/V/2023,X8SS021264,Unknown,,Unknown,Good,2026-09-20,,IT Administrator,ex Geoffrey Office
+348,Printer,Epson L4260,005-B/XII/2023,X8SS020020,Unknown,,Unknown,Good,2026-09-21,,IT Administrator,
+349,Printer,Epson L4260,001-C/III/2024,X8SS024957,Unknown,,Unknown,Good,2026-09-22,,IT Administrator,
+350,Printer,Epson L4260,001-C/VII/2024,X8SS027085,Unknown,,Unknown,Good,2026-09-23,,IT Administrator,
+351,Printer,Epson L3210,001-C/IX/2024,XAGKD50041,Unknown,,Unknown,Good,2026-09-24,,IT Administrator,
+352,Printer,Epson L3210,001-C/XI/2024,XAGKC90669,Unknown,,Unknown,Good,2026-09-25,,IT Administrator,
+353,Printer,Epson L3110,002-C/XI/2024,X6NX380353,Unknown,,Unknown,Good,2026-09-26,,IT Administrator,
+354,Printer,Epson L4260,001-C/VIII/2024,X8SS014145,Unknown,,Unknown,Good,2026-09-27,,IT Administrator,HANGAR
+355,Printer,Epson L4260,001-C/II/2025,X8SS029258,Unknown,,Unknown,Good,2026-09-28,,IT Administrator,
+356,Printer,BROTHER DCP L3551 CDW,002-C/II/2025,E79051C3N310274,Unknown,,Unknown,Good,2026-09-29,,IT Administrator,
+357,Printer,BROTHER DCP L3551 CDW,003-C/II/2025,E79051C3N310229,Unknown,,Unknown,Good,2026-09-30,,IT Administrator,
+358,Printer,BROTHER DCP L3551 CDW,004-C/II/2025,E79051C3N310228,Unknown,,Unknown,Good,2026-10-01,,IT Administrator,
+359,Printer,BROTHER DCP L3560 CDW,001-C/V/2025,E81703L4N715652,Unknown,,Unknown,Good,2026-10-02,,IT Administrator,
+360,Printer,EPSON L4260,001-C/VIII/2025,X8SS038212,Unknown,,Unknown,Good,2026-10-03,,IT Administrator,
+361,Printer,HP P1102,001-C/X/2025,VNC6X30362,Unknown,,Unknown,Good,2026-10-04,,IT Administrator,
+362,Printer,PRINTER EPSON L360,AUTO-PRINTER-001,X3GW091743,Unknown,,Unknown,Good,2026-10-05,,IT Administrator,
+363,Printer,PRINTER EPSON L3110,003-C/X/2024,X5DX172046,Unknown,,Unknown,Good,2026-10-06,,IT Administrator,
+364,Printer,HP P1102,001-C/X/2025-2,VNF6K48777,Unknown,,Unknown,Good,2026-10-07,,IT Administrator,
+365,Printer,Canon IP2770,AUTO-PRINTER-002,KLJJ05922,Unknown,,Unknown,Good,2026-10-08,,IT Administrator,
+366,Printer,BROTHER DCP-L3551CDW,AUTO-PRINTER-003,E79051C3N310212,Unknown,,Unknown,Good,2026-10-09,,IT Administrator,
+367,Printer,EPSON L220,AUTO-PRINTER-004,WN5P082723,Unknown,,Unknown,Good,2026-10-10,,IT Administrator,
+368,Printer,CANON MP237,AUTO-PRINTER-005,LNKC69156,Unknown,,Unknown,Good,2026-10-11,,IT Administrator,
+369,Printer,CANON PIXMA G2730,SA-BTJ-IT/002/0003,KPLH62736,Unknown,,Unknown,Good,2026-10-12,,IT Administrator,
+370,Printer,Epson L4260,002-C/SFS/2025,X8SS028389,Unknown,,Unknown,Good,2026-10-13,,IT Administrator,
+371,Printer,HP Laserjet P1102,AUTO-PRINTER-006,,Unknown,,Operations > Base Padang > Unit Gunungsitoli,Good,2026-10-14,2021-02-14,IT Administrator,test note

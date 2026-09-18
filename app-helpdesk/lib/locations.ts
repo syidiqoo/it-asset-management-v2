@@ -9,13 +9,13 @@ export function normalizeLocationCode(value: string): string {
 
 export function validateLocationCode(value: string): string | null {
   const trimmed = value.trim()
-  if (!trimmed) return "Kode wajib diisi."
+  if (!trimmed) return "Code is required."
   if (!/^\d{1,3}$/.test(trimmed)) {
-    return `Kode harus berupa angka ${LOCATION_CODE_MIN}–${LOCATION_CODE_MAX}.`
+    return `Code must be numeric ${LOCATION_CODE_MIN}–${LOCATION_CODE_MAX}.`
   }
   const numeric = Number(trimmed)
   if (numeric < LOCATION_CODE_MIN || numeric > LOCATION_CODE_MAX) {
-    return `Kode harus di antara ${normalizeLocationCode(String(LOCATION_CODE_MIN))} dan ${LOCATION_CODE_MAX}.`
+    return `Code must be between ${normalizeLocationCode(String(LOCATION_CODE_MIN))} and ${LOCATION_CODE_MAX}.`
   }
   return null
 }

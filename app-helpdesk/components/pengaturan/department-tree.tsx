@@ -30,7 +30,7 @@ export function DepartmentTree({
   if (nodes.length === 0) {
     return (
       <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-        Belum ada department.
+        No departments yet.
       </p>
     )
   }
@@ -61,7 +61,7 @@ export function DepartmentTree({
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Tambah sub-department ${node.name}`}
+                  aria-label={`Add sub-department ${node.name}`}
                   onClick={() => onAddChild(node)}
                 >
                   <Plus />
@@ -73,13 +73,13 @@ export function DepartmentTree({
                       variant="ghost"
                       size="icon-sm"
                       disabled
-                      aria-label={`Tambah sub-department ${node.name}`}
+                      aria-label={`Add sub-department ${node.name}`}
                     >
                       <Plus />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    Maksimal {MAX_DEPARTMENT_LEVEL} level department.
+                    Maximum {MAX_DEPARTMENT_LEVEL} department levels.
                   </TooltipContent>
                 </Tooltip>
               )}
@@ -100,7 +100,7 @@ export function DepartmentTree({
                       variant="ghost"
                       size="icon-sm"
                       disabled
-                      aria-label={`Hapus ${node.name}`}
+                      aria-label={`Delete ${node.name}`}
                     >
                       <Trash2 />
                     </Button>
@@ -111,7 +111,7 @@ export function DepartmentTree({
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Hapus ${node.name}`}
+                  aria-label={`Delete ${node.name}`}
                   onClick={() => onDelete(node)}
                 >
                   <Trash2 />

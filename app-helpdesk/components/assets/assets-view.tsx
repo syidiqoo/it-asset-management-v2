@@ -4,15 +4,15 @@ import * as React from "react"
 import Link from "next/link"
 import { Plus } from "lucide-react"
 
-import { AssetTable } from "@/components/assets/asset-table"
+import { AssetSection } from "@/components/assets/asset-section"
 import { CsvActions } from "@/components/csv-actions"
 import { useDataStore } from "@/components/data-store"
 import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
-import { Pagination } from "@/components/pagination"
 import { StickyHeader } from "@/components/sticky-header"
+import { StoreState } from "@/components/store-state"
 import { Button } from "@/components/ui/button"
-import { ASSET_PAGE_SIZE, CSV_IMPORT_COLUMNS, filterAssets } from "@/lib/assets"
+import { CSV_IMPORT_COLUMNS, assetSection, filterAssets } from "@/lib/assets"
 import { csvFileName, downloadCsv } from "@/lib/csv"
 import {
   collectDescendantIds,
@@ -20,31 +20,28 @@ import {
   flattenDepartments,
 } from "@/lib/departments"
 import {
-  buildFilterQuery,
   type FilterField,
   type FilterValues,
 } from "@/lib/filters"
 import { CONDITIONS } from "@/lib/types"
 
 const CSV_HEADER = [
-  "Nama Aset",
+  "Asset Name",
   "Code",
   "Serial Number",
-  "Kategori",
+  "Category",
   "Employee",
   "Department",
   "Condition",
-  "Record Date",
+  "Latest Update",
   "Purchase Date",
   "Note",
 ]
 
 export function AssetsView({
   values,
-  page: requestedPage,
 }: {
   values: FilterValues
-  page: number
 }) {
   const store = useDataStore()
 
@@ -73,14 +70,14 @@ export function AssetsView({
     {
       type: "search",
       name: "q",
-      label: "Pencarian",
-      placeholder: "Nama, code, serial, employee",
+      label: "Search",
+      placeholder: "Name, code, serial, employee",
     },
     {
       type: "select",
       name: "category",
-      label: "Kategori",
-      allLabel: "Semua kategori",
+      label: "Category",
+      allLabel: "All categories",
       options: store.categories.map((category) => ({
         label: category.name,
         value: String(category.id),
@@ -89,8 +86,8 @@ export function AssetsView({
     {
       type: "select",
       name: "condition",
-      label: "Kondisi",
-      allLabel: "Semua kondisi",
+      label: "Condition",
+      allLabel: "All conditions",
       options: CONDITIONS.map((condition) => ({
         label: condition,
         value: condition,
@@ -100,7 +97,7 @@ export function AssetsView({
       type: "select",
       name: "department",
       label: "Department",
-      allLabel: "Semua department",
+      allLabel: "All departments",
       options: flattenDepartments(store.departments).map((department) => ({
         label: department.path,
         value: String(department.id),
@@ -108,21 +105,22 @@ export function AssetsView({
     },
   ]
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / ASSET_PAGE_SIZE))
-  const page = Math.min(requestedPage, pageCount)
-  const pageItems = filtered.slice(
-    (page - 1) * ASSET_PAGE_SIZE,
-    page * ASSET_PAGE_SIZE
+  const available = React.useMemo(
+    () => filtered.filter((asset) => assetSection(asset) === "available"),
+    [filtered]
   )
-
-  const buildHref = (target: number) => {
-    const query = buildFilterQuery(values, target)
-    return query ? `/assets?${query}` : "/assets"
-  }
+  const main = React.useMemo(
+    () => filtered.filter((asset) => assetSection(asset) === "main"),
+    [filtered]
+  )
+  const broken = React.useMemo(
+    () => filtered.filter((asset) => assetSection(asset) === "broken"),
+    [filtered]
+  )
 
   const exportCsv = () => {
     downloadCsv(
-      csvFileName("data-aset"),
+      csvFileName("asset-data"),
       CSV_HEADER,
       filtered.map((asset) => [
         asset.name,
@@ -133,30 +131,35 @@ export function AssetsView({
         employeeName(asset.employeeId),
         departmentPath(store.departments, asset.departmentId) ?? "",
         asset.condition,
-        asset.recordDate,
+        asset.updatedAt,
         asset.purchaseDate ?? "",
         asset.note ?? "",
       ])
     )
   }
 
+  const importCsv = async (rows: string[][]) => {
+    return store.importAssets(rows)
+  }
+
   return (
     <div className="flex flex-col">
       <StickyHeader>
         <PageHeader
-          title="Data Aset"
-          description="Kelola aset IT kantor beserta kondisi dan pemegangnya."
+          title="Asset Data"
+          description="Manage office IT assets with conditions and holders."
           actions={
             <>
               <CsvActions
                 columns={CSV_IMPORT_COLUMNS}
                 onExport={exportCsv}
-                fileHint="Nilai Kategori, Department, dan Employee harus sudah ada di master data."
-                note="Import bersifat semua-atau-batal: satu baris bermasalah akan membatalkan seluruh proses. Penulisan ke database belum aktif pada tahap UI ini."
+                fileHint="App columns or the sample format (No, Kategori Inventaris, Asset Name, ...). User/Username columns are ignored."
+                note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Asset Code already exists are skipped; duplicate codes inside one file are rejected."
+                onImport={importCsv}
               />
               <Button size="sm" render={<Link href="/assets/new" />}>
                 <Plus />
-                Tambah Aset
+                Add Asset
               </Button>
             </>
           }
@@ -165,18 +168,37 @@ export function AssetsView({
       </StickyHeader>
 
       <div className="flex flex-col gap-4 p-4 md:p-6">
-        <AssetTable assets={pageItems} />
+        <StoreState
+          loading={store.loading}
+          error={store.error}
+          onRetry={store.refresh}
+          empty={false}
+        >
+          <div className="contents">
+        <AssetSection
+          title="Main Asset"
+          description="Assets currently assigned to an employee."
+          assets={main}
+          unit="assets"
+        />
 
-        {filtered.length > 0 ? (
-          <Pagination
-            page={page}
-            pageCount={pageCount}
-            total={filtered.length}
-            pageSize={ASSET_PAGE_SIZE}
-            unit="aset"
-            buildHref={buildHref}
-          />
-        ) : null}
+        <AssetSection
+          title="Available Asset"
+          description="Unassigned stock in Good or Fair condition."
+          assets={available}
+          unit="available assets"
+          defaultOpen={false}
+        />
+
+        <AssetSection
+          title="Broken Asset"
+          description="Assets that are Damaged or Under Repair."
+          assets={broken}
+          unit="broken assets"
+          defaultOpen={false}
+        />
+          </div>
+        </StoreState>
       </div>
     </div>
   )

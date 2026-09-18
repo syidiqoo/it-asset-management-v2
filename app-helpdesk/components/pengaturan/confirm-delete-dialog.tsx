@@ -32,10 +32,10 @@ export function ConfirmDeleteDialog({
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Batal
+            Cancel
           </Button>
           <Button variant="destructive" onClick={onConfirm}>
-            Hapus
+            Delete
           </Button>
         </DialogFooter>
       </DialogContent>

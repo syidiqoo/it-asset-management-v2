@@ -59,6 +59,14 @@ export function departmentPath(
   )
 }
 
+export function departmentName(
+  departments: Department[],
+  id: number | null
+): string | null {
+  if (id === null) return null
+  return departments.find((item) => item.id === id)?.name ?? null
+}
+
 export function collectDescendantIds(
   departments: { id: number; parentId: number | null }[],
   rootId: number

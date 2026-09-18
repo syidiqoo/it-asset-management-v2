@@ -5,12 +5,12 @@ import { ASSET_FILTER_NAMES } from "@/lib/assets"
 import { parseFilterValues } from "@/lib/filters"
 
 export const metadata: Metadata = {
-  title: "Data Aset — IT Helpdesk",
+  title: "Asset Data — IT Helpdesk",
 }
 
 export default async function AssetsPage(props: PageProps<"/assets">) {
   const searchParams = await props.searchParams
-  const { values, page } = parseFilterValues(searchParams, ASSET_FILTER_NAMES)
+  const { values } = parseFilterValues(searchParams, ASSET_FILTER_NAMES)
 
-  return <AssetsView values={values} page={page} />
+  return <AssetsView values={values} />
 }

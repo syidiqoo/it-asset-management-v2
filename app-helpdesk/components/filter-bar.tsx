@@ -84,7 +84,7 @@ export function FilterBar({
                     size="xs"
                     className="absolute top-1/2 right-1 -translate-y-1/2"
                   >
-                    Cari
+                    Search
                   </Button>
                 </div>
               </form>
@@ -122,7 +122,7 @@ export function FilterBar({
           <div className="flex justify-end">
             <Button variant="ghost" size="sm" onClick={reset}>
               <X />
-              Reset filter
+              Reset filters
             </Button>
           </div>
         ) : null}

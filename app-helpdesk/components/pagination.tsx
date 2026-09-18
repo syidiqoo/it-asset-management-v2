@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactNode } from "react"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -25,6 +26,89 @@ function pageWindow(page: number, pageCount: number): (number | "gap")[] {
   return result
 }
 
+function PageActionButton({
+  targetPage,
+  disabled,
+  label,
+  buildHref,
+  onPageChange,
+  children,
+}: {
+  targetPage: number
+  disabled: boolean
+  label: string
+  buildHref?: (page: number) => string
+  onPageChange?: (page: number) => void
+  children: ReactNode
+}) {
+  if (disabled || (!buildHref && !onPageChange)) {
+    return (
+      <Button variant="outline" size="icon-sm" disabled aria-label={label}>
+        {children}
+      </Button>
+    )
+  }
+  if (onPageChange) {
+    return (
+      <Button
+        variant="outline"
+        size="icon-sm"
+        onClick={() => onPageChange(targetPage)}
+        aria-label={label}
+      >
+        {children}
+      </Button>
+    )
+  }
+  return (
+    <Button
+      variant="outline"
+      size="icon-sm"
+      render={
+        <Link href={(buildHref as (page: number) => string)(targetPage)} />
+      }
+      aria-label={label}
+    >
+      {children}
+    </Button>
+  )
+}
+
+function PageNumberButton({
+  item,
+  active,
+  buildHref,
+  onPageChange,
+}: {
+  item: number
+  active: boolean
+  buildHref?: (page: number) => string
+  onPageChange?: (page: number) => void
+}) {
+  if (onPageChange) {
+    return (
+      <Button
+        variant={active ? "default" : "outline"}
+        size="icon-sm"
+        onClick={() => onPageChange(item)}
+        aria-current={active ? "page" : undefined}
+      >
+        {item}
+      </Button>
+    )
+  }
+  return (
+    <Button
+      variant={active ? "default" : "outline"}
+      size="icon-sm"
+      render={<Link href={(buildHref as (page: number) => string)(item)} />}
+      aria-current={active ? "page" : undefined}
+    >
+      {item}
+    </Button>
+  )
+}
+
 export function Pagination({
   page,
   pageCount,
@@ -32,13 +116,15 @@ export function Pagination({
   pageSize,
   unit,
   buildHref,
+  onPageChange,
 }: {
   page: number
   pageCount: number
   total: number
   pageSize: number
   unit: string
-  buildHref: (page: number) => string
+  buildHref?: (page: number) => string
+  onPageChange?: (page: number) => void
 }) {
   const from = total === 0 ? 0 : (page - 1) * pageSize + 1
   const to = Math.min(page * pageSize, total)
@@ -46,11 +132,11 @@ export function Pagination({
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <p className="text-sm text-muted-foreground">
-        Menampilkan{" "}
+        Showing{" "}
         <span className="font-medium text-foreground tabular-nums">{from}</span>
         {"–"}
         <span className="font-medium text-foreground tabular-nums">{to}</span>{" "}
-        dari{" "}
+        of{" "}
         <span className="font-medium text-foreground tabular-nums">
           {total}
         </span>{" "}
@@ -58,25 +144,15 @@ export function Pagination({
       </p>
 
       <div className="flex items-center gap-1">
-        {page > 1 ? (
-          <Button
-            variant="outline"
-            size="icon-sm"
-            render={<Link href={buildHref(page - 1)} />}
-            aria-label="Halaman sebelumnya"
-          >
-            <ChevronLeft />
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            size="icon-sm"
-            disabled
-            aria-label="Halaman sebelumnya"
-          >
-            <ChevronLeft />
-          </Button>
-        )}
+        <PageActionButton
+          targetPage={page - 1}
+          disabled={page <= 1}
+          label="Previous page"
+          buildHref={buildHref}
+          onPageChange={onPageChange}
+        >
+          <ChevronLeft />
+        </PageActionButton>
 
         {pageWindow(page, pageCount).map((item, index) =>
           item === "gap" ? (
@@ -87,37 +163,25 @@ export function Pagination({
               …
             </span>
           ) : (
-            <Button
+            <PageNumberButton
               key={item}
-              variant={item === page ? "default" : "outline"}
-              size="icon-sm"
-              render={<Link href={buildHref(item)} />}
-              aria-current={item === page ? "page" : undefined}
-            >
-              {item}
-            </Button>
+              item={item}
+              active={item === page}
+              buildHref={buildHref}
+              onPageChange={onPageChange}
+            />
           )
         )}
 
-        {page < pageCount ? (
-          <Button
-            variant="outline"
-            size="icon-sm"
-            render={<Link href={buildHref(page + 1)} />}
-            aria-label="Halaman berikutnya"
-          >
-            <ChevronRight />
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            size="icon-sm"
-            disabled
-            aria-label="Halaman berikutnya"
-          >
-            <ChevronRight />
-          </Button>
-        )}
+        <PageActionButton
+          targetPage={page + 1}
+          disabled={page >= pageCount}
+          label="Next page"
+          buildHref={buildHref}
+          onPageChange={onPageChange}
+        >
+          <ChevronRight />
+        </PageActionButton>
       </div>
     </div>
   )

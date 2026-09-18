@@ -11,8 +11,8 @@ export const ASSET_FILTER_NAMES = [
 ]
 
 export const CSV_IMPORT_COLUMNS = [
-  "Kategori",
-  "Nama Aset",
+  "Category",
+  "Asset Name",
   "Code",
   "Serial Number",
   "Employee",
@@ -21,6 +21,24 @@ export const CSV_IMPORT_COLUMNS = [
   "Purchase Date",
   "Note",
 ]
+
+export type AssetSectionKey = "main" | "available" | "broken"
+
+export const ASSET_SECTION_LABEL: Record<AssetSectionKey, string> = {
+  main: "Main Asset",
+  available: "Available Asset",
+  broken: "Broken Asset",
+}
+
+export function assetSection(asset: Asset): AssetSectionKey {
+  if (asset.condition === "Damaged" || asset.condition === "Under Repair") {
+    return "broken"
+  }
+  if (asset.employeeId === null) {
+    return "available"
+  }
+  return "main"
+}
 
 export function filterAssets(
   assets: Asset[],
