@@ -14,13 +14,14 @@ export async function POST(request: Request) {
   const parsed = locationSchema.safeParse(await request.json().catch(() => null))
   if (!parsed.success) return fail(zodMessage(parsed.error))
 
-  const { code, address, latitude, longitude } = parsed.data
+  const { code, address, detailStreetAddress, latitude, longitude } =
+    parsed.data
   const existing = await db.location.findUnique({ where: { code } })
   if (existing) return fail(`Code ${code} is already used by another location.`, 409)
 
   try {
     const item = await db.location.create({
-      data: { code, address, latitude, longitude },
+      data: { code, address, detailStreetAddress, latitude, longitude },
     })
     return ok(serializeLocation(item), 201)
   } catch (error) {

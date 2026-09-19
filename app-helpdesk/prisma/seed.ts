@@ -66,6 +66,7 @@ async function main() {
       update: {
         code: location.code,
         address: location.address,
+        detailStreetAddress: location.detailStreetAddress,
         latitude: location.latitude,
         longitude: location.longitude,
       },
@@ -73,6 +74,7 @@ async function main() {
         id: location.id,
         code: location.code,
         address: location.address,
+        detailStreetAddress: location.detailStreetAddress,
         latitude: location.latitude,
         longitude: location.longitude,
         createdAt: toDate(location.createdAt),
@@ -179,7 +181,35 @@ async function main() {
     create: { username, passwordHash, name },
   })
 
+  await resetIdSequences()
+
   console.log(`Seed done. Admin: ${username}`)
+}
+
+// Seed rows use explicit ids, which leaves each table's id sequence behind the
+// max id. Without this, the next auto-increment insert collides on the primary
+// key. Realign every sequence after seeding.
+const SEQUENCED_TABLES = [
+  "Category",
+  "Department",
+  "Employee",
+  "Asset",
+  "SimPackage",
+  "SimCard",
+  "Location",
+  "InternetData",
+  "User",
+  "FileBlob",
+]
+
+async function resetIdSequences() {
+  for (const table of SEQUENCED_TABLES) {
+    await db.$executeRawUnsafe(
+      `SELECT setval(pg_get_serial_sequence('"${table}"', 'id'), ` +
+        `(SELECT COALESCE(MAX(id), 1) FROM "${table}"), ` +
+        `(SELECT COUNT(*) FROM "${table}") > 0)`
+    )
+  }
 }
 
 main()

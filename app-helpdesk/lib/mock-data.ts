@@ -57,7 +57,8 @@ export const seedLocations: Location[] = [
   {
     id: 1,
     code: "001",
-    address:
+    address: "Gedung Utama",
+    detailStreetAddress:
       "Gedung Utama, Jl. Jenderal Sudirman No. 1, Jakarta Pusat, DKI Jakarta 10220",
     latitude: -6.2088,
     longitude: 106.8456,
@@ -66,7 +67,8 @@ export const seedLocations: Location[] = [
   {
     id: 2,
     code: "002",
-    address:
+    address: "IT Warehouse",
+    detailStreetAddress:
       "IT Warehouse, Jl. TB Simatupang No. 22, Jakarta Selatan, DKI Jakarta 12430",
     latitude: -6.2615,
     longitude: 106.8106,
@@ -75,7 +77,9 @@ export const seedLocations: Location[] = [
   {
     id: 3,
     code: "003",
-    address: "Surabaya Branch Office, Jl. Basuki Rahmat No. 45, Surabaya 60271",
+    address: "Surabaya Branch Office",
+    detailStreetAddress:
+      "Surabaya Branch Office, Jl. Basuki Rahmat No. 45, Surabaya 60271",
     latitude: -7.2575,
     longitude: 112.7521,
     createdAt: "2026-01-09",
@@ -83,7 +87,8 @@ export const seedLocations: Location[] = [
   {
     id: 4,
     code: "004",
-    address:
+    address: "Base Jakarta",
+    detailStreetAddress:
       "Base Jakarta, Jl. Gatot Subroto No. 88, Jakarta Selatan, DKI Jakarta 12710",
     latitude: -6.2297,
     longitude: 106.8296,
@@ -92,7 +97,8 @@ export const seedLocations: Location[] = [
   {
     id: 5,
     code: "005",
-    address:
+    address: "Data Center",
+    detailStreetAddress:
       "Data Center, Jl. Kuningan Barat No. 10, Jakarta Selatan, DKI Jakarta 12710",
     latitude: -6.2345,
     longitude: 106.8256,
@@ -101,7 +107,9 @@ export const seedLocations: Location[] = [
   {
     id: 6,
     code: "006",
-    address: "Bandung Office, Jl. Asia Afrika No. 133, Bandung 40112",
+    address: "Bandung Office",
+    detailStreetAddress:
+      "Bandung Office, Jl. Asia Afrika No. 133, Bandung 40112",
     latitude: null,
     longitude: null,
     createdAt: "2026-01-11",

@@ -92,13 +92,14 @@ model SimCard {
 }
 
 model Location {
-  id        Int            @id @default(autoincrement())
-  code      String         @unique
-  address   String
-  latitude  Float?
-  longitude Float?
-  createdAt DateTime       @default(now())
-  internet  InternetData[]
+  id                  Int            @id @default(autoincrement())
+  code                String         @unique
+  address             String?
+  detailStreetAddress String
+  latitude            Float?
+  longitude           Float?
+  createdAt           DateTime       @default(now())
+  internet            InternetData[]
 }
 
 model InternetData {

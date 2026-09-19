@@ -26,9 +26,9 @@ export function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-const currencyFormatter = new Intl.NumberFormat("en-US", {
+const currencyFormatter = new Intl.NumberFormat("id-ID", {
   style: "currency",
-  currency: "USD",
+  currency: "IDR",
   maximumFractionDigits: 0,
 })
 

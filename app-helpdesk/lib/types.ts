@@ -53,7 +53,8 @@ export type SimPackage = {
 export type Location = {
   id: number
   code: string
-  address: string
+  address: string | null
+  detailStreetAddress: string
   latitude: number | null
   longitude: number | null
   createdAt: string

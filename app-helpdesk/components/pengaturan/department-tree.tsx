@@ -1,15 +1,16 @@
 "use client"
 
-import { Building2, Pencil, Plus, Trash2 } from "lucide-react"
+import * as React from "react"
+import { Building2, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { flattenDepartments, MAX_DEPARTMENT_LEVEL } from "@/lib/departments"
+import { buildDepartmentTree, MAX_DEPARTMENT_LEVEL } from "@/lib/departments"
+import { cn } from "@/lib/utils"
 import type { Department, DepartmentNode } from "@/lib/types"
 
 export function DepartmentTree({
@@ -18,28 +19,57 @@ export function DepartmentTree({
   onEdit,
   onDelete,
   deleteBlockReason,
+  emptyLabel = "No departments yet.",
 }: {
   departments: Department[]
   onAddChild: (department: DepartmentNode) => void
   onEdit: (department: DepartmentNode) => void
   onDelete: (department: DepartmentNode) => void
   deleteBlockReason: (department: DepartmentNode) => string | null
+  emptyLabel?: string
 }) {
-  const nodes = flattenDepartments(departments)
+  const [collapsed, setCollapsed] = React.useState<Set<number>>(
+    () => new Set()
+  )
 
-  if (nodes.length === 0) {
+  const rows = React.useMemo(() => {
+    const result: { node: DepartmentNode; hasChildren: boolean }[] = []
+
+    const walk = (items: DepartmentNode[]) => {
+      for (const item of items) {
+        result.push({ node: item, hasChildren: item.children.length > 0 })
+        if (item.children.length > 0 && !collapsed.has(item.id)) {
+          walk(item.children)
+        }
+      }
+    }
+
+    walk(buildDepartmentTree(departments))
+    return result
+  }, [departments, collapsed])
+
+  const toggle = (id: number) =>
+    setCollapsed((previous) => {
+      const next = new Set(previous)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+
+  if (rows.length === 0) {
     return (
       <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-        No departments yet.
+        {emptyLabel}
       </p>
     )
   }
 
   return (
     <div>
-      {nodes.map((node) => {
+      {rows.map(({ node, hasChildren }) => {
         const reason = deleteBlockReason(node)
         const canAddChild = node.level < MAX_DEPARTMENT_LEVEL
+        const expanded = hasChildren && !collapsed.has(node.id)
 
         return (
           <div
@@ -51,11 +81,29 @@ export function DepartmentTree({
               className="shrink-0"
               style={{ width: (node.level - 1) * 20 }}
             />
+
+            {hasChildren ? (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="shrink-0"
+                aria-label={`${expanded ? "Collapse" : "Expand"} ${node.name}`}
+                aria-expanded={expanded}
+                onClick={() => toggle(node.id)}
+              >
+                <ChevronDown
+                  className={cn(
+                    "transition-transform",
+                    !expanded && "-rotate-90"
+                  )}
+                />
+              </Button>
+            ) : (
+              <span aria-hidden className="size-7 shrink-0" />
+            )}
+
             <Building2 className="size-4 shrink-0 text-muted-foreground" />
             <span className="truncate text-sm font-medium">{node.name}</span>
-            <Badge variant="outline" className="shrink-0 text-[10px]">
-              Lv {node.level}
-            </Badge>
             <div className="ml-auto flex shrink-0 items-center gap-1">
               {canAddChild ? (
                 <Button

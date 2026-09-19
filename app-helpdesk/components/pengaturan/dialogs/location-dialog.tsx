@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import dynamic from "next/dynamic"
 import { Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -23,9 +24,23 @@ import {
 } from "@/lib/locations"
 import type { Location, LocationInput } from "@/lib/types"
 
+const LocationMapPicker = dynamic(
+  () =>
+    import("@/components/pengaturan/location-map-picker").then(
+      (mod) => mod.LocationMapPicker
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-56 w-full animate-pulse rounded-lg border bg-muted" />
+    ),
+  }
+)
+
 type FormState = {
   code: string
   address: string
+  detailStreetAddress: string
   latitude: string
   longitude: string
 }
@@ -34,12 +49,19 @@ type FormErrors = Partial<Record<keyof FormState, string>>
 
 function initialState(location: Location | null): FormState {
   if (!location) {
-    return { code: "", address: "", latitude: "", longitude: "" }
+    return {
+      code: "",
+      address: "",
+      detailStreetAddress: "",
+      latitude: "",
+      longitude: "",
+    }
   }
 
   return {
     code: location.code,
-    address: location.address,
+    address: location.address ?? "",
+    detailStreetAddress: location.detailStreetAddress,
     latitude: location.latitude === null ? "" : String(location.latitude),
     longitude: location.longitude === null ? "" : String(location.longitude),
   }
@@ -73,7 +95,7 @@ export function LocationDialog({
 }: LocationDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl">
         <LocationDialogForm {...props} onDone={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
@@ -97,6 +119,17 @@ function LocationDialogForm({
     setForm((previous) => ({ ...previous, [key]: value }))
   }
 
+  const parsedLatitude = form.latitude.trim() ? Number(form.latitude) : null
+  const parsedLongitude = form.longitude.trim() ? Number(form.longitude) : null
+
+  const handleMapChange = (nextLatitude: number, nextLongitude: number) => {
+    setForm((previous) => ({
+      ...previous,
+      latitude: nextLatitude.toFixed(6),
+      longitude: nextLongitude.toFixed(6),
+    }))
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -106,7 +139,11 @@ function LocationDialogForm({
     if (codeError) nextErrors.code = codeError
 
     if (!form.address.trim()) {
-      nextErrors.address = "Full address is required."
+      nextErrors.address = "Address is required."
+    }
+
+    if (!form.detailStreetAddress.trim()) {
+      nextErrors.detailStreetAddress = "Detail street address is required."
     }
 
     const latitudeError = validateCoordinate(form.latitude, "Latitude", 90)
@@ -124,6 +161,7 @@ function LocationDialogForm({
     const message = await onSubmit({
       code: normalizeLocationCode(form.code),
       address: form.address.trim(),
+      detailStreetAddress: form.detailStreetAddress.trim(),
       latitude: form.latitude.trim() ? Number(form.latitude) : null,
       longitude: form.longitude.trim() ? Number(form.longitude) : null,
     })
@@ -150,7 +188,7 @@ function LocationDialogForm({
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 sm:col-span-2">
           <Label htmlFor="location-code">Code</Label>
           <Input
             id="location-code"
@@ -170,6 +208,19 @@ function LocationDialogForm({
           )}
         </div>
 
+        <div className="space-y-1.5 sm:col-span-2">
+          <Label>Map</Label>
+          <LocationMapPicker
+            latitude={parsedLatitude}
+            longitude={parsedLongitude}
+            onChange={handleMapChange}
+          />
+          <p className="text-xs text-muted-foreground">
+            Search a place, click the map, or drag the pin to fill latitude and
+            longitude.
+          </p>
+        </div>
+
         <div className="space-y-1.5">
           <Label htmlFor="location-latitude">Latitude</Label>
           <Input
@@ -183,20 +234,6 @@ function LocationDialogForm({
           />
           {errors.latitude ? (
             <p className="text-xs text-destructive">{errors.latitude}</p>
-          ) : null}
-        </div>
-
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="location-address">Full Address</Label>
-          <Textarea
-            id="location-address"
-            value={form.address}
-            onChange={(event) => set("address", event.target.value)}
-            placeholder="Gedung Utama, Jl. Jenderal Sudirman No. 1, Jakarta Pusat"
-            rows={2}
-          />
-          {errors.address ? (
-            <p className="text-xs text-destructive">{errors.address}</p>
           ) : null}
         </div>
 
@@ -218,6 +255,39 @@ function LocationDialogForm({
               Coordinates may be left empty.
             </p>
           )}
+        </div>
+
+        <div className="space-y-1.5 sm:col-span-2">
+          <Label htmlFor="location-address">Address</Label>
+          <Input
+            id="location-address"
+            value={form.address}
+            onChange={(event) => set("address", event.target.value)}
+            placeholder="Kantor Pusat"
+          />
+          {errors.address ? (
+            <p className="text-xs text-destructive">{errors.address}</p>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Short location or area name.
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-1.5 sm:col-span-2">
+          <Label htmlFor="location-detail-street">Detail Street Address</Label>
+          <Textarea
+            id="location-detail-street"
+            value={form.detailStreetAddress}
+            onChange={(event) => set("detailStreetAddress", event.target.value)}
+            placeholder="Gedung Utama, Jl. Jenderal Sudirman No. 1, Jakarta Pusat"
+            rows={2}
+          />
+          {errors.detailStreetAddress ? (
+            <p className="text-xs text-destructive">
+              {errors.detailStreetAddress}
+            </p>
+          ) : null}
         </div>
 
         <DialogFooter className="sm:col-span-2">

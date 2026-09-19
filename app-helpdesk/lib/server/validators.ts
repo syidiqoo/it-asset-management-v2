@@ -39,7 +39,11 @@ export const locationSchema = z.object({
       message: "Code must be numeric 1–100.",
     })
     .transform(normalizeLocationCode),
-  address: z.string().trim().min(1, "Full address is required."),
+  address: z.string().trim().min(1, "Address is required."),
+  detailStreetAddress: z
+    .string()
+    .trim()
+    .min(1, "Detail street address is required."),
   latitude: z.number().min(-90).max(90).nullable(),
   longitude: z.number().min(-180).max(180).nullable(),
 })

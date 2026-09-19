@@ -26,8 +26,8 @@ export function formatCoordinates(location: Location): string {
 }
 
 export function formatLocationLabel(location: Location): string {
-  const shortName = location.address.split(",")[0]?.trim() || location.address
-  return `${location.code} — ${shortName}`
+  const name = location.address?.trim() || location.detailStreetAddress
+  return `${location.code} — ${name}`
 }
 
 export function locationLabelById(

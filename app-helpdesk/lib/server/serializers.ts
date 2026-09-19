@@ -48,7 +48,8 @@ export function serializePackage(item: { id: number; name: string }) {
 export function serializeLocation(item: {
   id: number
   code: string
-  address: string
+  address: string | null
+  detailStreetAddress: string
   latitude: number | null
   longitude: number | null
   createdAt: Date
@@ -57,6 +58,7 @@ export function serializeLocation(item: {
     id: item.id,
     code: item.code,
     address: item.address,
+    detailStreetAddress: item.detailStreetAddress,
     latitude: item.latitude,
     longitude: item.longitude,
     createdAt: toDay(item.createdAt) ?? "",

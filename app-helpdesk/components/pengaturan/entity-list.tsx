@@ -15,16 +15,18 @@ export function EntityList({
   onEdit,
   onDelete,
   blockReason,
+  emptyLabel = "No data yet.",
 }: {
   items: { id: number; name: string }[]
   onEdit: (item: { id: number; name: string }) => void
   onDelete: (item: { id: number; name: string }) => void
   blockReason?: (id: number) => string | null
+  emptyLabel?: string
 }) {
   if (items.length === 0) {
     return (
       <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-        No data yet.
+        {emptyLabel}
       </p>
     )
   }

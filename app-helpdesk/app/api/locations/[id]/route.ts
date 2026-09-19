@@ -14,7 +14,8 @@ export async function PUT(
   const parsed = locationSchema.safeParse(await request.json().catch(() => null))
   if (!parsed.success) return fail(zodMessage(parsed.error))
 
-  const { code, address, latitude, longitude } = parsed.data
+  const { code, address, detailStreetAddress, latitude, longitude } =
+    parsed.data
   const existing = await db.location.findFirst({
     where: { code, NOT: { id } },
   })
@@ -23,7 +24,7 @@ export async function PUT(
   try {
     const item = await db.location.update({
       where: { id },
-      data: { code, address, latitude, longitude },
+      data: { code, address, detailStreetAddress, latitude, longitude },
     })
     return ok(serializeLocation(item))
   } catch (error) {

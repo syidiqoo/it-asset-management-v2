@@ -1,56 +1,73 @@
 "use client"
 
 import * as React from "react"
-import { Boxes, Building2, MapPin, Smartphone, Users, Wifi } from "lucide-react"
+import dynamic from "next/dynamic"
+import { Boxes, Smartphone, Wifi } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { ConditionCard } from "@/components/dashboard/condition-card"
+import { KpiCard } from "@/components/dashboard/kpi-card"
 import { StoreState } from "@/components/store-state"
-import { StatGrid, type Stat } from "@/components/dashboard/stat-grid"
-import { PageHeader } from "@/components/page-header"
-import { CONDITIONS, type Condition } from "@/lib/types"
+import { useSessionUser } from "@/components/use-session-user"
+import { Card } from "@/components/ui/card"
+import { conditionCounts, percent } from "@/lib/dashboard"
 
-const CONDITION_DOT: Record<Condition, string> = {
-  Good: "bg-emerald-500",
-  Fair: "bg-amber-500",
-  Damaged: "bg-red-500",
-  "Under Repair": "bg-blue-500",
-}
+const DashboardMap = dynamic(
+  () =>
+    import("@/components/dashboard/dashboard-map").then(
+      (mod) => mod.DashboardMap
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-80 w-full animate-pulse bg-muted md:h-96" />
+    ),
+  }
+)
 
 export function DashboardView() {
   const store = useDataStore()
+  const sessionUser = useSessionUser()
 
-  const counts = React.useMemo(() => {
-    const result = Object.fromEntries(
-      CONDITIONS.map((condition) => [condition, 0])
-    ) as Record<Condition, number>
+  const today = React.useMemo(() => {
+    const now = new Date()
+    const day = String(now.getDate()).padStart(2, "0")
+    const month = String(now.getMonth() + 1).padStart(2, "0")
+    return `${day}/${month}/${now.getFullYear()}`
+  }, [])
 
-    for (const asset of store.assets) result[asset.condition] += 1
-    return result
-  }, [store.assets])
+  const counts = React.useMemo(
+    () => conditionCounts(store.assets),
+    [store.assets]
+  )
+  const totalAssets = store.assets.length
 
-  const assetStats: Stat[] = [
-    { label: "Total Assets", value: store.assets.length, icon: Boxes },
-    ...CONDITIONS.map((condition) => ({
-      label: condition,
-      value: counts[condition],
-      dotClassName: CONDITION_DOT[condition],
-    })),
-  ]
+  const totalBandwidth = store.internetData.reduce(
+    (sum, item) => sum + item.bandwidthMbps,
+    0
+  )
 
-  const inventoryStats: Stat[] = [
-    { label: "SIM Card", value: store.simCards.length, icon: Smartphone },
-    { label: "Internet Data", value: store.internetData.length, icon: Wifi },
-    { label: "Location", value: store.locations.length, icon: MapPin },
-    { label: "Employee", value: store.employees.length, icon: Users },
-    { label: "Department", value: store.departments.length, icon: Building2 },
-  ]
+  const plottedCount = React.useMemo(
+    () =>
+      store.locations.filter(
+        (location) => location.latitude !== null && location.longitude !== null
+      ).length,
+    [store.locations]
+  )
+
+  const share = (value: number) =>
+    totalAssets === 0 ? 0 : (value / totalAssets) * 100
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6">
-      <PageHeader
-        title="Dashboard"
-        description="Summary of IT assets and office inventory."
-      />
+      <div className="space-y-1">
+        <h1 className="text-xl font-semibold tracking-tight">
+          Selamat datang, {sessionUser?.name ?? "—"}
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Ringkasan IT assets dan inventory kantor — {today}
+        </p>
+      </div>
 
       <StoreState
         loading={store.loading}
@@ -59,19 +76,53 @@ export function DashboardView() {
         empty={false}
       >
         <div className="contents">
-      <section className="space-y-3">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          Asset Summary
-        </h2>
-        <StatGrid stats={assetStats} columns={5} />
-      </section>
+          <section className="space-y-3">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              Overview
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <KpiCard
+                label="Total Assets"
+                value={totalAssets}
+                icon={Boxes}
+                hint={`${store.categories.length} categories`}
+              />
+              <KpiCard
+                label="Good Assets"
+                value={counts.Good}
+                hint={`${percent(counts.Good, totalAssets)} of assets`}
+                progress={share(counts.Good)}
+              />
+              <KpiCard
+                label="Total SIM Card"
+                value={store.simCards.length}
+                icon={Smartphone}
+                hint={`${store.simPackages.length} packages`}
+              />
+              <KpiCard
+                label="Internet Data"
+                value={store.internetData.length}
+                icon={Wifi}
+                hint={`${totalBandwidth} Mbps total`}
+              />
+            </div>
+          </section>
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          Other Inventory
-        </h2>
-        <StatGrid stats={inventoryStats} columns={5} />
-      </section>
+          <section className="space-y-3">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              Location Map
+            </h2>
+            <div className="grid gap-3 lg:grid-cols-12">
+              <Card className="relative z-0 h-80 overflow-hidden [--card-spacing:0] md:h-96 lg:col-span-8">
+                <DashboardMap locations={store.locations} />
+              </Card>
+              <ConditionCard className="lg:col-span-4 lg:h-96" />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {plottedCount} of {store.locations.length} locations have
+              coordinates.
+            </p>
+          </section>
         </div>
       </StoreState>
     </div>

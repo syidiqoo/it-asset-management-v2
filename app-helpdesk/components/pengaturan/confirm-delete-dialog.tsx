@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -21,21 +23,46 @@ export function ConfirmDeleteDialog({
   onOpenChange: (open: boolean) => void
   title: string
   description: React.ReactNode
-  onConfirm: () => void
+  onConfirm: () => void | Promise<void | string | null>
 }) {
+  const [error, setError] = React.useState<string | null>(null)
+  const [busy, setBusy] = React.useState(false)
+
+  const handleOpenChange = (next: boolean) => {
+    if (!next) setError(null)
+    onOpenChange(next)
+  }
+
+  const confirm = async () => {
+    if (busy) return
+    setError(null)
+    setBusy(true)
+    try {
+      const message = await onConfirm()
+      if (message) setError(message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
+        {error ? (
+          <p className="rounded-lg border border-red-600/20 bg-red-50 p-3 text-xs break-words text-red-700">
+            {error}
+          </p>
+        ) : null}
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => handleOpenChange(false)}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
-            Delete
+          <Button variant="destructive" disabled={busy} onClick={confirm}>
+            {busy ? "Deleting…" : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>
