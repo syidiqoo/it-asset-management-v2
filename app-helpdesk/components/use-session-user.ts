@@ -3,7 +3,14 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 
-export type SessionUser = { id: number; username: string; name: string }
+import type { Role } from "@/lib/types"
+
+export type SessionUser = {
+  id: number
+  username: string
+  name: string
+  role: Role
+}
 
 export function useSessionUser() {
   const [user, setUser] = React.useState<SessionUser | null>(null)

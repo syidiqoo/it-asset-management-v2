@@ -11,6 +11,7 @@ import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
 import { StickyHeader } from "@/components/sticky-header"
 import { StoreState } from "@/components/store-state"
+import { useSessionUser } from "@/components/use-session-user"
 import { Button } from "@/components/ui/button"
 import { CSV_IMPORT_COLUMNS, assetSection, filterAssets } from "@/lib/assets"
 import { csvFileName, downloadCsv } from "@/lib/csv"
@@ -44,6 +45,8 @@ export function AssetsView({
   values: FilterValues
 }) {
   const store = useDataStore()
+  const sessionUser = useSessionUser()
+  const canWrite = sessionUser?.role === "admin"
 
   const departmentIds = React.useMemo(
     () =>
@@ -149,19 +152,21 @@ export function AssetsView({
           title="Asset Data"
           description="Manage office IT assets with conditions and holders."
           actions={
-            <>
-              <CsvActions
-                columns={CSV_IMPORT_COLUMNS}
-                onExport={exportCsv}
-                fileHint="App columns or the sample format (No, Kategori Inventaris, Asset Name, ...). User/Username columns are ignored."
-                note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Asset Code already exists are skipped; duplicate codes inside one file are rejected."
-                onImport={importCsv}
-              />
-              <Button size="sm" render={<Link href="/assets/new" />}>
-                <Plus />
-                Add Asset
-              </Button>
-            </>
+            canWrite ? (
+              <>
+                <CsvActions
+                  columns={CSV_IMPORT_COLUMNS}
+                  onExport={exportCsv}
+                  fileHint="App columns or the sample format (No, Kategori Inventaris, Asset Name, ...). User/Username columns are ignored."
+                  note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Asset Code already exists are skipped; duplicate codes inside one file are rejected."
+                  onImport={importCsv}
+                />
+                <Button size="sm" render={<Link href="/assets/new" />}>
+                  <Plus />
+                  Add Asset
+                </Button>
+              </>
+            ) : null
           }
         />
         <FilterBar fields={fields} values={values} />

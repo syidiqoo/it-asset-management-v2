@@ -133,8 +133,8 @@ async function main() {
 
   await db.user.upsert({
     where: { username },
-    update: { passwordHash, name },
-    create: { username, passwordHash, name },
+    update: { passwordHash, name, role: "admin" },
+    create: { username, passwordHash, name, role: "admin" },
   })
 
   console.log(`Admin user ready: ${username}`)
@@ -158,8 +158,22 @@ rm make-admin.cjs
 Verifikasi:
 
 ```bash
-PGPASSWORD='password_kuat_anda' psql -h localhost -U helpdesk -d app_helpdesk -c 'select id, username, name from "User";'
+PGPASSWORD='password_kuat_anda' psql -h localhost -U helpdesk -d app_helpdesk -c 'select id, username, name, role from "User";'
 ```
+
+## 7b. Membuat User Guest
+
+User tambahan (termasuk akses baca-saja) **tidak** dibuat lewat `.env`, tetapi dari dalam aplikasi:
+
+1. Login sebagai admin, buka **Pengaturan → User**.
+2. Klik **Add User**, isi Nama, Username, Role = **Guest**, dan Password (minimal 8 karakter).
+
+Arti role:
+
+- **Administrator** — akses penuh: semua halaman, Pengaturan, serta tambah/ubah/hapus data.
+- **Guest** — hanya bisa melihat **Dashboard, Asset Data, SIM Card, dan Internet Data**. Tombol tambah/ubah/hapus dan menu Pengaturan tidak muncul, dan permintaan tulis ke API ditolak (403).
+
+Catatan: saat upgrade dari versi lama, semua user yang sudah ada otomatis menjadi Administrator, dan user harus login ulang sekali karena isi cookie sesi berubah.
 
 ## 8. Build Aplikasi
 

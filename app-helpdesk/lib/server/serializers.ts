@@ -65,14 +65,32 @@ export function serializeLocation(item: {
   }
 }
 
+export function serializeUser(item: {
+  id: number
+  username: string
+  name: string
+  role: string
+  createdAt: Date
+}) {
+  return {
+    id: item.id,
+    username: item.username,
+    name: item.name,
+    role: item.role === "guest" ? "guest" : "admin",
+    createdAt: toDay(item.createdAt) ?? "",
+  }
+}
+
 export function serializeInternet(item: {
   id: number
   internetId: string
   locationId: number | null
+  detail: string | null
   service: string
-  bandwidthMbps: number
+  bandwidthMbps: number | null
   customerName: string
   monthlyCost: number
+  paymentMethod: string | null
   createdAt: Date
   updatedAt: Date
 }) {
@@ -87,6 +105,8 @@ export function serializeSimCard(item: {
   packageId: number | null
   clsDomestic: string | null
   clsRoaming: string | null
+  note: string | null
+  terminated: boolean
   createdAt: Date
   updatedAt: Date
 }) {

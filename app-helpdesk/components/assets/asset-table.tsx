@@ -19,6 +19,7 @@ import {
 import { AssetPreviewDialog } from "@/components/assets/asset-preview-dialog"
 import { DocumentPreviewDialog } from "@/components/assets/document-preview-dialog"
 import { MoveAssetDialog } from "@/components/assets/move-asset-dialog"
+import { useSessionUser } from "@/components/use-session-user"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
 import { departmentName } from "@/lib/departments"
 import { CONDITION_BADGE_CLASS, formatDate } from "@/lib/format"
@@ -82,6 +83,8 @@ function DocumentCell({
 
 export function AssetTable({ assets }: { assets: Asset[] }) {
   const store = useDataStore()
+  const sessionUser = useSessionUser()
+  const canWrite = sessionUser?.role === "admin"
   const [preview, setPreview] = React.useState<Asset | null>(null)
   const [moveTarget, setMoveTarget] = React.useState<Asset | null>(null)
   const [pendingDelete, setPendingDelete] = React.useState<Asset | null>(null)
@@ -114,10 +117,12 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
               Change keywords or reset filters to see other data.
             </p>
           </div>
-          <Button size="sm" render={<Link href="/assets/new" />}>
-            <Plus />
-            Add Asset
-          </Button>
+          {canWrite ? (
+            <Button size="sm" render={<Link href="/assets/new" />}>
+              <Plus />
+              Add Asset
+            </Button>
+          ) : null}
         </CardContent>
       </Card>
     )
@@ -202,6 +207,7 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
 
       <AssetPreviewDialog
         asset={preview}
+        canWrite={canWrite}
         onClose={() => setPreview(null)}
         onDelete={(asset) => {
           setPreview(null)

@@ -75,6 +75,8 @@ type DataStore = {
   importDepartments: (rows: string[][]) => Promise<string>
   importEmployees: (rows: string[][]) => Promise<string>
   importAssets: (rows: string[][]) => Promise<string>
+  importInternetData: (rows: string[][]) => Promise<string>
+  importSimCards: (rows: string[][]) => Promise<string>
   refresh: () => Promise<void>
 }
 
@@ -318,6 +320,70 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
         )
         await refresh()
         return `Imported ${result.imported} assets, skipped ${result.skipped} with existing code.`
+      },
+      async importInternetData(rows) {
+        const result = await request<{
+          imported: number
+          skipped: number
+          unknownLocations: string[]
+        }>("/api/internet/import", {
+          method: "POST",
+          body: JSON.stringify({ rows }),
+        })
+        await refresh()
+
+        const unknown = result.unknownLocations
+        const unknownNote =
+          unknown.length > 0
+            ? ` ${unknown.length} location(s) not in master, saved as unknown: ${unknown
+                .slice(0, 5)
+                .join(", ")}${unknown.length > 5 ? ", …" : ""}.`
+            : ""
+
+        return `Imported ${result.imported} internet records, skipped ${result.skipped} with existing Internet ID.${unknownNote}`
+      },
+      async importSimCards(rows) {
+        const result = await request<{
+          imported: number
+          skipped: number
+          skippedNoPhone: number
+          skippedDuplicate: number
+          unknownEmployees: string[]
+          unknownDepartments: string[]
+          unknownPackages: string[]
+        }>("/api/sim-cards/import", {
+          method: "POST",
+          body: JSON.stringify({ rows }),
+        })
+        await refresh()
+
+        const noPhoneNote =
+          result.skippedNoPhone > 0
+            ? ` ${result.skippedNoPhone} row(s) without MSISDN skipped.`
+            : ""
+        const duplicateNote =
+          result.skippedDuplicate > 0
+            ? ` ${result.skippedDuplicate} duplicate MSISDN row(s) skipped.`
+            : ""
+
+        const unknown = [
+          result.unknownEmployees.length > 0
+            ? `${result.unknownEmployees.length} name(s)`
+            : null,
+          result.unknownDepartments.length > 0
+            ? `${result.unknownDepartments.length} department(s)`
+            : null,
+          result.unknownPackages.length > 0
+            ? `${result.unknownPackages.length} package(s)`
+            : null,
+        ].filter(Boolean)
+
+        const unknownNote =
+          unknown.length > 0
+            ? ` Not found in master, saved as available: ${unknown.join(", ")}.`
+            : ""
+
+        return `Imported ${result.imported} SIM cards, skipped ${result.skipped} with existing MSISDN.${noPhoneNote}${duplicateNote}${unknownNote}`
       },
     }
   }, [

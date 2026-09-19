@@ -1,4 +1,13 @@
-function tokenize(text: string): string[][] {
+// Excel in some locales exports "CSV" with semicolons, so the separator is
+// detected from the header line instead of assuming a comma.
+function detectDelimiter(text: string): string {
+  const firstLine = text.split("\n", 1)[0] ?? ""
+  const semicolons = (firstLine.match(/;/g) ?? []).length
+  const commas = (firstLine.match(/,/g) ?? []).length
+  return semicolons > commas ? ";" : ","
+}
+
+function tokenize(text: string, delimiter: string): string[][] {
   const rows: string[][] = []
   let row: string[] = []
   let field = ""
@@ -23,7 +32,7 @@ function tokenize(text: string): string[][] {
 
     if (char === '"') {
       inQuotes = true
-    } else if (char === ",") {
+    } else if (char === delimiter) {
       row.push(field)
       field = ""
     } else if (char === "\n") {
@@ -44,19 +53,24 @@ function tokenize(text: string): string[][] {
   return rows
 }
 
-function unwrapRow(row: string[], columns: number): string[] {
+function unwrapRow(
+  row: string[],
+  columns: number,
+  delimiter: string
+): string[] {
   if (columns < 2 || row.length !== 1) return row
-  const nested = tokenize(row[0])
+  const nested = tokenize(row[0], delimiter)
   if (nested.length === 1 && nested[0].length === columns) return nested[0]
   return row
 }
 
 export function parseCsv(text: string): string[][] {
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1)
-  const rows = tokenize(text)
+  const delimiter = detectDelimiter(text)
+  const rows = tokenize(text, delimiter)
   const columns = rows[0]?.length ?? 0
   return rows
-    .map((row) => unwrapRow(row, columns))
+    .map((row) => unwrapRow(row, columns, delimiter))
     .filter((item) => item.some((cell) => cell.trim() !== ""))
 }
 

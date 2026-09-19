@@ -1,6 +1,8 @@
 import * as jose from "jose"
 import { cookies } from "next/headers"
 
+import { ROLES, type Role } from "@/lib/types"
+
 const COOKIE = "session"
 
 function secret() {
@@ -9,7 +11,16 @@ function secret() {
   return new TextEncoder().encode(value)
 }
 
-export type Session = { id: number; username: string; name: string }
+export type Session = {
+  id: number
+  username: string
+  name: string
+  role: Role
+}
+
+function isRole(value: unknown): value is Role {
+  return typeof value === "string" && (ROLES as string[]).includes(value)
+}
 
 export async function createSession(session: Session) {
   const token = await new jose.SignJWT(session)
@@ -41,11 +52,17 @@ export async function getSession(): Promise<Session | null> {
     if (
       typeof payload.id !== "number" ||
       typeof payload.username !== "string" ||
-      typeof payload.name !== "string"
+      typeof payload.name !== "string" ||
+      !isRole(payload.role)
     ) {
       return null
     }
-    return { id: payload.id, username: payload.username, name: payload.name }
+    return {
+      id: payload.id,
+      username: payload.username,
+      name: payload.name,
+      role: payload.role,
+    }
   } catch {
     return null
   }

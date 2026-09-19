@@ -83,6 +83,8 @@ model SimCard {
   package      SimPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull)
   clsDomestic  String?
   clsRoaming   String?
+  note         String?
+  terminated   Boolean     @default(false)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
@@ -107,10 +109,12 @@ model InternetData {
   internetId    String    @unique
   locationId    Int?
   location      Location? @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  detail        String?
   service       String
-  bandwidthMbps Int
+  bandwidthMbps Int?
   customerName  String
   monthlyCost   Int
+  paymentMethod String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -122,6 +126,7 @@ model User {
   username     String   @unique
   passwordHash String
   name         String
+  role         String   @default("admin")
   createdAt    DateTime @default(now())
 }
 

@@ -97,11 +97,13 @@ function AssetImage({ url, name }: { url: string | null; name: string }) {
 
 export function AssetPreviewDialog({
   asset,
+  canWrite,
   onClose,
   onDelete,
   onMove,
 }: {
   asset: Asset | null
+  canWrite: boolean
   onClose: () => void
   onDelete: (asset: Asset) => void
   onMove: (asset: Asset) => void
@@ -225,7 +227,7 @@ export function AssetPreviewDialog({
         ) : null}
 
         <DialogFooter className="mx-0 mb-0 rounded-b-xl border-t bg-muted/50 p-4">
-          {asset ? (
+          {asset && canWrite ? (
             <>
               <Button variant="outline" onClick={() => onMove(asset)}>
                 <ArrowRightLeft />

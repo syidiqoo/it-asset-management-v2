@@ -88,19 +88,23 @@ async function main() {
       update: {
         internetId: item.internetId,
         locationId: item.locationId,
+        detail: item.detail,
         service: item.service,
         bandwidthMbps: item.bandwidthMbps,
         customerName: item.customerName,
         monthlyCost: item.monthlyCost,
+        paymentMethod: item.paymentMethod,
       },
       create: {
         id: item.id,
         internetId: item.internetId,
         locationId: item.locationId,
+        detail: item.detail,
         service: item.service,
         bandwidthMbps: item.bandwidthMbps,
         customerName: item.customerName,
         monthlyCost: item.monthlyCost,
+        paymentMethod: item.paymentMethod,
         createdAt: toDate(item.createdAt),
         updatedAt: toDate(item.updatedAt),
       },
@@ -177,8 +181,8 @@ async function main() {
   const passwordHash = await bcrypt.hash(password, 10)
   await db.user.upsert({
     where: { username },
-    update: { passwordHash, name },
-    create: { username, passwordHash, name },
+    update: { passwordHash, name, role: "admin" },
+    create: { username, passwordHash, name, role: "admin" },
   })
 
   await resetIdSequences()

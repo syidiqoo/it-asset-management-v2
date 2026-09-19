@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client"
 
 import { MAX_DEPARTMENT_LEVEL } from "@/lib/departments"
+import { normalizeInternetId } from "@/lib/internet"
 import { CONDITIONS, type Condition } from "@/lib/types"
 import { db } from "@/lib/server/db"
 
@@ -412,4 +413,371 @@ export async function applyAssetImport(
     })
   }
   return { imported: pending.length, skipped }
+}
+
+// Column names accepted from the internet CSV. The source spreadsheet labels
+// columns slightly differently between sheets, so each field lists aliases.
+const INTERNET_COLUMNS: Record<string, string[]> = {
+  location: ["location", "base"],
+  detail: ["detail", "lokasi"],
+  internetId: ["internet id", "no. pelanggan", "no pelanggan", "nomor internet"],
+  service: ["service", "layanan"],
+  bandwidth: [
+    "bandwith (mbps)",
+    "bandwidth (mbps)",
+    "bandwith / package",
+    "bandwidth / package",
+    "bandwith",
+    "bandwidth",
+  ],
+  customerName: ["customer name", "nama", "atas nama"],
+  monthlyCost: ["monthly cost", "tagihan bulanan"],
+  paymentMethod: ["payment method", "paymen method", "metode pembayaran"],
+}
+
+function headerKey(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, " ")
+}
+
+function internetColumns(header: string[]): Record<string, number> | null {
+  const index: Record<string, number> = {}
+
+  header.forEach((cell, column) => {
+    const key = headerKey(cell)
+    for (const [field, aliases] of Object.entries(INTERNET_COLUMNS)) {
+      if (index[field] === undefined && aliases.includes(key)) {
+        index[field] = column
+      }
+    }
+  })
+
+  if (index.location === undefined || index.internetId === undefined) return null
+  return index
+}
+
+function locationKey(value: string): string {
+  return headerKey(value).replace(/^(base|unit|head office)\s+/, "")
+}
+
+function firstNumber(value: string): string | null {
+  return value.match(/\d+/)?.[0] ?? null
+}
+
+export async function applyInternetImport(
+  tx: ImportTx,
+  rows: string[][]
+): Promise<{ imported: number; skipped: number; unknownLocations: string[] }> {
+  const items = rows.filter((row) => row.some((cell) => cell.trim() !== ""))
+  if (items.length === 0) throw new Error("CSV has no rows.")
+
+  // The spreadsheet keeps a title and blank rows above the real header.
+  let index: Record<string, number> | null = null
+  let start = 0
+  for (let i = 0; i < Math.min(items.length, 10); i += 1) {
+    const parsed = internetColumns(items[i])
+    if (parsed) {
+      index = parsed
+      start = i + 1
+      break
+    }
+  }
+  if (!index) {
+    throw new Error(
+      "Header not found. Required columns: Location, Internet ID, Service, Customer Name, Monthly Cost."
+    )
+  }
+
+  const dataRows = items.slice(start)
+  if (dataRows.length === 0) throw new Error("CSV has no data rows.")
+  if (dataRows.length > MAX_ROWS) {
+    throw new Error(`Maximum ${MAX_ROWS} rows per import.`)
+  }
+
+  const locations = await tx.location.findMany({
+    select: { id: true, address: true },
+  })
+  const locationByName = new Map<string, number>()
+  for (const location of locations) {
+    const key = locationKey(location.address ?? "")
+    if (key && !locationByName.has(key)) locationByName.set(key, location.id)
+  }
+
+  const existing = new Set(
+    (await tx.internetData.findMany({ select: { internetId: true } })).map(
+      (item) => item.internetId
+    )
+  )
+
+  const unknown = new Set<string>()
+  const seen = new Set<string>()
+  let skipped = 0
+  const pending: {
+    internetId: string
+    locationId: number | null
+    detail: string | null
+    service: string
+    bandwidthMbps: number | null
+    customerName: string
+    monthlyCost: number
+    paymentMethod: string | null
+  }[] = []
+
+  dataRows.forEach((row, rowIndex) => {
+    const line = start + rowIndex + 2
+    const cell = (field: string) =>
+      index[field] === undefined ? "" : (row[index[field]] ?? "").trim()
+
+    const rawId = cell("internetId")
+    const idNumber = firstNumber(rawId)
+    if (!idNumber) {
+      throw new Error(`Row ${line}: Internet ID "${rawId}" is invalid.`)
+    }
+    const internetId = normalizeInternetId(idNumber)
+    const idKey = internetId.toLowerCase()
+    if (seen.has(idKey)) {
+      throw new Error(`Row ${line}: duplicate Internet ID "${internetId}" in file.`)
+    }
+    seen.add(idKey)
+    if (existing.has(internetId)) {
+      skipped += 1
+      return
+    }
+
+    const service = cell("service")
+    if (!service) throw new Error(`Row ${line}: Service is required.`)
+    const customerName = cell("customerName")
+    if (!customerName) throw new Error(`Row ${line}: Customer Name is required.`)
+
+    const locationName = cell("location")
+    let locationId: number | null = null
+    if (locationName) {
+      locationId = locationByName.get(locationKey(locationName)) ?? null
+      if (locationId === null) unknown.add(locationName)
+    }
+
+    const bandwidthNumber = firstNumber(cell("bandwidth"))
+    const costDigits = cell("monthlyCost").replace(/\D/g, "")
+
+    pending.push({
+      internetId,
+      locationId,
+      detail: clean(cell("detail")),
+      service,
+      bandwidthMbps: bandwidthNumber === null ? null : Number(bandwidthNumber),
+      customerName,
+      monthlyCost: costDigits ? Number(costDigits) : 0,
+      paymentMethod: clean(cell("paymentMethod")),
+    })
+  })
+
+  if (pending.length > 0) {
+    await tx.internetData.createMany({ data: pending })
+  }
+
+  return {
+    imported: pending.length,
+    skipped,
+    unknownLocations: [...unknown],
+  }
+}
+
+const SIM_CARD_COLUMNS: Record<string, string[]> = {
+  phone: [
+    "msisdn",
+    "phone number",
+    "no handphone",
+    "no. handphone",
+    "nomor handphone",
+    "nomor",
+  ],
+  employee: ["name", "nama", "employee", "pemegang"],
+  department: [
+    "position - department",
+    "position-department",
+    "posisi - department",
+    "department",
+    "departemen",
+    "position",
+    "posisi",
+  ],
+  package: ["package", "paket", "sim package"],
+  clsDomestic: ["cls domestic"],
+  clsRoaming: ["cls roaming"],
+  note: ["note", "notes", "catatan", "keterangan"],
+}
+
+function simCardColumns(header: string[]): Record<string, number> | null {
+  const index: Record<string, number> = {}
+
+  header.forEach((cell, column) => {
+    const key = headerKey(cell)
+    for (const [field, aliases] of Object.entries(SIM_CARD_COLUMNS)) {
+      if (index[field] === undefined && aliases.includes(key)) {
+        index[field] = column
+      }
+    }
+  })
+
+  return index.phone === undefined ? null : index
+}
+
+// Local Indonesian format: keep the leading zero, convert the 62 prefix.
+function normalizePhone(value: string): string {
+  const digits = value.replace(/\D/g, "")
+  if (!digits) return ""
+  if (digits.startsWith("62")) return `0${digits.slice(2)}`
+  return digits.startsWith("0") ? digits : `0${digits}`
+}
+
+export async function applySimCardImport(
+  tx: ImportTx,
+  rows: string[][]
+): Promise<{
+  imported: number
+  skipped: number
+  skippedNoPhone: number
+  skippedDuplicate: number
+  unknownEmployees: string[]
+  unknownDepartments: string[]
+  unknownPackages: string[]
+}> {
+  const items = rows.filter((row) => row.some((cell) => cell.trim() !== ""))
+  if (items.length === 0) throw new Error("CSV has no rows.")
+
+  let index: Record<string, number> | null = null
+  let start = 0
+  for (let i = 0; i < Math.min(items.length, 5); i += 1) {
+    const parsed = simCardColumns(items[i])
+    if (parsed) {
+      index = parsed
+      start = i + 1
+      break
+    }
+  }
+  if (!index) {
+    throw new Error(
+      "Header not found. Required column: MSISDN (or Phone Number)."
+    )
+  }
+
+  const dataRows = items.slice(start)
+  if (dataRows.length === 0) throw new Error("CSV has no data rows.")
+  if (dataRows.length > MAX_ROWS) {
+    throw new Error(`Maximum ${MAX_ROWS} rows per import.`)
+  }
+
+  const employeeByName = new Map<string, number>()
+  for (const employee of await tx.employee.findMany()) {
+    const key = headerKey(employee.name)
+    if (key && !employeeByName.has(key)) employeeByName.set(key, employee.id)
+  }
+
+  // Reuses the shared index so a value matches either the department name or
+  // its full "A > B" path, the same way the employee and asset imports match.
+  const departmentLookup = await departmentIndex(tx)
+
+  const packageByName = new Map<string, number>()
+  for (const item of await tx.simPackage.findMany()) {
+    const key = headerKey(item.name)
+    if (key && !packageByName.has(key)) packageByName.set(key, item.id)
+  }
+
+  const existing = new Set(
+    (await tx.simCard.findMany({ select: { phoneNumber: true } })).map((item) =>
+      item.phoneNumber.toLowerCase()
+    )
+  )
+
+  const unknownEmployees = new Set<string>()
+  const unknownDepartments = new Set<string>()
+  const unknownPackages = new Set<string>()
+  const seen = new Set<string>()
+  let skipped = 0
+  let skippedNoPhone = 0
+  let skippedDuplicate = 0
+  const pending: {
+    phoneNumber: string
+    employeeId: number | null
+    departmentId: number | null
+    packageId: number | null
+    clsDomestic: string | null
+    clsRoaming: string | null
+    note: string | null
+    terminated: boolean
+  }[] = []
+
+  dataRows.forEach((row) => {
+    const cell = (field: string) =>
+      index[field] === undefined ? "" : (row[index[field]] ?? "").trim()
+
+    // The sheet has label rows (e.g. a divider) with no number; those are not
+    // SIM cards, so they are counted and skipped instead of failing the import.
+    const phoneNumber = normalizePhone(cell("phone"))
+    if (!phoneNumber) {
+      skippedNoPhone += 1
+      return
+    }
+    // MSISDN is the unique key, so a number repeated inside one file cannot
+    // become a second card; the repeat is counted and skipped.
+    const phoneKey = phoneNumber.toLowerCase()
+    if (seen.has(phoneKey)) {
+      skippedDuplicate += 1
+      return
+    }
+    seen.add(phoneKey)
+    if (existing.has(phoneKey)) {
+      skipped += 1
+      return
+    }
+
+    const employeeName = cell("employee")
+    let employeeId: number | null = null
+    if (employeeName) {
+      employeeId = employeeByName.get(headerKey(employeeName)) ?? null
+      if (employeeId === null) unknownEmployees.add(employeeName)
+    }
+
+    const departmentName = cell("department")
+    let departmentId: number | null = null
+    if (departmentName) {
+      const key = departmentName.trim().toLowerCase()
+      departmentId =
+        departmentLookup.byPath.get(key) ??
+        departmentLookup.byName.get(key) ??
+        null
+      if (departmentId === null) unknownDepartments.add(departmentName)
+    }
+
+    const packageName = cell("package")
+    let packageId: number | null = null
+    if (packageName) {
+      packageId = packageByName.get(headerKey(packageName)) ?? null
+      if (packageId === null) unknownPackages.add(packageName)
+    }
+
+    pending.push({
+      phoneNumber,
+      employeeId,
+      departmentId,
+      packageId,
+      clsDomestic: clean(cell("clsDomestic")),
+      clsRoaming: clean(cell("clsRoaming")),
+      note: clean(cell("note")),
+      terminated: false,
+    })
+  })
+
+  if (pending.length > 0) {
+    await tx.simCard.createMany({ data: pending })
+  }
+
+  return {
+    imported: pending.length,
+    skipped,
+    skippedNoPhone,
+    skippedDuplicate,
+    unknownEmployees: [...unknownEmployees],
+    unknownDepartments: [...unknownDepartments],
+    unknownPackages: [...unknownPackages],
+  }
 }

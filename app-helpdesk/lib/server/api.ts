@@ -16,6 +16,12 @@ export async function requireUser() {
   return session
 }
 
+export async function requireAdmin() {
+  const session = await getSession()
+  if (!session || session.role !== "admin") return null
+  return session
+}
+
 export function toDay(value: Date | string | null | undefined): string | null {
   if (!value) return null
   const date = value instanceof Date ? value : new Date(value)

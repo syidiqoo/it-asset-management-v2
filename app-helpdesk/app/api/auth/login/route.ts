@@ -20,6 +20,12 @@ export async function POST(request: Request) {
   const valid = await bcrypt.compare(password, user.passwordHash)
   if (!valid) return fail("Invalid username or password.", 401)
 
-  await createSession({ id: user.id, username: user.username, name: user.name })
-  return ok({ id: user.id, username: user.username, name: user.name })
+  const role = user.role === "guest" ? "guest" : "admin"
+  await createSession({
+    id: user.id,
+    username: user.username,
+    name: user.name,
+    role,
+  })
+  return ok({ id: user.id, username: user.username, name: user.name, role })
 }

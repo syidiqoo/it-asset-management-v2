@@ -29,6 +29,8 @@ export async function POST(request: Request) {
         packageId: parsed.data.packageId,
         clsDomestic: parsed.data.clsDomestic ?? null,
         clsRoaming: parsed.data.clsRoaming ?? null,
+        note: parsed.data.note ?? null,
+        terminated: parsed.data.terminated,
       },
     })
     return ok(serializeSimCard(item), 201)

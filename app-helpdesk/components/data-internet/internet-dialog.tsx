@@ -30,10 +30,12 @@ import type { InternetData, InternetDataInput } from "@/lib/types"
 type FormState = {
   internetId: string
   locationId: string
+  detail: string
   service: string
   bandwidth: string
   customerName: string
   monthlyCost: string
+  paymentMethod: string
 }
 
 type FormErrors = Partial<Record<keyof FormState, string>>
@@ -43,20 +45,24 @@ function initialState(item: InternetData | null): FormState {
     return {
       internetId: "",
       locationId: "",
+      detail: "",
       service: "",
       bandwidth: "",
       customerName: "",
       monthlyCost: "",
+      paymentMethod: "",
     }
   }
 
   return {
     internetId: item.internetId,
     locationId: item.locationId === null ? "" : String(item.locationId),
+    detail: item.detail ?? "",
     service: item.service,
-    bandwidth: String(item.bandwidthMbps),
+    bandwidth: item.bandwidthMbps === null ? "" : String(item.bandwidthMbps),
     customerName: item.customerName,
     monthlyCost: String(item.monthlyCost),
+    paymentMethod: item.paymentMethod ?? "",
   }
 }
 
@@ -107,9 +113,6 @@ function InternetDialogForm({
     const internetIdError = validateInternetId(form.internetId)
     if (internetIdError) nextErrors.internetId = internetIdError
 
-    if (!form.locationId) {
-      nextErrors.locationId = "Location is required."
-    }
     if (!form.service.trim()) {
       nextErrors.service = "Service is required."
     }
@@ -118,10 +121,8 @@ function InternetDialogForm({
     }
 
     const bandwidth = Number(form.bandwidth)
-    if (!form.bandwidth.trim()) {
-      nextErrors.bandwidth = "Bandwidth is required."
-    } else if (!Number.isFinite(bandwidth) || bandwidth <= 0) {
-      nextErrors.bandwidth = "Bandwidth must be greater than 0."
+    if (form.bandwidth.trim() && (!Number.isFinite(bandwidth) || bandwidth < 0)) {
+      nextErrors.bandwidth = "Bandwidth cannot be negative."
     }
 
     const monthlyCost = Number(form.monthlyCost)
@@ -139,11 +140,13 @@ function InternetDialogForm({
 
     const message = await onSubmit({
       internetId: normalizeInternetId(form.internetId),
-      locationId: Number(form.locationId),
+      locationId: form.locationId ? Number(form.locationId) : null,
+      detail: form.detail.trim() ? form.detail.trim() : null,
       service: form.service.trim(),
-      bandwidthMbps: bandwidth,
+      bandwidthMbps: form.bandwidth.trim() ? bandwidth : null,
       customerName: form.customerName.trim(),
       monthlyCost,
+      paymentMethod: form.paymentMethod.trim() ? form.paymentMethod.trim() : null,
     })
 
     if (message) {
@@ -207,17 +210,21 @@ function InternetDialogForm({
         <div className="space-y-1.5 sm:col-span-2">
           <Label>Location</Label>
           <Select
-            items={store.locations.map((location) => ({
-              label: formatLocationLabel(location),
-              value: String(location.id),
-            }))}
+            items={[
+              { label: "— No location —", value: "" },
+              ...store.locations.map((location) => ({
+                label: formatLocationLabel(location),
+                value: String(location.id),
+              })),
+            ]}
             value={form.locationId}
             onValueChange={(value) => set("locationId", value ?? "")}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select location" />
+              <SelectValue placeholder="— No location —" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="">— No location —</SelectItem>
               {store.locations.map((location) => (
                 <SelectItem key={location.id} value={String(location.id)}>
                   {formatLocationLabel(location)}
@@ -225,12 +232,19 @@ function InternetDialogForm({
               ))}
             </SelectContent>
           </Select>
-          {errors.locationId ? (
-            <p className="text-xs text-destructive">{errors.locationId}</p>
-          ) : null}
         </div>
 
         <div className="space-y-1.5 sm:col-span-2">
+          <Label htmlFor="internet-detail">Detail</Label>
+          <Input
+            id="internet-detail"
+            value={form.detail}
+            onChange={(event) => set("detail", event.target.value)}
+            placeholder="Mess Pilot"
+          />
+        </div>
+
+        <div className="space-y-1.5">
           <Label htmlFor="internet-customer">Customer Name</Label>
           <Input
             id="internet-customer"
@@ -244,12 +258,22 @@ function InternetDialogForm({
         </div>
 
         <div className="space-y-1.5">
+          <Label htmlFor="internet-payment">Payment Method</Label>
+          <Input
+            id="internet-payment"
+            value={form.paymentMethod}
+            onChange={(event) => set("paymentMethod", event.target.value)}
+            placeholder="Virtual Account"
+          />
+        </div>
+
+        <div className="space-y-1.5">
           <Label htmlFor="internet-bandwidth">Bandwidth</Label>
           <div className="relative">
             <Input
               id="internet-bandwidth"
               type="number"
-              min={1}
+              min={0}
               step="any"
               value={form.bandwidth}
               onChange={(event) => set("bandwidth", event.target.value)}
@@ -262,14 +286,18 @@ function InternetDialogForm({
           </div>
           {errors.bandwidth ? (
             <p className="text-xs text-destructive">{errors.bandwidth}</p>
-          ) : null}
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              May be left empty.
+            </p>
+          )}
         </div>
 
         <div className="space-y-1.5">
           <Label htmlFor="internet-cost">Monthly Cost</Label>
           <div className="relative">
             <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-sm text-muted-foreground">
-              $
+              Rp
             </span>
             <Input
               id="internet-cost"
@@ -279,7 +307,7 @@ function InternetDialogForm({
               value={form.monthlyCost}
               onChange={(event) => set("monthlyCost", event.target.value)}
               placeholder="4500000"
-              className="pl-9 font-mono"
+              className="pl-10 font-mono"
             />
           </div>
           {errors.monthlyCost ? (

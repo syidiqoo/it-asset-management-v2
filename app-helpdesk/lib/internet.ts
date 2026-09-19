@@ -40,6 +40,8 @@ export function filterInternetData(
         item.internetId,
         item.customerName,
         item.service,
+        item.detail ?? "",
+        item.paymentMethod ?? "",
         options.locationLabel(item.locationId),
       ]
         .join(" ")

@@ -57,11 +57,17 @@ export const internetSchema = z.object({
       message: "Internet ID is invalid.",
     })
     .transform(normalizeInternetId),
-  locationId: z.number().int().positive(),
+  locationId: z.number().int().positive().nullable(),
+  detail: z.string().trim().min(1).nullable().optional(),
   service: z.string().trim().min(1, "Service is required."),
-  bandwidthMbps: z.number().positive("Bandwidth must be greater than 0."),
+  bandwidthMbps: z
+    .number()
+    .int()
+    .min(0, "Bandwidth cannot be negative.")
+    .nullable(),
   customerName: z.string().trim().min(1, "Customer name is required."),
   monthlyCost: z.number().min(0, "Monthly cost cannot be negative."),
+  paymentMethod: z.string().trim().min(1).nullable().optional(),
 })
 
 export const simCardSchema = z.object({
@@ -71,6 +77,8 @@ export const simCardSchema = z.object({
   packageId: z.number().int().positive().nullable(),
   clsDomestic: z.string().trim().min(1).nullable().optional(),
   clsRoaming: z.string().trim().min(1).nullable().optional(),
+  note: z.string().trim().min(1).nullable().optional(),
+  terminated: z.boolean(),
 })
 
 export const assetSchema = z.object({
@@ -93,4 +101,26 @@ export function zodMessage(error: z.ZodError): string {
 
 export const importRowsSchema = z.object({
   rows: z.array(z.array(z.string())).min(1, "CSV rows are required."),
+})
+
+export const roleSchema = z.enum(["admin", "guest"])
+
+export const userCreateSchema = z.object({
+  name: z.string().trim().min(1, "Name is required."),
+  username: z.string().trim().min(3, "Username must be at least 3 characters."),
+  role: roleSchema,
+  password: z.string().min(8, "Password must be at least 8 characters."),
+})
+
+export const userUpdateSchema = z.object({
+  name: z.string().trim().min(1, "Name is required."),
+  username: z.string().trim().min(3, "Username must be at least 3 characters."),
+  role: roleSchema,
+  password: z
+    .string()
+    .optional()
+    .refine(
+      (value) => value === undefined || value === "" || value.length >= 8,
+      { message: "Password must be at least 8 characters." }
+    ),
 })

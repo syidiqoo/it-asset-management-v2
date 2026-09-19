@@ -10,6 +10,19 @@ export const SIM_CARD_FILTER_NAMES = [
   "package",
 ]
 
+export type SimCardSectionKey = "main" | "available" | "terminated"
+
+export const SIM_CARD_SECTION_LABEL: Record<SimCardSectionKey, string> = {
+  main: "Main SIM Card",
+  available: "Available SIM Card",
+  terminated: "Terminate SIM Card",
+}
+
+export function simCardSection(card: SimCard): SimCardSectionKey {
+  if (card.terminated) return "terminated"
+  return card.employeeId === null ? "available" : "main"
+}
+
 export function filterSimCards(
   simCards: SimCard[],
   values: FilterValues,

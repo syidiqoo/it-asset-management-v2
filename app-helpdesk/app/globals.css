@@ -70,6 +70,47 @@
   --sidebar-ring: oklch(0.546 0.215 262.9);
 }
 
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .bast-print-area,
+  .bast-print-area * {
+    visibility: visible !important;
+  }
+
+  .bast-print-area {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+  }
+
+  .bast-sheet {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .bast-sheet table,
+  .bast-sheet tr,
+  .bast-sheet li {
+    break-inside: avoid;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

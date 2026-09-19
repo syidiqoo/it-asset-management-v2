@@ -43,7 +43,7 @@ export function DashboardView() {
   const totalAssets = store.assets.length
 
   const totalBandwidth = store.internetData.reduce(
-    (sum, item) => sum + item.bandwidthMbps,
+    (sum, item) => sum + (item.bandwidthMbps ?? 0),
     0
   )
 

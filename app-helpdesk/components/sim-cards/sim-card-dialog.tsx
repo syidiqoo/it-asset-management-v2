@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { flattenDepartments } from "@/lib/departments"
 import type { SimCard, SimCardInput } from "@/lib/types"
 
@@ -32,6 +33,7 @@ type FormState = {
   packageId: string
   clsDomestic: string
   clsRoaming: string
+  note: string
 }
 
 function initialState(card: SimCard | null): FormState {
@@ -43,6 +45,7 @@ function initialState(card: SimCard | null): FormState {
       packageId: "",
       clsDomestic: "",
       clsRoaming: "",
+      note: "",
     }
   }
 
@@ -54,6 +57,7 @@ function initialState(card: SimCard | null): FormState {
     packageId: card.packageId === null ? "" : String(card.packageId),
     clsDomestic: card.clsDomestic ?? "",
     clsRoaming: card.clsRoaming ?? "",
+    note: card.note ?? "",
   }
 }
 
@@ -114,6 +118,8 @@ function SimCardForm({
       packageId: form.packageId ? Number(form.packageId) : null,
       clsDomestic: form.clsDomestic.trim() || null,
       clsRoaming: form.clsRoaming.trim() || null,
+      note: form.note.trim() || null,
+      terminated: card?.terminated ?? false,
     }
 
     try {
@@ -250,6 +256,17 @@ function SimCardForm({
             value={form.clsRoaming}
             onChange={(event) => set("clsRoaming", event.target.value)}
             placeholder="CLS Roaming 5 GB"
+          />
+        </div>
+
+        <div className="space-y-1.5 sm:col-span-2">
+          <Label htmlFor="sim-note">Note</Label>
+          <Textarea
+            id="sim-note"
+            value={form.note}
+            onChange={(event) => set("note", event.target.value)}
+            placeholder="Catatan tambahan, mis. nomor sudah tidak dipakai"
+            rows={3}
           />
         </div>
 

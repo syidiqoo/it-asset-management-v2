@@ -66,10 +66,12 @@ export type InternetData = {
   id: number
   internetId: string
   locationId: number | null
+  detail: string | null
   service: string
-  bandwidthMbps: number
+  bandwidthMbps: number | null
   customerName: string
   monthlyCost: number
+  paymentMethod: string | null
   createdAt: string
   updatedAt: string
 }
@@ -87,6 +89,8 @@ export type SimCard = {
   packageId: number | null
   clsDomestic: string | null
   clsRoaming: string | null
+  note: string | null
+  terminated: boolean
   createdAt: string
   updatedAt: string
 }
@@ -102,4 +106,23 @@ export type DepartmentNode = Department & {
   level: number
   path: string
   children: DepartmentNode[]
+}
+
+export type Role = "admin" | "guest"
+
+export const ROLES: Role[] = ["admin", "guest"]
+
+export type AppUser = {
+  id: number
+  username: string
+  name: string
+  role: Role
+  createdAt: string
+}
+
+export type UserInput = {
+  name: string
+  username: string
+  role: Role
+  password?: string
 }

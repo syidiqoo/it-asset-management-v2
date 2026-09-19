@@ -7,6 +7,7 @@ import {
   Boxes,
   ChevronDown,
   Database,
+  FileText,
   LayoutDashboard,
   LogOut,
   MonitorSmartphone,
@@ -17,6 +18,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { useSessionUser, useSignOut } from "@/components/use-session-user"
+import { ROLE_LABEL } from "@/lib/users"
 import { cn } from "@/lib/utils"
 
 const SETTINGS_PREFIX = "/pengaturan"
@@ -26,6 +28,7 @@ const MAIN_ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/assets", label: "Asset Data", icon: Boxes },
   { href: "/sim-cards", label: "SIM Card", icon: Smartphone },
   { href: "/data-internet", label: "Internet Data", icon: Wifi },
+  { href: "/bast", label: "BAST", icon: FileText },
 ]
 
 const SETTINGS_ITEMS: { href: string; label: string }[] = [
@@ -34,6 +37,7 @@ const SETTINGS_ITEMS: { href: string; label: string }[] = [
   { href: `${SETTINGS_PREFIX}/department`, label: "Department" },
   { href: `${SETTINGS_PREFIX}/sim-package`, label: "SIM Package" },
   { href: `${SETTINGS_PREFIX}/location`, label: "Location" },
+  { href: `${SETTINGS_PREFIX}/user`, label: "User" },
 ]
 
 function isActive(pathname: string, href: string) {
@@ -133,6 +137,15 @@ export function Sidebar() {
   const toggleSettings = () =>
     setOverride({ path: pathname, open: !settingsExpanded })
 
+  const showSettings = sessionUser?.role === "admin"
+  const initials =
+    (sessionUser?.name ?? "")
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "—"
+
   return (
     <>
       <header className="z-30 flex shrink-0 flex-col gap-2 border-b bg-sidebar px-4 py-3 md:hidden">
@@ -145,13 +158,15 @@ export function Sidebar() {
               active={isActive(pathname, item.href)}
             />
           ))}
-          <SettingsToggle
-            expanded={settingsExpanded}
-            active={settingsActive}
-            onToggle={toggleSettings}
-          />
+          {showSettings ? (
+            <SettingsToggle
+              expanded={settingsExpanded}
+              active={settingsActive}
+              onToggle={toggleSettings}
+            />
+          ) : null}
         </nav>
-        {settingsExpanded ? (
+        {showSettings && settingsExpanded ? (
           <nav className="flex items-center gap-1 overflow-x-auto">
             {SETTINGS_ITEMS.map((item) => (
               <Link
@@ -181,13 +196,15 @@ export function Sidebar() {
             />
           ))}
 
-          <SettingsToggle
-            expanded={settingsExpanded}
-            active={settingsActive}
-            onToggle={toggleSettings}
-          />
+          {showSettings ? (
+            <SettingsToggle
+              expanded={settingsExpanded}
+              active={settingsActive}
+              onToggle={toggleSettings}
+            />
+          ) : null}
 
-          {settingsExpanded ? (
+          {showSettings && settingsExpanded ? (
             <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l pl-2">
               {SETTINGS_ITEMS.map((item) => (
                 <Link
@@ -206,12 +223,12 @@ export function Sidebar() {
         <div className="border-t pt-3">
           <div className="flex items-center gap-2.5 px-1.5 pb-2">
             <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-              AD
+              {initials}
             </div>
             <div className="min-w-0 leading-tight">
               <p className="truncate text-sm font-medium">{sessionUser?.name ?? "—"}</p>
               <p className="truncate text-xs text-muted-foreground">
-                Administrator
+                {sessionUser ? ROLE_LABEL[sessionUser.role] : "—"}
               </p>
             </div>
           </div>

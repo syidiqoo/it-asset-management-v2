@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/page-header"
 import { Pagination } from "@/components/pagination"
 import { StickyHeader } from "@/components/sticky-header"
 import { StoreState } from "@/components/store-state"
+import { useSessionUser } from "@/components/use-session-user"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -47,12 +48,14 @@ import { formatLocationLabel, locationLabelById } from "@/lib/locations"
 import type { InternetData, InternetDataInput } from "@/lib/types"
 
 const CSV_COLUMNS = [
-  "Internet ID",
   "Location",
+  "Detail",
+  "Internet ID",
   "Service",
   "Bandwidth (Mbps)",
   "Customer Name",
   "Monthly Cost",
+  "Payment Method",
 ]
 
 export function DataInternetView({
@@ -63,12 +66,23 @@ export function DataInternetView({
   page: number
 }) {
   const store = useDataStore()
+  const sessionUser = useSessionUser()
+  const canWrite = sessionUser?.role === "admin"
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [editing, setEditing] = React.useState<InternetData | null>(null)
   const [target, setTarget] = React.useState<InternetData | null>(null)
 
   const locationLabel = React.useCallback(
     (id: number | null) => locationLabelById(store.locations, id),
+    [store.locations]
+  )
+
+  const locationName = React.useCallback(
+    (id: number | null) => {
+      if (id === null) return ""
+      const location = store.locations.find((item) => item.id === id)
+      return location?.address?.trim() || location?.code || ""
+    },
     [store.locations]
   )
 
@@ -150,14 +164,20 @@ export function DataInternetView({
       csvFileName("internet-data"),
       CSV_COLUMNS,
       filtered.map((item) => [
+        locationName(item.locationId),
+        item.detail ?? "",
         item.internetId,
-        locationLabel(item.locationId),
         item.service,
-        String(item.bandwidthMbps),
+        item.bandwidthMbps === null ? "" : String(item.bandwidthMbps),
         item.customerName,
         String(item.monthlyCost),
+        item.paymentMethod ?? "",
       ])
     )
+  }
+
+  const importCsv = async (rows: string[][]) => {
+    return store.importInternetData(rows)
   }
 
   return (
@@ -167,18 +187,21 @@ export function DataInternetView({
           title="Internet Data"
           description="Internet subscriptions per location with bandwidth and monthly costs."
           actions={
-            <>
-              <CsvActions
-                columns={CSV_COLUMNS}
-                onExport={exportCsv}
-                fileHint="CSV format, first row is the header."
-                note="File must have a header row matching the columns above. Missing master data will be auto-created. Database writes are not enabled in this UI stage."
-              />
-              <Button size="sm" onClick={openCreate}>
-                <Plus />
-                Add Internet Data
-              </Button>
-            </>
+            canWrite ? (
+              <>
+                <CsvActions
+                  columns={CSV_COLUMNS}
+                  onExport={exportCsv}
+                  fileHint="Columns: Location, Detail, Internet ID, Service, Bandwidth, Customer Name, Monthly Cost, Payment Method."
+                  note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Internet ID already exists are skipped. Location must already exist in Location master — unmatched ones are saved without a location."
+                  onImport={importCsv}
+                />
+                <Button size="sm" onClick={openCreate}>
+                  <Plus />
+                  Add Internet Data
+                </Button>
+              </>
+            ) : null
           }
         />
         <FilterBar fields={fields} values={values} />
@@ -206,10 +229,12 @@ export function DataInternetView({
                   Change keywords or reset filters to see other data.
                 </p>
               </div>
-              <Button size="sm" onClick={openCreate}>
-                <Plus />
-                Add Internet Data
-              </Button>
+              {canWrite ? (
+                <Button size="sm" onClick={openCreate}>
+                  <Plus />
+                  Add Internet Data
+                </Button>
+              ) : null}
             </CardContent>
           </Card>
         ) : (
@@ -220,11 +245,17 @@ export function DataInternetView({
                   <TableRow>
                     <TableHead className="pl-4">Internet ID</TableHead>
                     <TableHead>Location</TableHead>
+                    <TableHead>Detail</TableHead>
                     <TableHead>Service</TableHead>
                     <TableHead className="text-right">Bandwidth</TableHead>
                     <TableHead>Customer Name</TableHead>
                     <TableHead className="text-right">Monthly Cost</TableHead>
-                    <TableHead className="pr-4 text-right">Actions</TableHead>
+                    <TableHead className={canWrite ? undefined : "pr-4"}>
+                      Payment Method
+                    </TableHead>
+                    {canWrite ? (
+                      <TableHead className="pr-4 text-right">Actions</TableHead>
+                    ) : null}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -236,14 +267,23 @@ export function DataInternetView({
                       <TableCell className="text-muted-foreground">
                         {locationLabel(item.locationId)}
                       </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {item.detail ?? "—"}
+                      </TableCell>
                       <TableCell>{item.service}</TableCell>
                       <TableCell className="text-right tabular-nums">
-                        {item.bandwidthMbps} Mbps
+                        {item.bandwidthMbps === null
+                          ? "—"
+                          : `${item.bandwidthMbps} Mbps`}
                       </TableCell>
                       <TableCell>{item.customerName}</TableCell>
                       <TableCell className="text-right font-medium tabular-nums">
                         {formatCurrency(item.monthlyCost)}
                       </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {item.paymentMethod ?? "—"}
+                      </TableCell>
+                      {canWrite ? (
                       <TableCell className="pr-4 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger
@@ -273,6 +313,7 @@ export function DataInternetView({
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
+                      ) : null}
                     </TableRow>
                   ))}
                 </TableBody>
