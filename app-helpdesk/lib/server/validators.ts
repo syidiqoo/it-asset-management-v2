@@ -124,3 +124,17 @@ export const userUpdateSchema = z.object({
       { message: "Password must be at least 8 characters." }
     ),
 })
+
+export const docSchema = z.object({
+  title: z.string().trim().min(1, "Title is required."),
+  slug: z
+    .string()
+    .trim()
+    .min(1, "Slug is required.")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Slug can only contain lowercase letters, numbers, and dashes."
+    ),
+  summary: z.string().trim().min(1).nullable().optional(),
+  content: z.string().trim().min(1, "Content is required."),
+})

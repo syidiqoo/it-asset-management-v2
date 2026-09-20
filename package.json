@@ -1,0 +1,10 @@
+{
+  "name": "project-2",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix app-helpdesk run dev",
+    "build": "npm --prefix app-helpdesk run build",
+    "start": "npm --prefix app-helpdesk run start",
+    "lint": "npm --prefix app-helpdesk run lint"
+  }
+}

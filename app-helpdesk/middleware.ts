@@ -4,6 +4,16 @@ import * as jose from "jose"
 import { ROLES, type Role } from "@/lib/types"
 
 const GUEST_PAGES = ["/dashboard", "/assets", "/sim-cards", "/data-internet"]
+const GUEST_PREFIXES = ["/dokumentasi"]
+
+function isGuestPage(pathname: string) {
+  return (
+    GUEST_PAGES.includes(pathname) ||
+    GUEST_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+    )
+  )
+}
 
 function readRole(payload: Record<string, unknown>): Role | null {
   const role = payload.role
@@ -60,7 +70,7 @@ export async function middleware(request: Request) {
       return NextResponse.next()
     }
 
-    if (!GUEST_PAGES.includes(pathname)) {
+    if (!isGuestPage(pathname)) {
       return NextResponse.redirect(new URL("/dashboard", request.url))
     }
   }

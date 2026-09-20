@@ -139,3 +139,14 @@ model FileBlob {
   data      Bytes
   createdAt DateTime @default(now())
 }
+
+model Doc {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  title     String
+  summary   String?
+  content   String
+  updatedBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

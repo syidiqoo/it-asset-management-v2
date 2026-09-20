@@ -39,3 +39,20 @@ export function fileExtension(fileName: string): string {
 export function mimeTypeFor(fileName: string): string {
   return MIME_BY_EXTENSION[fileExtension(fileName)] ?? "application/octet-stream"
 }
+
+export async function uploadFile(
+  file: File,
+  kind: UploadKind
+): Promise<string> {
+  const body = new FormData()
+  body.append("kind", kind)
+  body.append("file", file)
+
+  const response = await fetch("/api/files", { method: "POST", body })
+  const data = await response.json().catch(() => null)
+  if (!response.ok) {
+    throw new Error(data?.error ?? "Upload failed.")
+  }
+
+  return data.url as string
+}

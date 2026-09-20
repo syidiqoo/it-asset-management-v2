@@ -3,6 +3,7 @@ import type {
   Category,
   Condition,
   Department,
+  DocInput,
   Employee,
   InternetData,
   Location,
@@ -759,5 +760,66 @@ export const seedSimCards: Omit<SimCard, "terminated" | "note">[] = [
     clsRoaming: null,
     createdAt: "2026-02-04",
     updatedAt: "2026-02-04",
+  },
+]
+
+export const seedDocs: DocInput[] = [
+  {
+    slug: "topologi-internet-kantor",
+    title: "Topologi Internet Kantor",
+    summary:
+      "Jalur koneksi internet dari ISP sampai tiap lokasi, lengkap dengan perangkat inti dan bandwidth-nya.",
+    content: `## Ringkasan
+
+Dokumen ini mencatat topologi internet kantor: jalur dari penyedia layanan sampai tiap
+lokasi, perangkat yang dipakai, dan batas bandwidth-nya. Perbarui setiap kali ada
+perubahan layanan.
+
+## Sketsa Topologi
+
+\`\`\`
+ISP Utama (1 Gbps)
+  |
+  +-- Router Core  (MikroTik CCR2004)
+        |
+        +-- Switch Distribution  (Cisco CBS350)
+              |
+              +-- Base Jakarta   300 Mbps
+              +-- Base Bandung   200 Mbps
+              +-- Gudang Bekasi  100 Mbps
+\`\`\`
+
+## Daftar Layanan
+
+| Lokasi | Layanan | Bandwidth | Biaya / bulan |
+| --- | --- | --- | --- |
+| Base Jakarta | Dedicated | 300 Mbps | Rp 12.000.000 |
+| Base Bandung | Broadband | 200 Mbps | Rp 4.500.000 |
+| Gudang Bekasi | Broadband | 100 Mbps | Rp 2.250.000 |
+
+Angka biaya dan bandwidth di atas bisa dicocokkan dengan menu [Internet Data](/data-internet).
+
+## Perangkat Inti
+
+- **Router Core** — MikroTik CCR2004, dua jalur uplink.
+- **Switch Distribution** — Cisco CBS350, VLAN terpisah untuk kantor dan guest.
+- **Access Point** — Ubiquiti UniFi, satu SSID per lantai.
+
+## Catatan Operasional
+
+> Jalur cadangan memakai provider berbeda. Kegagalan satu provider tidak boleh
+> memutus dua lokasi sekaligus.
+
+## Langkah Pemeliharaan
+
+- [x] Uji failover jalur cadangan
+- [ ] Perbarui tabel bandwidth setelah upgrade
+- [ ] Cek masa berlaku kontrak ISP
+
+## Menyisipkan Diagram
+
+Export topologi dari draw.io sebagai PNG, lalu pakai tombol **Insert image** di editor
+untuk menyisipkannya sebagai gambar di dokumen ini.
+`,
   },
 ]

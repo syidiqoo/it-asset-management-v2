@@ -138,3 +138,16 @@ export function serializeAsset(item: {
     ...dates(item),
   }
 }
+
+export function serializeDoc(item: {
+  id: number
+  slug: string
+  title: string
+  summary: string | null
+  content: string
+  updatedBy: string | null
+  createdAt: Date
+  updatedAt: Date
+}) {
+  return { ...item, ...dates(item) }
+}

@@ -1,9 +1,11 @@
 import bcrypt from "bcryptjs"
 import { PrismaClient } from "@prisma/client"
 import {
+  ADMIN_NAME,
   seedAssets,
   seedCategories,
   seedDepartments,
+  seedDocs,
   seedEmployees,
   seedInternetData,
   seedLocations,
@@ -171,6 +173,22 @@ async function main() {
         updatedBy: asset.updatedBy,
         createdAt: toDate(asset.createdAt),
         updatedAt: toDate(asset.updatedAt),
+      },
+    })
+  }
+
+  for (const doc of seedDocs) {
+    await db.doc.upsert({
+      where: { slug: doc.slug },
+      // Sample content only, so re-seeding never overwrites a document the
+      // team has edited.
+      update: {},
+      create: {
+        slug: doc.slug,
+        title: doc.title,
+        summary: doc.summary,
+        content: doc.content,
+        updatedBy: ADMIN_NAME,
       },
     })
   }

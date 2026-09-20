@@ -4,13 +4,14 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
+  BookOpen,
   Boxes,
   ChevronDown,
-  Database,
   FileText,
   LayoutDashboard,
   LogOut,
   MonitorSmartphone,
+  Settings,
   Smartphone,
   Wifi,
   type LucideIcon,
@@ -23,12 +24,18 @@ import { cn } from "@/lib/utils"
 
 const SETTINGS_PREFIX = "/pengaturan"
 
-const MAIN_ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
+const MAIN_ITEMS: {
+  href: string
+  label: string
+  icon: LucideIcon
+  adminOnly?: boolean
+}[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/assets", label: "Asset Data", icon: Boxes },
   { href: "/sim-cards", label: "SIM Card", icon: Smartphone },
   { href: "/data-internet", label: "Internet Data", icon: Wifi },
-  { href: "/bast", label: "BAST", icon: FileText },
+  { href: "/dokumentasi", label: "Dokumentasi", icon: BookOpen },
+  { href: "/bast", label: "BAST", icon: FileText, adminOnly: true },
 ]
 
 const SETTINGS_ITEMS: { href: string; label: string }[] = [
@@ -109,7 +116,7 @@ function SettingsToggle({
       aria-expanded={expanded}
       className={itemClassName(active)}
     >
-      <Database className="size-4 shrink-0" />
+      <Settings className="size-4 shrink-0" />
       <span className="whitespace-nowrap">Settings</span>
       <ChevronDown
         className={cn(
@@ -137,7 +144,9 @@ export function Sidebar() {
   const toggleSettings = () =>
     setOverride({ path: pathname, open: !settingsExpanded })
 
-  const showSettings = sessionUser?.role === "admin"
+  const isAdmin = sessionUser?.role === "admin"
+  const mainItems = MAIN_ITEMS.filter((item) => !item.adminOnly || isAdmin)
+  const showSettings = isAdmin
   const initials =
     (sessionUser?.name ?? "")
       .split(" ")
@@ -151,7 +160,7 @@ export function Sidebar() {
       <header className="z-30 flex shrink-0 flex-col gap-2 border-b bg-sidebar px-4 py-3 md:hidden">
         <Brand />
         <nav className="flex items-center gap-1 overflow-x-auto">
-          {MAIN_ITEMS.map((item) => (
+          {mainItems.map((item) => (
             <MainLink
               key={item.href}
               {...item}
@@ -188,7 +197,7 @@ export function Sidebar() {
         </div>
 
         <nav className="mt-6 flex flex-1 flex-col gap-1">
-          {MAIN_ITEMS.map((item) => (
+          {mainItems.map((item) => (
             <MainLink
               key={item.href}
               {...item}

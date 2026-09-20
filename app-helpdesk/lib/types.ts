@@ -126,3 +126,19 @@ export type UserInput = {
   role: Role
   password?: string
 }
+
+export type Doc = {
+  id: number
+  slug: string
+  title: string
+  summary: string | null
+  content: string
+  updatedBy: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type DocInput = Omit<
+  Doc,
+  "id" | "createdAt" | "updatedAt" | "updatedBy"
+>
