@@ -8,6 +8,8 @@ import { Eye, EyeOff, Loader2, LogIn } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { TriangleAlert } from "lucide-react"
 
 export function LoginForm() {
   const router = useRouter()
@@ -104,12 +106,10 @@ export function LoginForm() {
             </div>
 
             {error ? (
-              <p
-                role="alert"
-                className="rounded-xl border border-red-600/20 bg-red-50 p-3 text-xs break-words text-red-700"
-              >
-                {error}
-              </p>
+              <Alert variant="destructive">
+                <TriangleAlert />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             ) : null}
 
             <Button

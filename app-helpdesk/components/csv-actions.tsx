@@ -13,6 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { TriangleAlert } from "lucide-react"
+import { toast } from "sonner"
 import { parseCsv } from "@/lib/csv"
 
 const PREVIEW_ROWS = 5
@@ -35,23 +46,20 @@ export function CsvActions({
   const [fileName, setFileName] = React.useState<string | null>(null)
   const [rows, setRows] = React.useState<string[][]>([])
   const [importing, setImporting] = React.useState(false)
-  const [feedback, setFeedback] = React.useState<{
-    ok: boolean
-    message: string
-  } | null>(null)
+  const [error, setError] = React.useState<string | null>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   const reset = () => {
     setFileName(null)
     setRows([])
-    setFeedback(null)
+    setError(null)
     if (inputRef.current) inputRef.current.value = ""
   }
 
   const handleFile = async (file: File | undefined) => {
     if (!file) return
     setFileName(file.name)
-    setFeedback(null)
+    setError(null)
     setRows(parseCsv(await file.text()))
   }
 
@@ -63,18 +71,14 @@ export function CsvActions({
   const handleImport = async () => {
     if (!onImport || rows.length === 0 || importing) return
     setImporting(true)
-    setFeedback(null)
+    setError(null)
     try {
       const message = await onImport(rows)
-      setFeedback({ ok: true, message })
-      setFileName(null)
-      setRows([])
-      if (inputRef.current) inputRef.current.value = ""
+      setOpen(false)
+      reset()
+      toast.success(message)
     } catch (err) {
-      setFeedback({
-        ok: false,
-        message: err instanceof Error ? err.message : "Import failed.",
-      })
+      setError(err instanceof Error ? err.message : "Import failed.")
     } finally {
       setImporting(false)
     }
@@ -129,41 +133,36 @@ export function CsvActions({
             </label>
 
             {rows.length > 0 ? (
-              <div className="overflow-x-auto rounded-lg border">
-                <table className="w-full caption-bottom text-sm">
-                  <thead className="[&_tr]:border-b">
-                    <tr className="border-b transition-colors hover:bg-muted/50">
-                      {previewHeader.map((cell, index) => (
-                        <th
-                          key={index}
-                          className="h-10 max-w-32 truncate px-2 text-left align-middle text-xs font-medium whitespace-nowrap text-foreground"
-                          title={cell}
-                        >
-                          {cell}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="[&_tr:last-child]:border-0">
-                    {previewRows.map((row, index) => (
-                      <tr
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {previewHeader.map((cell, index) => (
+                      <TableHead
                         key={index}
-                        className="border-b transition-colors hover:bg-muted/50"
+                        className="max-w-32 truncate text-xs"
+                        title={cell}
                       >
-                        {previewHeader.map((_, cellIndex) => (
-                          <td
-                            key={cellIndex}
-                            className="max-w-32 truncate p-2 align-middle text-xs whitespace-nowrap"
-                            title={row[cellIndex] ?? ""}
-                          >
-                            {row[cellIndex] ?? ""}
-                          </td>
-                        ))}
-                      </tr>
+                        {cell}
+                      </TableHead>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {previewRows.map((row, index) => (
+                    <TableRow key={index}>
+                      {previewHeader.map((_, cellIndex) => (
+                        <TableCell
+                          key={cellIndex}
+                          className="max-w-32 truncate text-xs"
+                          title={row[cellIndex] ?? ""}
+                        >
+                          {row[cellIndex] ?? ""}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             ) : null}
 
             {rows.length > 0 ? (
@@ -177,16 +176,11 @@ export function CsvActions({
               </p>
             ) : null}
 
-            {feedback ? (
-              <p
-                className={
-                  feedback.ok
-                    ? "rounded-lg border border-emerald-600/20 bg-emerald-50 p-3 text-xs break-words text-emerald-700"
-                    : "rounded-lg border border-red-600/20 bg-red-50 p-3 text-xs break-words text-red-700"
-                }
-              >
-                {feedback.message}
-              </p>
+            {error ? (
+              <Alert variant="destructive">
+                <TriangleAlert />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             ) : null}
 
             <p className="rounded-lg border bg-muted/40 p-3 text-xs break-words text-muted-foreground">

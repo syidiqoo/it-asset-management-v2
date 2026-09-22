@@ -2,6 +2,9 @@
 
 import * as React from "react"
 
+import { TriangleAlert } from "lucide-react"
+
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -53,9 +56,10 @@ export function ConfirmDeleteDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {error ? (
-          <p className="rounded-lg border border-red-600/20 bg-red-50 p-3 text-xs break-words text-red-700">
-            {error}
-          </p>
+          <Alert variant="destructive">
+            <TriangleAlert />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         ) : null}
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>

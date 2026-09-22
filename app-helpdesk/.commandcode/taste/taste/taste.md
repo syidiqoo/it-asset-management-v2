@@ -12,3 +12,4 @@
 - Prefers simple numeric-only business identifiers (plain digits, e.g. `1001`) over formatted alphanumeric codes with letters/prefixes (e.g. `INT-2026-001`), and expects the input to restrict typing to digits. Confidence: 0.5
 - Creates technical documentation (e.g. internet topology diagrams) with app.diagrams.net / draw.io, and expects documentation features to accommodate that workflow (e.g. letting them insert an exported draw.io diagram as an image in a document) rather than replacing draw.io with an in-app editor. Confidence: 0.5
 - Prefers documentation to live as in-app Markdown content (written and edited inside the app, admin writes / guest reads) rather than as an archive of uploaded files or an embedded third-party editor. Confidence: 0.4
+- Prefers shadcn-ui as the standard UI component library over custom/hand-rolled markup and styling. Confidence: 0.6
