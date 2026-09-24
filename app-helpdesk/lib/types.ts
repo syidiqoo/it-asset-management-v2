@@ -102,6 +102,21 @@ export type AssetInput = Omit<
 
 export type SimCardInput = Omit<SimCard, "id" | "createdAt" | "updatedAt">
 
+export type AssetFileHistoryItem = {
+  id: number
+  assetId: number
+  kind: string
+  url: string
+  fileName: string | null
+  createdBy: string | null
+  createdAt: string
+}
+
+export type AssetFileHistory = {
+  image: AssetFileHistoryItem[]
+  document: AssetFileHistoryItem[]
+}
+
 export type DepartmentNode = Department & {
   level: number
   path: string

@@ -59,6 +59,7 @@ model Asset {
   updatedBy    String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  fileHistory  AssetFileHistory[]
 
   @@index([categoryId])
   @@index([employeeId])
@@ -138,6 +139,19 @@ model FileBlob {
   kind      String
   data      Bytes
   createdAt DateTime @default(now())
+}
+
+model AssetFileHistory {
+  id        Int      @id @default(autoincrement())
+  assetId   Int
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  kind      String
+  url       String
+  fileName  String?
+  createdBy String?
+  createdAt DateTime @default(now())
+
+  @@index([assetId, kind, createdAt])
 }
 
 model Doc {

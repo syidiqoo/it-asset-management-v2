@@ -32,6 +32,7 @@ import {
   simCardSection,
 } from "@/lib/sim-cards"
 import type { SimCard } from "@/lib/types"
+import type { PdfColumn } from "@/lib/report"
 
 const CSV_COLUMNS = [
   "Phone Number",
@@ -174,6 +175,30 @@ export function SimCardsView({ values }: { values: FilterValues }) {
     return store.importSimCards(rows)
   }
 
+  const PDF_COLUMNS: PdfColumn[] = [
+    { header: "Phone Number" },
+    { header: "Employee" },
+    { header: "Department" },
+    { header: "Package" },
+    { header: "CLS Domestic" },
+    { header: "CLS Roaming" },
+  ]
+
+  const pdfRows = filtered.map((card) => [
+    card.phoneNumber,
+    card.employeeId === null
+      ? ""
+      : (store.employees.find((item) => item.id === card.employeeId)?.name ??
+        ""),
+    departmentPath(store.departments, card.departmentId) ?? "",
+    card.packageId === null
+      ? ""
+      : (store.simPackages.find((item) => item.id === card.packageId)?.name ??
+        ""),
+    card.clsDomestic ?? "",
+    card.clsRoaming ?? "",
+  ])
+
   return (
     <div className="flex flex-col">
       <StickyHeader>
@@ -189,6 +214,12 @@ export function SimCardsView({ values }: { values: FilterValues }) {
                   fileHint="Columns: MSISDN, Name, Position - Department, Package — or the app columns above."
                   note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose MSISDN already exists are skipped. Employee, Department, or Package that is not in master is left empty, so the card lands in Available."
                   onImport={importCsv}
+                  pdf={{
+                    title: "Laporan SIM Card",
+                    columns: PDF_COLUMNS,
+                    rows: pdfRows,
+                    filePrefix: "sim-card",
+                  }}
                 />
                 <Button size="sm" onClick={openCreate}>
                   <Plus />

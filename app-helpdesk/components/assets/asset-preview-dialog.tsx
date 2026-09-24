@@ -5,6 +5,7 @@ import Link from "next/link"
 import {
   ArrowRightLeft,
   FileText,
+  History,
   ImageIcon,
   Info,
   Laptop,
@@ -13,6 +14,10 @@ import {
   Trash2,
 } from "lucide-react"
 
+import {
+  AssetHistoryDialog,
+  type AssetHistoryItem,
+} from "@/components/assets/asset-history-dialog"
 import { DocumentPreviewDialog } from "@/components/assets/document-preview-dialog"
 import { useDataStore } from "@/components/data-store"
 import { Badge } from "@/components/ui/badge"
@@ -24,10 +29,28 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { fetchAssetFileHistory } from "@/lib/asset-history"
 import { departmentName } from "@/lib/departments"
 import { CONDITION_BADGE_CLASS, formatDate } from "@/lib/format"
-import type { Asset } from "@/lib/types"
+import type { Asset, AssetFileHistory, AssetInput } from "@/lib/types"
 import { cn } from "@/lib/utils"
+
+function toAssetInput(asset: Asset): AssetInput {
+  return {
+    categoryId: asset.categoryId,
+    name: asset.name,
+    code: asset.code,
+    serialNumber: asset.serialNumber,
+    employeeId: asset.employeeId,
+    departmentId: asset.departmentId,
+    condition: asset.condition,
+    imageUrl: asset.imageUrl,
+    docUrl: asset.docUrl,
+    recordDate: asset.recordDate,
+    purchaseDate: asset.purchaseDate,
+    note: asset.note,
+  }
+}
 
 function Field({
   label,
@@ -110,6 +133,13 @@ export function AssetPreviewDialog({
 }) {
   const store = useDataStore()
   const [document, setDocument] = React.useState<string | null>(null)
+  const [historyOpen, setHistoryOpen] = React.useState(false)
+  const [historyState, setHistoryState] = React.useState<{
+    key: string
+    data: AssetFileHistory
+  } | null>(null)
+  const [restoring, setRestoring] = React.useState<string | null>(null)
+  const [restoreError, setRestoreError] = React.useState<string | null>(null)
 
   const category =
     asset === null
@@ -125,6 +155,91 @@ export function AssetPreviewDialog({
     asset === null
       ? "—"
       : (departmentName(store.departments, asset.departmentId) ?? "—")
+
+  const historyKey = asset ? `${asset.id}:${asset.updatedAt}` : null
+  const history =
+    historyState && historyKey && historyState.key === historyKey
+      ? historyState.data
+      : null
+
+  React.useEffect(() => {
+    if (!asset || !historyKey) return
+    let cancelled = false
+    fetchAssetFileHistory(asset.id)
+      .then((data) => {
+        if (!cancelled) setHistoryState({ key: historyKey, data })
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setHistoryState({
+            key: historyKey,
+            data: { image: [], document: [] },
+          })
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [asset, historyKey])
+
+  const imageItems = React.useMemo(() => {
+    if (!asset) return []
+    const items: AssetHistoryItem[] = []
+    if (asset.imageUrl) {
+      items.push({ url: asset.imageUrl, label: "Saat ini", current: true })
+    }
+    for (const entry of history?.image ?? []) {
+      if (entry.url !== asset.imageUrl) {
+        items.push({
+          url: entry.url,
+          label: formatDate(entry.createdAt),
+          current: false,
+        })
+      }
+    }
+    return items
+  }, [asset, history])
+
+  const documentItems = React.useMemo(() => {
+    if (!asset) return []
+    const items: AssetHistoryItem[] = []
+    if (asset.docUrl) {
+      items.push({ url: asset.docUrl, label: "Dokumen saat ini", current: true })
+    }
+    for (const entry of history?.document ?? []) {
+      if (entry.url !== asset.docUrl) {
+        items.push({
+          url: entry.url,
+          label: entry.fileName ?? formatDate(entry.createdAt),
+          current: false,
+        })
+      }
+    }
+    return items
+  }, [asset, history])
+
+  const hasHistory = imageItems.length > 1 || documentItems.length > 1
+
+  const restore = async (kind: "image" | "document", url: string) => {
+    if (!asset) return
+    setRestoring(url)
+    setRestoreError(null)
+    try {
+      const input = toAssetInput(asset)
+      if (kind === "image") {
+        input.imageUrl = url
+      } else {
+        input.docUrl = url
+      }
+      await store.updateAsset(asset.id, input)
+    } catch (error) {
+      setRestoreError(
+        error instanceof Error ? error.message : "Gagal mengembalikan file."
+      )
+    } finally {
+      setRestoring(null)
+    }
+  }
 
   return (
     <Dialog
@@ -152,6 +267,25 @@ export function AssetPreviewDialog({
                   {category} • IT Asset Management
                 </DialogDescription>
               </div>
+
+              {hasHistory ? (
+                <Button
+                  variant="outline"
+                  size="icon-lg"
+                  className="relative shrink-0"
+                  aria-label="Lihat riwayat file"
+                  title="Riwayat foto & dokumen (5 versi terakhir)"
+                  onClick={() => {
+                    setRestoreError(null)
+                    setHistoryOpen(true)
+                  }}
+                >
+                  <History className="size-5" />
+                  <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary text-[9px] font-medium text-primary-foreground">
+                    {imageItems.length + documentItems.length}
+                  </span>
+                </Button>
+              ) : null}
 
               {asset.docUrl ? (
                 <Button
@@ -253,6 +387,17 @@ export function AssetPreviewDialog({
         url={document}
         title={asset?.name}
         onClose={() => setDocument(null)}
+      />
+
+      <AssetHistoryDialog
+        asset={historyOpen ? asset : null}
+        imageItems={imageItems}
+        documentItems={documentItems}
+        canWrite={canWrite}
+        restoring={restoring}
+        error={restoreError}
+        onRestore={restore}
+        onClose={() => setHistoryOpen(false)}
       />
     </Dialog>
   )

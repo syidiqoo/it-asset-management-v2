@@ -151,3 +151,15 @@ export function serializeDoc(item: {
 }) {
   return { ...item, ...dates(item) }
 }
+
+export function serializeAssetFileHistory(item: {
+  id: number
+  assetId: number
+  kind: string
+  url: string
+  fileName: string | null
+  createdBy: string | null
+  createdAt: Date
+}) {
+  return { ...item, createdAt: toDay(item.createdAt) ?? "" }
+}

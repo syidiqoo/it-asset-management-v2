@@ -45,6 +45,7 @@ import {
   INTERNET_PAGE_SIZE,
 } from "@/lib/internet"
 import { formatLocationLabel, locationLabelById } from "@/lib/locations"
+import type { PdfColumn } from "@/lib/report"
 import type { InternetData, InternetDataInput } from "@/lib/types"
 
 const CSV_COLUMNS = [
@@ -180,6 +181,28 @@ export function DataInternetView({
     return store.importInternetData(rows)
   }
 
+  const PDF_COLUMNS: PdfColumn[] = [
+    { header: "Location" },
+    { header: "Detail" },
+    { header: "Internet ID" },
+    { header: "Service" },
+    { header: "Bandwidth (Mbps)", align: "right" },
+    { header: "Customer Name" },
+    { header: "Monthly Cost", align: "right" },
+    { header: "Payment Method" },
+  ]
+
+  const pdfRows = filtered.map((item) => [
+    locationName(item.locationId),
+    item.detail ?? "",
+    item.internetId,
+    item.service,
+    item.bandwidthMbps === null ? "" : String(item.bandwidthMbps),
+    item.customerName,
+    formatCurrency(item.monthlyCost),
+    item.paymentMethod ?? "",
+  ])
+
   return (
     <div className="flex flex-col">
       <StickyHeader>
@@ -195,6 +218,12 @@ export function DataInternetView({
                   fileHint="Columns: Location, Detail, Internet ID, Service, Bandwidth, Customer Name, Monthly Cost, Payment Method."
                   note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Internet ID already exists are skipped. Location must already exist in Location master — unmatched ones are saved without a location."
                   onImport={importCsv}
+                  pdf={{
+                    title: "Laporan Internet Data",
+                    columns: PDF_COLUMNS,
+                    rows: pdfRows,
+                    filePrefix: "internet-data",
+                  }}
                 />
                 <Button size="sm" onClick={openCreate}>
                   <Plus />

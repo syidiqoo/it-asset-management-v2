@@ -15,6 +15,8 @@ import { useSessionUser } from "@/components/use-session-user"
 import { Button } from "@/components/ui/button"
 import { CSV_IMPORT_COLUMNS, assetSection, filterAssets } from "@/lib/assets"
 import { csvFileName, downloadCsv } from "@/lib/csv"
+import { formatDate } from "@/lib/format"
+import type { PdfColumn } from "@/lib/report"
 import {
   collectDescendantIds,
   departmentPath,
@@ -145,6 +147,30 @@ export function AssetsView({
     return store.importAssets(rows)
   }
 
+  const PDF_COLUMNS: PdfColumn[] = [
+    { header: "Asset Name" },
+    { header: "Code" },
+    { header: "Serial Number" },
+    { header: "Category" },
+    { header: "Employee" },
+    { header: "Department" },
+    { header: "Condition" },
+    { header: "Purchase Date" },
+    { header: "Note" },
+  ]
+
+  const pdfRows = filtered.map((asset) => [
+    asset.name,
+    asset.code,
+    asset.serialNumber ?? "",
+    store.categories.find((item) => item.id === asset.categoryId)?.name ?? "",
+    employeeName(asset.employeeId),
+    departmentPath(store.departments, asset.departmentId) ?? "",
+    asset.condition,
+    asset.purchaseDate ? formatDate(asset.purchaseDate) : "",
+    asset.note ?? "",
+  ])
+
   return (
     <div className="flex flex-col">
       <StickyHeader>
@@ -160,6 +186,12 @@ export function AssetsView({
                   fileHint="App columns or the sample format (No, Kategori Inventaris, Asset Name, ...). User/Username columns are ignored."
                   note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Asset Code already exists are skipped; duplicate codes inside one file are rejected."
                   onImport={importCsv}
+                  pdf={{
+                    title: "Laporan Data Aset",
+                    columns: PDF_COLUMNS,
+                    rows: pdfRows,
+                    filePrefix: "asset-data",
+                  }}
                 />
                 <Button size="sm" render={<Link href="/assets/new" />}>
                   <Plus />

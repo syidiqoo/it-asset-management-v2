@@ -1,7 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { Download, FileUp } from "lucide-react"
+import {
+  ChevronDown,
+  Download,
+  FileSpreadsheet,
+  FileText,
+  FileUp,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,20 +20,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { TriangleAlert } from "lucide-react"
 import { toast } from "sonner"
 import { parseCsv } from "@/lib/csv"
+import {
+  downloadPdfReport,
+  type PdfExportData,
+} from "@/lib/report"
 
 const PREVIEW_ROWS = 5
 const PREVIEW_CELLS = 6
+
+export type PdfExport = PdfExportData
 
 export function CsvActions({
   columns,
@@ -35,12 +46,14 @@ export function CsvActions({
   fileHint,
   note,
   onImport,
+  pdf,
 }: {
   columns: string[]
   onExport: () => void
   fileHint: string
   note: string
   onImport?: (rows: string[][]) => Promise<string>
+  pdf?: PdfExport
 }) {
   const [open, setOpen] = React.useState(false)
   const [fileName, setFileName] = React.useState<string | null>(null)
@@ -68,6 +81,11 @@ export function CsvActions({
   const previewRows = rows.slice(1, PREVIEW_ROWS + 1)
   const hiddenCount = Math.max(header.length - PREVIEW_CELLS, 0)
 
+  const handleExportPdf = () => {
+    if (!pdf) return
+    downloadPdfReport(pdf)
+  }
+
   const handleImport = async () => {
     if (!onImport || rows.length === 0 || importing) return
     setImporting(true)
@@ -86,10 +104,30 @@ export function CsvActions({
 
   return (
     <>
-      <Button variant="outline" size="sm" onClick={onExport}>
-        <Download />
-        Export CSV
-      </Button>
+      {pdf ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
+            <Download />
+            Export
+            <ChevronDown />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem onClick={handleExportPdf}>
+              <FileText />
+              Export PDF
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onExport}>
+              <FileSpreadsheet />
+              Export CSV
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Button variant="outline" size="sm" onClick={onExport}>
+          <Download />
+          Export CSV
+        </Button>
+      )}
 
       <Dialog
         open={open}

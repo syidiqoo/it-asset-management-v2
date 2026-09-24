@@ -67,7 +67,7 @@ const subItemClassName = (active: boolean) =>
       : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
   )
 
-function Brand() {
+function Brand({ version }: { version: string }) {
   return (
     <div className="flex items-center gap-2.5">
       <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -76,6 +76,7 @@ function Brand() {
       <div className="leading-tight">
         <p className="text-sm font-semibold">IT Helpdesk</p>
         <p className="text-xs text-muted-foreground">IT Asset Management</p>
+        <p className="text-[10px] text-muted-foreground/80">v{version}</p>
       </div>
     </div>
   )
@@ -128,7 +129,7 @@ function SettingsToggle({
   )
 }
 
-export function Sidebar() {
+export function Sidebar({ version }: { version: string }) {
   const pathname = usePathname()
   const sessionUser = useSessionUser()
   const signOut = useSignOut()
@@ -158,7 +159,7 @@ export function Sidebar() {
   return (
     <>
       <header className="z-30 flex shrink-0 flex-col gap-2 border-b bg-sidebar px-4 py-3 md:hidden">
-        <Brand />
+        <Brand version={version} />
         <nav className="flex items-center gap-1 overflow-x-auto">
           {mainItems.map((item) => (
             <MainLink
@@ -193,7 +194,7 @@ export function Sidebar() {
 
       <aside className="hidden w-60 shrink-0 flex-col overflow-y-auto border-r bg-sidebar px-3 py-4 md:flex">
         <div className="px-1.5">
-          <Brand />
+          <Brand version={version} />
         </div>
 
         <nav className="mt-6 flex flex-1 flex-col gap-1">
