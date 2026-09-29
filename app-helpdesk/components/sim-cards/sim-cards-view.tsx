@@ -14,15 +14,12 @@ import { SimCardPreviewDialog } from "@/components/sim-cards/sim-card-preview-di
 import { StickyHeader } from "@/components/sticky-header"
 import { StoreState } from "@/components/store-state"
 import { useSessionUser } from "@/components/use-session-user"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
 import { collectDescendantIds, departmentPath, flattenDepartments } from "@/lib/departments"
 import { csvFileName, downloadCsv } from "@/lib/csv"
 import { type FilterField, type FilterValues } from "@/lib/filters"
@@ -221,8 +218,12 @@ export function SimCardsView({ values }: { values: FilterValues }) {
                     filePrefix: "sim-card",
                   }}
                 />
-                <Button size="sm" onClick={openCreate}>
-                  <Plus />
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<Plus className="size-4" />}
+                  onClick={openCreate}
+                >
                   Add SIM Card
                 </Button>
               </>
@@ -297,42 +298,41 @@ export function SimCardsView({ values }: { values: FilterValues }) {
 
       <Dialog
         open={target !== null}
-        onOpenChange={(open) => {
-          if (!open) setTarget(null)
-        }}
+        onClose={() => setTarget(null)}
+        maxWidth="xs"
+        fullWidth
       >
+        <DialogTitle>Delete this SIM card?</DialogTitle>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete this SIM card?</DialogTitle>
-            <DialogDescription>
-              Number{" "}
-              <span className="font-medium text-foreground">
-                {target?.phoneNumber}
-              </span>{" "}
-              will be removed from inventory. This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setTarget(null)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={async () => {
-                if (target) {
-                  try {
-                    await store.deleteSimCard(target.id)
-                  } catch {
-                    return
-                  }
-                }
-                setTarget(null)
-              }}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
+          <DialogContentText>
+            Number{" "}
+            <span className="font-medium text-foreground">
+              {target?.phoneNumber}
+            </span>{" "}
+            will be removed from inventory. This action cannot be undone.
+          </DialogContentText>
         </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={() => setTarget(null)}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={async () => {
+              if (target) {
+                try {
+                  await store.deleteSimCard(target.id)
+                } catch {
+                  return
+                }
+              }
+              setTarget(null)
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   )

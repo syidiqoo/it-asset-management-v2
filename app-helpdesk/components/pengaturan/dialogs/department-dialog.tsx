@@ -133,6 +133,10 @@ function DepartmentDialogForm({
             label="Parent Department"
             value={parent}
             onChange={(event) => setParent(event.target.value)}
+            slotProps={{
+              select: { displayEmpty: true },
+              inputLabel: { shrink: true },
+            }}
             fullWidth
             size="small"
           >

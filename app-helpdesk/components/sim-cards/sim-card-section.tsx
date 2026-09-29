@@ -2,19 +2,17 @@
 
 import * as React from "react"
 import { ChevronDown } from "lucide-react"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Chip from "@mui/material/Chip"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
 
 import { useDataStore } from "@/components/data-store"
 import { Pagination } from "@/components/pagination"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { departmentName } from "@/lib/departments"
 import { SIM_CARD_PAGE_SIZE } from "@/lib/sim-cards"
 import type { SimCard } from "@/lib/types"
@@ -55,7 +53,7 @@ export function SimCardSection({
   )
 
   return (
-    <Card size="sm">
+    <Card variant="outlined">
       <CardContent className="space-y-4">
         <button
           type="button"
@@ -67,9 +65,11 @@ export function SimCardSection({
             <p className="text-sm font-medium">{title}</p>
             <p className="text-xs text-muted-foreground">{description}</p>
           </div>
-          <Badge variant="secondary" className="shrink-0 tabular-nums">
-            {cards.length}
-          </Badge>
+          <Chip
+            size="small"
+            label={cards.length}
+            className="shrink-0 tabular-nums"
+          />
           <ChevronDown
             className={cn(
               "size-4 shrink-0 text-muted-foreground transition-transform",
@@ -85,27 +85,28 @@ export function SimCardSection({
                 No SIM cards in this group.
               </p>
             ) : (
-              <Card size="sm" className="py-0">
-                <CardContent className="px-0">
-                  <Table>
-                    <TableHeader>
+              <Card variant="outlined" className="py-0">
+                <CardContent className="p-0">
+                  <Table size="small">
+                    <TableHead>
                       <TableRow>
-                        <TableHead className="pl-4">Phone Number</TableHead>
-                        <TableHead>Employee</TableHead>
-                        <TableHead>Department</TableHead>
-                        <TableHead>Package</TableHead>
-                        <TableHead>CLS Domestic</TableHead>
-                        <TableHead className="pr-4">CLS Roaming</TableHead>
+                        <TableCell>Phone Number</TableCell>
+                        <TableCell>Employee</TableCell>
+                        <TableCell>Department</TableCell>
+                        <TableCell>Package</TableCell>
+                        <TableCell>CLS Domestic</TableCell>
+                        <TableCell>CLS Roaming</TableCell>
                       </TableRow>
-                    </TableHeader>
+                    </TableHead>
                     <TableBody>
                       {pageItems.map((card) => (
                         <TableRow
                           key={card.id}
+                          hover
                           className="cursor-pointer"
                           onClick={() => onPreview(card)}
                         >
-                          <TableCell className="pl-4 font-mono text-xs font-medium">
+                          <TableCell className="font-mono text-xs font-medium">
                             {card.phoneNumber}
                           </TableCell>
                           <TableCell>{employeeName(card.employeeId)}</TableCell>
@@ -119,7 +120,7 @@ export function SimCardSection({
                           <TableCell className="text-muted-foreground">
                             {card.clsDomestic ?? "—"}
                           </TableCell>
-                          <TableCell className="pr-4 text-muted-foreground">
+                          <TableCell className="text-muted-foreground">
                             {card.clsRoaming ?? "—"}
                           </TableCell>
                         </TableRow>

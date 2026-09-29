@@ -2,27 +2,16 @@
 
 import * as React from "react"
 import { Save } from "lucide-react"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import MenuItem from "@mui/material/MenuItem"
+import TextField from "@mui/material/TextField"
 
 import { useDataStore } from "@/components/data-store"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { flattenDepartments } from "@/lib/departments"
 import type { SimCard, SimCardInput } from "@/lib/types"
 
@@ -52,8 +41,7 @@ function initialState(card: SimCard | null): FormState {
   return {
     phoneNumber: card.phoneNumber,
     employeeId: card.employeeId === null ? "" : String(card.employeeId),
-    departmentId:
-      card.departmentId === null ? "" : String(card.departmentId),
+    departmentId: card.departmentId === null ? "" : String(card.departmentId),
     packageId: card.packageId === null ? "" : String(card.packageId),
     clsDomestic: card.clsDomestic ?? "",
     clsRoaming: card.clsRoaming ?? "",
@@ -71,10 +59,15 @@ export function SimCardFormDialog({
   card: SimCard | null
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+    <Dialog
+      open={open}
+      onClose={() => onOpenChange(false)}
+      maxWidth="sm"
+      fullWidth
+    >
+      {open ? (
         <SimCardForm card={card} onDone={() => onOpenChange(false)} />
-      </DialogContent>
+      ) : null}
     </Dialog>
   )
 }
@@ -138,148 +131,140 @@ function SimCardForm({
 
   return (
     <>
-      <DialogHeader>
-        <DialogTitle>{card ? "Edit SIM Card" : "Add SIM Card"}</DialogTitle>
-        <DialogDescription>
-          Phone Number must be unique. Employee, Department, and Package are selected from master data.
-        </DialogDescription>
-      </DialogHeader>
+      <DialogTitle>{card ? "Edit SIM Card" : "Add SIM Card"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Phone Number must be unique. Employee, Department, and Package are
+          selected from master data.
+        </DialogContentText>
 
-      <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="sim-phone">Phone Number</Label>
-          <Input
+        <form
+          id="sim-card-form"
+          onSubmit={handleSubmit}
+          className="mt-4 grid gap-4 sm:grid-cols-2"
+        >
+          <TextField
             id="sim-phone"
+            label="Phone Number"
             value={form.phoneNumber}
             onChange={(event) => set("phoneNumber", event.target.value)}
             placeholder="081210000001"
-            className="font-mono"
+            error={Boolean(error)}
+            helperText={error ?? undefined}
+            slotProps={{ htmlInput: { className: "font-mono" } }}
+            className="sm:col-span-2"
+            fullWidth
+            size="small"
           />
-          {error ? <p className="text-xs text-destructive">{error}</p> : null}
-        </div>
 
-        <div className="space-y-1.5">
-          <Label>Employee</Label>
-          <Select
-            items={[
-              { label: "— No holder —", value: "" },
-              ...store.employees.map((employee) => ({
-                label: employee.name,
-                value: String(employee.id),
-              })),
-            ]}
+          <TextField
+            select
+            label="Employee"
             value={form.employeeId}
-            onValueChange={(value) => set("employeeId", value ?? "")}
+            onChange={(event) => set("employeeId", event.target.value)}
+            slotProps={{
+              select: { displayEmpty: true },
+              inputLabel: { shrink: true },
+            }}
+            fullWidth
+            size="small"
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="— No holder —" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">— No holder —</SelectItem>
-              {store.employees.map((employee) => (
-                <SelectItem key={employee.id} value={String(employee.id)}>
-                  {employee.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            <MenuItem value="">— No holder —</MenuItem>
+            {store.employees.map((employee) => (
+              <MenuItem key={employee.id} value={String(employee.id)}>
+                {employee.name}
+              </MenuItem>
+            ))}
+          </TextField>
 
-        <div className="space-y-1.5">
-          <Label>Department</Label>
-          <Select
-            items={[
-              { label: "— No department —", value: "" },
-              ...departmentOptions.map((department) => ({
-                label: department.path,
-                value: String(department.id),
-              })),
-            ]}
+          <TextField
+            select
+            label="Department"
             value={form.departmentId}
-            onValueChange={(value) => set("departmentId", value ?? "")}
+            onChange={(event) => set("departmentId", event.target.value)}
+            slotProps={{
+              select: { displayEmpty: true },
+              inputLabel: { shrink: true },
+            }}
+            fullWidth
+            size="small"
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="— No department —" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">— No department —</SelectItem>
-              {departmentOptions.map((department) => (
-                <SelectItem key={department.id} value={String(department.id)}>
-                  {department.path}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            <MenuItem value="">— No department —</MenuItem>
+            {departmentOptions.map((department) => (
+              <MenuItem key={department.id} value={String(department.id)}>
+                {department.path}
+              </MenuItem>
+            ))}
+          </TextField>
 
-        <div className="space-y-1.5">
-          <Label>Package</Label>
-          <Select
-            items={[
-              { label: "— No package —", value: "" },
-              ...store.simPackages.map((item) => ({
-                label: item.name,
-                value: String(item.id),
-              })),
-            ]}
+          <TextField
+            select
+            label="Package"
             value={form.packageId}
-            onValueChange={(value) => set("packageId", value ?? "")}
+            onChange={(event) => set("packageId", event.target.value)}
+            slotProps={{
+              select: { displayEmpty: true },
+              inputLabel: { shrink: true },
+            }}
+            fullWidth
+            size="small"
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="— No package —" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">— No package —</SelectItem>
-              {store.simPackages.map((item) => (
-                <SelectItem key={item.id} value={String(item.id)}>
-                  {item.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            <MenuItem value="">— No package —</MenuItem>
+            {store.simPackages.map((item) => (
+              <MenuItem key={item.id} value={String(item.id)}>
+                {item.name}
+              </MenuItem>
+            ))}
+          </TextField>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="sim-cls-domestic">CLS Domestic</Label>
-          <Input
+          <TextField
             id="sim-cls-domestic"
+            label="CLS Domestic"
             value={form.clsDomestic}
             onChange={(event) => set("clsDomestic", event.target.value)}
             placeholder="CLS Domestic 25 GB"
+            fullWidth
+            size="small"
           />
-        </div>
 
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="sim-cls-roaming">CLS Roaming</Label>
-          <Input
+          <TextField
             id="sim-cls-roaming"
+            label="CLS Roaming"
             value={form.clsRoaming}
             onChange={(event) => set("clsRoaming", event.target.value)}
             placeholder="CLS Roaming 5 GB"
+            className="sm:col-span-2"
+            fullWidth
+            size="small"
           />
-        </div>
 
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="sim-note">Note</Label>
-          <Textarea
+          <TextField
             id="sim-note"
+            label="Note"
             value={form.note}
             onChange={(event) => set("note", event.target.value)}
             placeholder="Catatan tambahan, mis. nomor sudah tidak dipakai"
-            rows={3}
+            multiline
+            minRows={3}
+            className="sm:col-span-2"
+            fullWidth
+            size="small"
           />
-        </div>
-
-        <DialogFooter className="sm:col-span-2">
-          <Button type="button" variant="outline" onClick={onDone}>
-            Cancel
-          </Button>
-          <Button type="submit">
-            <Save />
-            Save
-          </Button>
-        </DialogFooter>
-      </form>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button type="button" variant="outlined" onClick={onDone}>
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          form="sim-card-form"
+          variant="contained"
+          startIcon={<Save className="size-4" />}
+        >
+          Save
+        </Button>
+      </DialogActions>
     </>
   )
 }

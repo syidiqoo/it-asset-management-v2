@@ -113,6 +113,10 @@ function EmployeeDialogForm({
           label="Department"
           value={department}
           onChange={(event) => setDepartment(event.target.value)}
+          slotProps={{
+            select: { displayEmpty: true },
+            inputLabel: { shrink: true },
+          }}
           fullWidth
           size="small"
         >

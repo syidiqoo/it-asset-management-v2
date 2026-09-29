@@ -9,16 +9,14 @@ import {
   StickyNote,
   Trash2,
 } from "lucide-react"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogDescription from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
 
 import { useDataStore } from "@/components/data-store"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { departmentName } from "@/lib/departments"
 import { formatDate } from "@/lib/format"
 import { SIM_CARD_SECTION_LABEL, simCardSection } from "@/lib/sim-cards"
@@ -52,7 +50,9 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <section className={cn("flex flex-col rounded-lg border bg-card", className)}>
+    <section
+      className={cn("flex flex-col rounded-lg border bg-card", className)}
+    >
       <header className="flex items-center gap-2 border-b px-3 py-2">
         <Icon className="size-3.5 text-primary" />
         <h3 className="text-xs font-medium">{title}</h3>
@@ -98,32 +98,29 @@ export function SimCardPreviewDialog({
   return (
     <Dialog
       open={card !== null}
-      onOpenChange={(open) => {
-        if (!open) onClose()
-      }}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
     >
-      <DialogContent
-        showCloseButton={false}
-        className="max-h-[calc(100dvh-2rem)] gap-0 overflow-hidden overflow-y-auto p-0 sm:max-w-2xl"
-      >
-        {card ? (
-          <>
-            <header className="flex items-start gap-3 border-b bg-muted/40 p-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Smartphone className="size-5" />
-              </div>
+      {card ? (
+        <>
+          <header className="flex items-start gap-3 border-b bg-muted/40 p-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Smartphone className="size-5" />
+            </div>
 
-              <div className="min-w-0 flex-1 space-y-0.5">
-                <DialogTitle className="font-mono text-base leading-tight break-words">
-                  {card.phoneNumber}
-                </DialogTitle>
-                <DialogDescription className="text-xs">
-                  {group} • IT Asset Management
-                </DialogDescription>
-              </div>
-            </header>
+            <div className="min-w-0 flex-1 space-y-0.5">
+              <DialogTitle className="font-mono text-base leading-tight break-words">
+                {card.phoneNumber}
+              </DialogTitle>
+              <DialogDescription className="text-xs">
+                {group} • IT Asset Management
+              </DialogDescription>
+            </div>
+          </header>
 
-            <div className="flex flex-col gap-3 bg-muted/20 p-4">
+          <DialogContent className="bg-muted/20">
+            <div className="flex flex-col gap-3">
               <Section icon={Info} title="SIM Card Information">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Employee">{employee}</Field>
@@ -152,41 +149,47 @@ export function SimCardPreviewDialog({
                 </div>
               </Section>
 
-              <Section
-                icon={StickyNote}
-                title="Note"
-                className="min-h-[190px]"
-              >
+              <Section icon={StickyNote} title="Note" className="min-h-[190px]">
                 <p className="text-sm break-words text-muted-foreground">
                   {card.note ?? "—"}
                 </p>
               </Section>
             </div>
-          </>
-        ) : null}
+          </DialogContent>
 
-        <DialogFooter className="mx-0 mb-0 rounded-b-xl border-t bg-muted/50 p-4">
-          {card && canWrite ? (
-            <>
-              <Button variant="outline" onClick={() => onMove(card)}>
-                <ArrowRightLeft />
-                Move
-              </Button>
-              <Button onClick={() => onEdit(card)}>
-                <Pencil />
-                Edit SIM Card
-              </Button>
-              <Button variant="destructive" onClick={() => onDelete(card)}>
-                <Trash2 />
-                Delete
-              </Button>
-            </>
-          ) : null}
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+          <DialogActions className="border-t bg-muted/50">
+            {canWrite ? (
+              <>
+                <Button
+                  variant="outlined"
+                  onClick={() => onMove(card)}
+                  startIcon={<ArrowRightLeft className="size-4" />}
+                >
+                  Move
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => onEdit(card)}
+                  startIcon={<Pencil className="size-4" />}
+                >
+                  Edit SIM Card
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => onDelete(card)}
+                  startIcon={<Trash2 className="size-4" />}
+                >
+                  Delete
+                </Button>
+              </>
+            ) : null}
+            <Button variant="outlined" onClick={onClose}>
+              Close
+            </Button>
+          </DialogActions>
+        </>
+      ) : null}
     </Dialog>
   )
 }

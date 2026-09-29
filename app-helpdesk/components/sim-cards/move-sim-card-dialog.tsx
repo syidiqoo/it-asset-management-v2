@@ -2,25 +2,16 @@
 
 import * as React from "react"
 import { ArrowRightLeft } from "lucide-react"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import MenuItem from "@mui/material/MenuItem"
+import TextField from "@mui/material/TextField"
 
 import { useDataStore } from "@/components/data-store"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   SIM_CARD_SECTION_LABEL,
   simCardSection,
@@ -90,88 +81,66 @@ function MoveSimCardForm({
   }
 
   return (
-    <Dialog
-      open
-      onOpenChange={(open) => {
-        if (!open) onClose()
-      }}
-    >
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Move {card.phoneNumber}</DialogTitle>
-          <DialogDescription>
-            Move this SIM card between Available, Main, and Terminate.
-          </DialogDescription>
-        </DialogHeader>
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>Move {card.phoneNumber}</DialogTitle>
+      <DialogContent className="space-y-4">
+        <DialogContentText>
+          Move this SIM card between Available, Main, and Terminate.
+        </DialogContentText>
 
-        <div className="grid gap-4">
-          <div className="space-y-1.5">
-            <Label>Destination</Label>
-            <Select
-              items={SECTION_ORDER.map((key) => ({
-                label: SIM_CARD_SECTION_LABEL[key],
-                value: key,
-              }))}
-              value={section}
-              onValueChange={(value) =>
-                setSection((value as SimCardSectionKey | null) ?? "available")
-              }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {SECTION_ORDER.map((key) => (
-                  <SelectItem key={key} value={key}>
-                    {SIM_CARD_SECTION_LABEL[key]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <TextField
+          select
+          label="Destination"
+          value={section}
+          onChange={(event) =>
+            setSection((event.target.value as SimCardSectionKey) ?? "available")
+          }
+          fullWidth
+          size="small"
+        >
+          {SECTION_ORDER.map((key) => (
+            <MenuItem key={key} value={key}>
+              {SIM_CARD_SECTION_LABEL[key]}
+            </MenuItem>
+          ))}
+        </TextField>
 
-          {section === "main" ? (
-            <div className="space-y-1.5">
-              <Label>Assign to employee</Label>
-              <Select
-                items={[
-                  { label: "Select employee", value: "" },
-                  ...store.employees.map((employee) => ({
-                    label: employee.name,
-                    value: String(employee.id),
-                  })),
-                ]}
-                value={employeeId}
-                onValueChange={(value) => setEmployeeId(value ?? "")}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select employee" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Select employee</SelectItem>
-                  {store.employees.map((employee) => (
-                    <SelectItem key={employee.id} value={String(employee.id)}>
-                      {employee.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          ) : null}
+        {section === "main" ? (
+          <TextField
+            select
+            label="Assign to employee"
+            value={employeeId}
+            onChange={(event) => setEmployeeId(event.target.value)}
+            slotProps={{
+              select: { displayEmpty: true },
+              inputLabel: { shrink: true },
+            }}
+            fullWidth
+            size="small"
+          >
+            <MenuItem value="">Select employee</MenuItem>
+            {store.employees.map((employee) => (
+              <MenuItem key={employee.id} value={String(employee.id)}>
+                {employee.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        ) : null}
 
-          {error ? <p className="text-xs text-destructive">{error}</p> : null}
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleMove}>
-            <ArrowRightLeft />
-            Move
-          </Button>
-        </DialogFooter>
+        {error ? <p className="text-xs text-destructive">{error}</p> : null}
       </DialogContent>
+      <DialogActions>
+        <Button variant="outlined" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleMove}
+          startIcon={<ArrowRightLeft className="size-4" />}
+        >
+          Move
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }
