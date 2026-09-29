@@ -2,6 +2,9 @@
 
 import * as React from "react"
 import { Plus } from "lucide-react"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
 
 import { useDataStore } from "@/components/data-store"
 import { FilterBar } from "@/components/filter-bar"
@@ -11,8 +14,6 @@ import { StoreState } from "@/components/store-state"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
 import { NameDialog } from "@/components/pengaturan/dialogs/name-dialog"
 import { EntityList } from "@/components/pengaturan/entity-list"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { hasActiveFilters, type FilterField, type FilterValues } from "@/lib/filters"
 import { filterSimPackages } from "@/lib/master-data"
 import type { SimPackage } from "@/lib/types"
@@ -64,8 +65,12 @@ export function SimPackageView({ values }: { values: FilterValues }) {
           title="SIM Package"
           description="Data packages available for SIM card inventory."
           actions={
-            <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-              <Plus />
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<Plus className="size-4" />}
+              onClick={() => setDialog({ open: true, item: null })}
+            >
               Add Package
             </Button>
           }
@@ -80,23 +85,21 @@ export function SimPackageView({ values }: { values: FilterValues }) {
           onRetry={store.refresh}
           empty={false}
         >
-          <div className="contents">
-            <Card size="sm" className="py-0">
-              <CardContent className="px-0">
-                <EntityList
-                  items={filtered}
-                  emptyLabel={
-                    hasActiveFilters(values)
-                      ? "No results found. Change keywords or reset filters."
-                      : "No data yet."
-                  }
-                  blockReason={blockReason}
-                  onEdit={(item) => setDialog({ open: true, item })}
-                  onDelete={setPendingDelete}
-                />
-              </CardContent>
-            </Card>
-          </div>
+          <Card variant="outlined" className="py-0">
+            <CardContent className="p-0">
+              <EntityList
+                items={filtered}
+                emptyLabel={
+                  hasActiveFilters(values)
+                    ? "No results found. Change keywords or reset filters."
+                    : "No data yet."
+                }
+                blockReason={blockReason}
+                onEdit={(item) => setDialog({ open: true, item })}
+                onDelete={setPendingDelete}
+              />
+            </CardContent>
+          </Card>
         </StoreState>
       </div>
 

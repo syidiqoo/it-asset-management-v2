@@ -2,6 +2,15 @@
 
 import * as React from "react"
 import { Plus } from "lucide-react"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Chip from "@mui/material/Chip"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
 
 import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
@@ -10,17 +19,6 @@ import { StoreState } from "@/components/store-state"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
 import { UserDialog } from "@/components/pengaturan/dialogs/user-dialog"
 import { ItemActions } from "@/components/pengaturan/item-actions"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import {
   hasActiveFilters,
   type FilterField,
@@ -129,8 +127,12 @@ export function UserView({ values }: { values: FilterValues }) {
           title="User"
           description="Accounts that can sign in. Administrator manages everything; Guest is read-only."
           actions={
-            <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-              <Plus />
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<Plus className="size-4" />}
+              onClick={() => setDialog({ open: true, item: null })}
+            >
               Add User
             </Button>
           }
@@ -145,66 +147,58 @@ export function UserView({ values }: { values: FilterValues }) {
           onRetry={reload}
           empty={false}
         >
-          <div className="contents">
-            <Card size="sm" className="py-0">
-              <CardContent className="px-0">
-                {filtered.length === 0 ? (
-                  <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-                    {hasActiveFilters(values)
-                      ? "No results found. Change keywords or reset filters."
-                      : "No users yet."}
-                  </p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="pl-4">Name</TableHead>
-                        <TableHead>Username</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead className="pr-4 text-right">
-                          Actions
-                        </TableHead>
+          <Card variant="outlined" className="py-0">
+            <CardContent className="p-0">
+              {filtered.length === 0 ? (
+                <p className="px-4 py-10 text-center text-sm text-muted-foreground">
+                  {hasActiveFilters(values)
+                    ? "No results found. Change keywords or reset filters."
+                    : "No users yet."}
+                </p>
+              ) : (
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Username</TableCell>
+                      <TableCell>Role</TableCell>
+                      <TableCell>Created</TableCell>
+                      <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filtered.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">
+                          {user.name}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">
+                          {user.username}
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            size="small"
+                            color={user.role === "admin" ? "primary" : "default"}
+                            label={ROLE_LABEL[user.role]}
+                          />
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {formatDate(user.createdAt)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <ItemActions
+                            label={user.name}
+                            onEdit={() => setDialog({ open: true, item: user })}
+                            onDelete={() => setPendingDelete(user)}
+                          />
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filtered.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell className="pl-4 font-medium">
-                            {user.name}
-                          </TableCell>
-                          <TableCell className="font-mono text-xs text-muted-foreground">
-                            {user.username}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                user.role === "admin" ? "default" : "secondary"
-                              }
-                            >
-                              {ROLE_LABEL[user.role]}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {formatDate(user.createdAt)}
-                          </TableCell>
-                          <TableCell className="pr-4">
-                            <ItemActions
-                              label={user.name}
-                              onEdit={() =>
-                                setDialog({ open: true, item: user })
-                              }
-                              onDelete={() => setPendingDelete(user)}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         </StoreState>
       </div>
 

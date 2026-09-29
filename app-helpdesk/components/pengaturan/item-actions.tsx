@@ -1,13 +1,8 @@
 "use client"
 
 import { Pencil, Trash2 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import IconButton from "@mui/material/IconButton"
+import Tooltip from "@mui/material/Tooltip"
 
 export function ItemActions({
   label,
@@ -22,38 +17,30 @@ export function ItemActions({
 }) {
   return (
     <div className="flex items-center justify-end gap-1">
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label={`Edit ${label}`}
-        onClick={onEdit}
-      >
-        <Pencil />
-      </Button>
+      <IconButton size="small" aria-label={`Edit ${label}`} onClick={onEdit}>
+        <Pencil className="size-4" />
+      </IconButton>
 
       {blockReason ? (
-        <Tooltip>
-          <TooltipTrigger render={<span className="inline-flex" />}>
-            <Button
-              variant="ghost"
-              size="icon-sm"
+        <Tooltip title={blockReason}>
+          <span className="inline-flex">
+            <IconButton
+              size="small"
               disabled
               aria-label={`Delete ${label}`}
             >
-              <Trash2 />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>{blockReason}</TooltipContent>
+              <Trash2 className="size-4" />
+            </IconButton>
+          </span>
         </Tooltip>
       ) : (
-        <Button
-          variant="ghost"
-          size="icon-sm"
+        <IconButton
+          size="small"
           aria-label={`Delete ${label}`}
           onClick={onDelete}
         >
-          <Trash2 />
-        </Button>
+          <Trash2 className="size-4" />
+        </IconButton>
       )}
     </div>
   )

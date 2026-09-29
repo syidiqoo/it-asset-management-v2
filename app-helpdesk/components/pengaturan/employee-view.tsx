@@ -2,6 +2,14 @@
 
 import * as React from "react"
 import { Plus } from "lucide-react"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
 
 import { useDataStore } from "@/components/data-store"
 import { FilterBar } from "@/components/filter-bar"
@@ -12,16 +20,6 @@ import { CsvActions } from "@/components/csv-actions"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
 import { EmployeeDialog } from "@/components/pengaturan/dialogs/employee-dialog"
 import { ItemActions } from "@/components/pengaturan/item-actions"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { csvFileName, downloadCsv } from "@/lib/csv"
 import {
   collectDescendantIds,
@@ -131,8 +129,12 @@ export function EmployeeView({ values }: { values: FilterValues }) {
                 note="Import is all-or-nothing: one bad row cancels the whole process. Department must already exist; rows whose name already exists are skipped."
                 onImport={importCsv}
               />
-              <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-                <Plus />
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<Plus className="size-4" />}
+                onClick={() => setDialog({ open: true, item: null })}
+              >
                 Add Employee
               </Button>
             </>
@@ -148,54 +150,52 @@ export function EmployeeView({ values }: { values: FilterValues }) {
           onRetry={store.refresh}
           empty={false}
         >
-          <div className="contents">
-            <Card size="sm" className="py-0">
-              <CardContent className="px-0">
-                {filtered.length === 0 ? (
-                  <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-                    {hasActiveFilters(values)
-                      ? "No results found. Change keywords or reset filters."
-                      : "No data yet."}
-                  </p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="pl-4">Name</TableHead>
-                        <TableHead>Department</TableHead>
-                        <TableHead className="pr-4 text-right">Actions</TableHead>
+          <Card variant="outlined" className="py-0">
+            <CardContent className="p-0">
+              {filtered.length === 0 ? (
+                <p className="px-4 py-10 text-center text-sm text-muted-foreground">
+                  {hasActiveFilters(values)
+                    ? "No results found. Change keywords or reset filters."
+                    : "No data yet."}
+                </p>
+              ) : (
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Department</TableCell>
+                      <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filtered.map((employee) => (
+                      <TableRow key={employee.id}>
+                        <TableCell className="font-medium">
+                          {employee.name}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {departmentName(
+                            store.departments,
+                            employee.departmentId
+                          ) ?? "—"}
+                        </TableCell>
+                        <TableCell align="right">
+                          <ItemActions
+                            label={employee.name}
+                            blockReason={blockReason(employee.id)}
+                            onEdit={() =>
+                              setDialog({ open: true, item: employee })
+                            }
+                            onDelete={() => setPendingDelete(employee)}
+                          />
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filtered.map((employee) => (
-                        <TableRow key={employee.id}>
-                          <TableCell className="pl-4 font-medium">
-                            {employee.name}
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {departmentName(
-                              store.departments,
-                              employee.departmentId
-                            ) ?? "—"}
-                          </TableCell>
-                          <TableCell className="pr-4">
-                            <ItemActions
-                              label={employee.name}
-                              blockReason={blockReason(employee.id)}
-                              onEdit={() =>
-                                setDialog({ open: true, item: employee })
-                              }
-                              onDelete={() => setPendingDelete(employee)}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         </StoreState>
       </div>
 

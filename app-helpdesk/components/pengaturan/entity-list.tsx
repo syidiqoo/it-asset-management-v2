@@ -1,14 +1,12 @@
 "use client"
 
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
+
 import { ItemActions } from "@/components/pengaturan/item-actions"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 
 export function EntityList({
   items,
@@ -32,18 +30,18 @@ export function EntityList({
   }
 
   return (
-    <Table>
-      <TableHeader>
+    <Table size="small">
+      <TableHead>
         <TableRow>
-          <TableHead className="pl-4">Name</TableHead>
-          <TableHead className="pr-4 text-right">Actions</TableHead>
+          <TableCell>Name</TableCell>
+          <TableCell align="right">Actions</TableCell>
         </TableRow>
-      </TableHeader>
+      </TableHead>
       <TableBody>
         {items.map((item) => (
           <TableRow key={item.id}>
-            <TableCell className="pl-4 font-medium">{item.name}</TableCell>
-            <TableCell className="pr-4">
+            <TableCell className="font-medium">{item.name}</TableCell>
+            <TableCell align="right">
               <ItemActions
                 label={item.name}
                 onEdit={() => onEdit(item)}

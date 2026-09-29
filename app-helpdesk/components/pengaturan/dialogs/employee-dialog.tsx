@@ -2,25 +2,15 @@
 
 import * as React from "react"
 import { Save } from "lucide-react"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import MenuItem from "@mui/material/MenuItem"
+import TextField from "@mui/material/TextField"
 
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { flattenDepartments } from "@/lib/departments"
 import type { Department, Employee } from "@/lib/types"
 
@@ -41,10 +31,15 @@ export function EmployeeDialog({
   ...props
 }: EmployeeDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog
+      open={open}
+      onClose={() => onOpenChange(false)}
+      maxWidth="xs"
+      fullWidth
+    >
+      {open ? (
         <EmployeeDialogForm {...props} onDone={() => onOpenChange(false)} />
-      </DialogContent>
+      ) : null}
     </Dialog>
   )
 }
@@ -79,7 +74,10 @@ function EmployeeDialogForm({
       return
     }
 
-    const message = await onSubmit(trimmed, department ? Number(department) : null)
+    const message = await onSubmit(
+      trimmed,
+      department ? Number(department) : null
+    )
     if (message) {
       setError(message)
       return
@@ -89,66 +87,57 @@ function EmployeeDialogForm({
   }
 
   return (
-    <>
-      <DialogHeader>
-        <DialogTitle>
-          {employee ? "Edit Employee" : "Add Employee"}
-        </DialogTitle>
-        <DialogDescription>
+    <form
+      onSubmit={handleSubmit}
+      className="flex min-h-0 flex-1 flex-col"
+    >
+      <DialogTitle>{employee ? "Edit Employee" : "Add Employee"}</DialogTitle>
+      <DialogContent className="space-y-4">
+        <DialogContentText>
           Employees are used as asset and SIM card holders.
-        </DialogDescription>
-      </DialogHeader>
+        </DialogContentText>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-1.5">
-          <Label htmlFor="employee-name">Employee Name</Label>
-          <Input
-            id="employee-name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Budi Santoso"
-          />
-        </div>
+        <TextField
+          id="employee-name"
+          label="Employee Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Budi Santoso"
+          fullWidth
+          size="small"
+          autoFocus
+        />
 
-        <div className="space-y-1.5">
-          <Label>Department</Label>
-          <Select
-            items={[
-              { label: "— No department —", value: "" },
-              ...departmentOptions.map((node) => ({
-                label: node.path,
-                value: String(node.id),
-              })),
-            ]}
-            value={department}
-            onValueChange={(value) => setDepartment(value ?? "")}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="— No department —" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">— No department —</SelectItem>
-              {departmentOptions.map((node) => (
-                <SelectItem key={node.id} value={String(node.id)}>
-                  {node.path}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <TextField
+          select
+          label="Department"
+          value={department}
+          onChange={(event) => setDepartment(event.target.value)}
+          fullWidth
+          size="small"
+        >
+          <MenuItem value="">— No department —</MenuItem>
+          {departmentOptions.map((node) => (
+            <MenuItem key={node.id} value={String(node.id)}>
+              {node.path}
+            </MenuItem>
+          ))}
+        </TextField>
 
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
-
-        <DialogFooter className="-mx-4">
-          <Button type="button" variant="outline" onClick={onDone}>
-            Cancel
-          </Button>
-          <Button type="submit">
-            <Save />
-            Save
-          </Button>
-        </DialogFooter>
-      </form>
-    </>
+      </DialogContent>
+      <DialogActions>
+        <Button type="button" variant="outlined" onClick={onDone}>
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={<Save className="size-4" />}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </form>
   )
 }

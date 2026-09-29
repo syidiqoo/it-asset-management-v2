@@ -2,13 +2,9 @@
 
 import * as React from "react"
 import { Building2, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react"
+import IconButton from "@mui/material/IconButton"
+import Tooltip from "@mui/material/Tooltip"
 
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { buildDepartmentTree, MAX_DEPARTMENT_LEVEL } from "@/lib/departments"
 import { cn } from "@/lib/utils"
 import type { Department, DepartmentNode } from "@/lib/types"
@@ -83,9 +79,8 @@ export function DepartmentTree({
             />
 
             {hasChildren ? (
-              <Button
-                variant="ghost"
-                size="icon-sm"
+              <IconButton
+                size="small"
                 className="shrink-0"
                 aria-label={`${expanded ? "Collapse" : "Expand"} ${node.name}`}
                 aria-expanded={expanded}
@@ -93,11 +88,11 @@ export function DepartmentTree({
               >
                 <ChevronDown
                   className={cn(
-                    "transition-transform",
+                    "size-4 transition-transform",
                     !expanded && "-rotate-90"
                   )}
                 />
-              </Button>
+              </IconButton>
             ) : (
               <span aria-hidden className="size-7 shrink-0" />
             )}
@@ -106,64 +101,57 @@ export function DepartmentTree({
             <span className="truncate text-sm font-medium">{node.name}</span>
             <div className="ml-auto flex shrink-0 items-center gap-1">
               {canAddChild ? (
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
+                <IconButton
+                  size="small"
                   aria-label={`Add sub-department ${node.name}`}
                   onClick={() => onAddChild(node)}
                 >
-                  <Plus />
-                </Button>
+                  <Plus className="size-4" />
+                </IconButton>
               ) : (
-                <Tooltip>
-                  <TooltipTrigger render={<span className="inline-flex" />}>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
+                <Tooltip
+                  title={`Maximum ${MAX_DEPARTMENT_LEVEL} department levels.`}
+                >
+                  <span className="inline-flex">
+                    <IconButton
+                      size="small"
                       disabled
                       aria-label={`Add sub-department ${node.name}`}
                     >
-                      <Plus />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Maximum {MAX_DEPARTMENT_LEVEL} department levels.
-                  </TooltipContent>
+                      <Plus className="size-4" />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               )}
 
-              <Button
-                variant="ghost"
-                size="icon-sm"
+              <IconButton
+                size="small"
                 aria-label={`Edit ${node.name}`}
                 onClick={() => onEdit(node)}
               >
-                <Pencil />
-              </Button>
+                <Pencil className="size-4" />
+              </IconButton>
 
               {reason ? (
-                <Tooltip>
-                  <TooltipTrigger render={<span className="inline-flex" />}>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
+                <Tooltip title={reason}>
+                  <span className="inline-flex">
+                    <IconButton
+                      size="small"
                       disabled
                       aria-label={`Delete ${node.name}`}
                     >
-                      <Trash2 />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{reason}</TooltipContent>
+                      <Trash2 className="size-4" />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               ) : (
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
+                <IconButton
+                  size="small"
                   aria-label={`Delete ${node.name}`}
                   onClick={() => onDelete(node)}
                 >
-                  <Trash2 />
-                </Button>
+                  <Trash2 className="size-4" />
+                </IconButton>
               )}
             </div>
           </div>

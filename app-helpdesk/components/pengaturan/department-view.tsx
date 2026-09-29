@@ -2,6 +2,9 @@
 
 import * as React from "react"
 import { Plus } from "lucide-react"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
 
 import { useDataStore } from "@/components/data-store"
 import { FilterBar } from "@/components/filter-bar"
@@ -12,13 +15,8 @@ import { CsvActions } from "@/components/csv-actions"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
 import { DepartmentTree } from "@/components/pengaturan/department-tree"
 import { DepartmentDialog } from "@/components/pengaturan/dialogs/department-dialog"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { csvFileName, downloadCsv } from "@/lib/csv"
-import {
-  flattenDepartments,
-  MAX_DEPARTMENT_LEVEL,
-} from "@/lib/departments"
+import { flattenDepartments, MAX_DEPARTMENT_LEVEL } from "@/lib/departments"
 import {
   hasActiveFilters,
   type FilterField,
@@ -126,12 +124,13 @@ export function DepartmentView({ values }: { values: FilterValues }) {
                 onImport={importCsv}
               />
               <Button
-                size="sm"
+                size="small"
+                variant="contained"
+                startIcon={<Plus className="size-4" />}
                 onClick={() =>
                   setDialog({ open: true, item: null, parentId: null })
                 }
               >
-                <Plus />
                 Add Department
               </Button>
             </>
@@ -147,28 +146,26 @@ export function DepartmentView({ values }: { values: FilterValues }) {
           onRetry={store.refresh}
           empty={false}
         >
-          <div className="contents">
-            <Card size="sm" className="py-0">
-              <CardContent className="px-0">
-                <DepartmentTree
-                  departments={filtered}
-                  emptyLabel={
-                    hasActiveFilters(values)
-                      ? "No results found. Change keywords or reset filters."
-                      : "No departments yet."
-                  }
-                  deleteBlockReason={deleteBlockReason}
-                  onAddChild={(node) =>
-                    setDialog({ open: true, item: null, parentId: node.id })
-                  }
-                  onEdit={(node) =>
-                    setDialog({ open: true, item: node, parentId: null })
-                  }
-                  onDelete={setPendingDelete}
-                />
-              </CardContent>
-            </Card>
-          </div>
+          <Card variant="outlined" className="py-0">
+            <CardContent className="p-0">
+              <DepartmentTree
+                departments={filtered}
+                emptyLabel={
+                  hasActiveFilters(values)
+                    ? "No results found. Change keywords or reset filters."
+                    : "No departments yet."
+                }
+                deleteBlockReason={deleteBlockReason}
+                onAddChild={(node) =>
+                  setDialog({ open: true, item: null, parentId: node.id })
+                }
+                onEdit={(node) =>
+                  setDialog({ open: true, item: node, parentId: null })
+                }
+                onDelete={setPendingDelete}
+              />
+            </CardContent>
+          </Card>
         </StoreState>
       </div>
 

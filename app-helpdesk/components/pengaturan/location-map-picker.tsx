@@ -3,10 +3,9 @@
 import * as React from "react"
 import L from "leaflet"
 import { Search } from "lucide-react"
+import Button from "@mui/material/Button"
+import TextField from "@mui/material/TextField"
 import "leaflet/dist/leaflet.css"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 
 const INDONESIA_CENTER: L.LatLngExpression = [-2.5, 118]
 const INDONESIA_ZOOM = 5
@@ -157,7 +156,7 @@ export function LocationMapPicker({
   return (
     <div className="space-y-2">
       <div className="flex gap-2">
-        <Input
+        <TextField
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={(event) => {
@@ -167,15 +166,20 @@ export function LocationMapPicker({
             }
           }}
           placeholder="Search address or place…"
-          aria-label="Search address or place"
+          slotProps={{
+            htmlInput: { "aria-label": "Search address or place" },
+          }}
+          size="small"
+          fullWidth
         />
         <Button
           type="button"
-          variant="outline"
+          variant="outlined"
           onClick={() => void runSearch()}
           disabled={searching || query.trim() === ""}
+          startIcon={<Search className="size-4" />}
+          className="shrink-0"
         >
-          <Search />
           {searching ? "Searching…" : "Search"}
         </Button>
       </div>

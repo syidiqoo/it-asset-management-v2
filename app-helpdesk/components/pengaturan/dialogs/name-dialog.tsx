@@ -2,18 +2,13 @@
 
 import * as React from "react"
 import { Save } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import TextField from "@mui/material/TextField"
 
 type NameDialogProps = {
   open: boolean
@@ -28,10 +23,13 @@ type NameDialogProps = {
 
 export function NameDialog({ open, onOpenChange, ...props }: NameDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <NameDialogForm {...props} onDone={() => onOpenChange(false)} />
-      </DialogContent>
+    <Dialog
+      open={open}
+      onClose={() => onOpenChange(false)}
+      maxWidth="xs"
+      fullWidth
+    >
+      {open ? <NameDialogForm {...props} onDone={() => onOpenChange(false)} /> : null}
     </Dialog>
   )
 }
@@ -69,32 +67,39 @@ function NameDialogForm({
   }
 
   return (
-    <>
-      <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
-      </DialogHeader>
-
-      <form onSubmit={handleSubmit} className="space-y-2">
-        <Label htmlFor="name-dialog-input">{label}</Label>
-        <Input
+    <form
+      onSubmit={handleSubmit}
+      className="flex min-h-0 flex-1 flex-col"
+    >
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{description}</DialogContentText>
+        <TextField
           id="name-dialog-input"
+          label={label}
           value={value}
           onChange={(event) => setValue(event.target.value)}
           placeholder={placeholder}
+          error={Boolean(error)}
+          helperText={error ?? undefined}
+          autoFocus
+          fullWidth
+          size="small"
+          className="mt-4"
         />
-        {error ? <p className="text-xs text-destructive">{error}</p> : null}
-
-        <DialogFooter className="-mx-4 mt-2">
-          <Button type="button" variant="outline" onClick={onDone}>
-            Cancel
-          </Button>
-          <Button type="submit">
-            <Save />
-            Save
-          </Button>
-        </DialogFooter>
-      </form>
-    </>
+      </DialogContent>
+      <DialogActions>
+        <Button type="button" variant="outlined" onClick={onDone}>
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={<Save className="size-4" />}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </form>
   )
 }

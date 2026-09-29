@@ -3,19 +3,14 @@
 import * as React from "react"
 import dynamic from "next/dynamic"
 import { Save } from "lucide-react"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import TextField from "@mui/material/TextField"
 
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
   LOCATION_CODE_MAX,
   LOCATION_CODE_MIN,
@@ -94,10 +89,15 @@ export function LocationDialog({
   ...props
 }: LocationDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl">
+    <Dialog
+      open={open}
+      onClose={() => onOpenChange(false)}
+      maxWidth="sm"
+      fullWidth
+    >
+      {open ? (
         <LocationDialogForm {...props} onDone={() => onOpenChange(false)} />
-      </DialogContent>
+      ) : null}
     </Dialog>
   )
 }
@@ -175,131 +175,116 @@ function LocationDialogForm({
   }
 
   return (
-    <>
-      <DialogHeader>
-        <DialogTitle>
-          {location ? "Edit Location" : "Add Location"}
-        </DialogTitle>
-        <DialogDescription>
+    <form
+      onSubmit={handleSubmit}
+      className="flex min-h-0 flex-1 flex-col"
+    >
+      <DialogTitle>{location ? "Edit Location" : "Add Location"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
           Location code is {normalizeLocationCode(String(LOCATION_CODE_MIN))}
           {"–"}
           {LOCATION_CODE_MAX} and must be unique.
-        </DialogDescription>
-      </DialogHeader>
+        </DialogContentText>
 
-      <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="location-code">Code</Label>
-          <Input
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <TextField
             id="location-code"
+            label="Code"
             value={form.code}
             onChange={(event) => set("code", event.target.value)}
             placeholder="001"
-            maxLength={3}
-            inputMode="numeric"
-            className="font-mono"
+            error={Boolean(errors.code)}
+            helperText={errors.code ?? "Example: 001, 002, 100."}
+            slotProps={{ htmlInput: { maxLength: 3, inputMode: "numeric" } }}
+            className="font-mono sm:col-span-2"
+            fullWidth
+            size="small"
           />
-          {errors.code ? (
-            <p className="text-xs text-destructive">{errors.code}</p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Example: 001, 002, 100.
+
+          <div className="sm:col-span-2">
+            <LocationMapPicker
+              latitude={parsedLatitude}
+              longitude={parsedLongitude}
+              onChange={handleMapChange}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Search a place, click the map, or drag the pin to fill latitude
+              and longitude.
             </p>
-          )}
-        </div>
+          </div>
 
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label>Map</Label>
-          <LocationMapPicker
-            latitude={parsedLatitude}
-            longitude={parsedLongitude}
-            onChange={handleMapChange}
-          />
-          <p className="text-xs text-muted-foreground">
-            Search a place, click the map, or drag the pin to fill latitude and
-            longitude.
-          </p>
-        </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="location-latitude">Latitude</Label>
-          <Input
+          <TextField
             id="location-latitude"
+            label="Latitude"
             type="number"
-            step="any"
             value={form.latitude}
             onChange={(event) => set("latitude", event.target.value)}
             placeholder="-6.208800"
+            error={Boolean(errors.latitude)}
+            helperText={errors.latitude ?? undefined}
+            slotProps={{ htmlInput: { step: "any" } }}
             className="font-mono"
+            fullWidth
+            size="small"
           />
-          {errors.latitude ? (
-            <p className="text-xs text-destructive">{errors.latitude}</p>
-          ) : null}
-        </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="location-longitude">Longitude</Label>
-          <Input
+          <TextField
             id="location-longitude"
+            label="Longitude"
             type="number"
-            step="any"
             value={form.longitude}
             onChange={(event) => set("longitude", event.target.value)}
             placeholder="106.845600"
+            error={Boolean(errors.longitude)}
+            helperText={errors.longitude ?? "Coordinates may be left empty."}
+            slotProps={{ htmlInput: { step: "any" } }}
             className="font-mono"
+            fullWidth
+            size="small"
           />
-          {errors.longitude ? (
-            <p className="text-xs text-destructive">{errors.longitude}</p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Coordinates may be left empty.
-            </p>
-          )}
-        </div>
 
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="location-address">Address</Label>
-          <Input
+          <TextField
             id="location-address"
+            label="Address"
             value={form.address}
             onChange={(event) => set("address", event.target.value)}
             placeholder="Kantor Pusat"
+            error={Boolean(errors.address)}
+            helperText={errors.address ?? "Short location or area name."}
+            className="sm:col-span-2"
+            fullWidth
+            size="small"
           />
-          {errors.address ? (
-            <p className="text-xs text-destructive">{errors.address}</p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Short location or area name.
-            </p>
-          )}
-        </div>
 
-        <div className="space-y-1.5 sm:col-span-2">
-          <Label htmlFor="location-detail-street">Detail Street Address</Label>
-          <Textarea
+          <TextField
             id="location-detail-street"
+            label="Detail Street Address"
             value={form.detailStreetAddress}
             onChange={(event) => set("detailStreetAddress", event.target.value)}
             placeholder="Gedung Utama, Jl. Jenderal Sudirman No. 1, Jakarta Pusat"
-            rows={2}
+            error={Boolean(errors.detailStreetAddress)}
+            helperText={errors.detailStreetAddress ?? undefined}
+            multiline
+            minRows={2}
+            className="sm:col-span-2"
+            fullWidth
+            size="small"
           />
-          {errors.detailStreetAddress ? (
-            <p className="text-xs text-destructive">
-              {errors.detailStreetAddress}
-            </p>
-          ) : null}
         </div>
-
-        <DialogFooter className="sm:col-span-2">
-          <Button type="button" variant="outline" onClick={onDone}>
-            Cancel
-          </Button>
-          <Button type="submit">
-            <Save />
-            Save
-          </Button>
-        </DialogFooter>
-      </form>
-    </>
+      </DialogContent>
+      <DialogActions>
+        <Button type="button" variant="outlined" onClick={onDone}>
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={<Save className="size-4" />}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </form>
   )
 }

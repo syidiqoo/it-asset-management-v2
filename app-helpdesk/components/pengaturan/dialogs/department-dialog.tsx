@@ -2,25 +2,15 @@
 
 import * as React from "react"
 import { Save } from "lucide-react"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import MenuItem from "@mui/material/MenuItem"
+import TextField from "@mui/material/TextField"
 
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   collectDescendantIds,
   flattenDepartments,
@@ -46,10 +36,15 @@ export function DepartmentDialog({
   ...props
 }: DepartmentDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog
+      open={open}
+      onClose={() => onOpenChange(false)}
+      maxWidth="xs"
+      fullWidth
+    >
+      {open ? (
         <DepartmentDialogForm {...props} onDone={() => onOpenChange(false)} />
-      </DialogContent>
+      ) : null}
     </Dialog>
   )
 }
@@ -108,70 +103,65 @@ function DepartmentDialogForm({
   }
 
   return (
-    <>
-      <DialogHeader>
-        <DialogTitle>
-          {department ? "Edit Department" : "Add Department"}
-        </DialogTitle>
-        <DialogDescription>
-          Departments can nest via parent, maximum{" "}
-          {MAX_DEPARTMENT_LEVEL} levels.
-        </DialogDescription>
-      </DialogHeader>
+    <form
+      onSubmit={handleSubmit}
+      className="flex min-h-0 flex-1 flex-col"
+    >
+      <DialogTitle>
+        {department ? "Edit Department" : "Add Department"}
+      </DialogTitle>
+      <DialogContent className="space-y-4">
+        <DialogContentText>
+          Departments can nest via parent, maximum {MAX_DEPARTMENT_LEVEL}{" "}
+          levels.
+        </DialogContentText>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-1.5">
-          <Label htmlFor="department-name">Department Name</Label>
-          <Input
-            id="department-name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Base Jakarta"
-          />
-        </div>
+        <TextField
+          id="department-name"
+          label="Department Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Base Jakarta"
+          fullWidth
+          size="small"
+          autoFocus
+        />
 
-        <div className="space-y-1.5">
-          <Label>Parent Department</Label>
-          <Select
-            items={[
-              { label: "— No parent (level 1) —", value: "" },
-              ...parentOptions.map((node) => ({
-                label: node.path,
-                value: String(node.id),
-              })),
-            ]}
+        <div>
+          <TextField
+            select
+            label="Parent Department"
             value={parent}
-            onValueChange={(value) => setParent(value ?? "")}
+            onChange={(event) => setParent(event.target.value)}
+            fullWidth
+            size="small"
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="— No parent —" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">— No parent (level 1) —</SelectItem>
-              {parentOptions.map((node) => (
-                <SelectItem key={node.id} value={String(node.id)}>
-                  {node.path}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <p className="text-xs text-muted-foreground">
+            <MenuItem value="">— No parent (level 1) —</MenuItem>
+            {parentOptions.map((node) => (
+              <MenuItem key={node.id} value={String(node.id)}>
+                {node.path}
+              </MenuItem>
+            ))}
+          </TextField>
+          <p className="mt-1 text-xs text-muted-foreground">
             This department will be at level {parentLevel + 1}.
           </p>
         </div>
 
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
-
-        <DialogFooter className="-mx-4">
-          <Button type="button" variant="outline" onClick={onDone}>
-            Cancel
-          </Button>
-          <Button type="submit">
-            <Save />
-            Save
-          </Button>
-        </DialogFooter>
-      </form>
-    </>
+      </DialogContent>
+      <DialogActions>
+        <Button type="button" variant="outlined" onClick={onDone}>
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={<Save className="size-4" />}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </form>
   )
 }

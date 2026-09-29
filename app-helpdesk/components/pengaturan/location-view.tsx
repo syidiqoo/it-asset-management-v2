@@ -2,6 +2,15 @@
 
 import * as React from "react"
 import { Plus } from "lucide-react"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Chip from "@mui/material/Chip"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
 
 import { useDataStore } from "@/components/data-store"
 import { FilterBar } from "@/components/filter-bar"
@@ -12,17 +21,6 @@ import { CsvActions } from "@/components/csv-actions"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
 import { LocationDialog } from "@/components/pengaturan/dialogs/location-dialog"
 import { ItemActions } from "@/components/pengaturan/item-actions"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { csvFileName, downloadCsv } from "@/lib/csv"
 import {
   hasActiveFilters,
@@ -120,8 +118,12 @@ export function LocationView({ values }: { values: FilterValues }) {
                 fileHint="Coordinates may be left empty."
                 note="Export includes every location. Import is not available for locations yet."
               />
-              <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-                <Plus />
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<Plus className="size-4" />}
+                onClick={() => setDialog({ open: true, item: null })}
+              >
                 Add Location
               </Button>
             </>
@@ -137,61 +139,62 @@ export function LocationView({ values }: { values: FilterValues }) {
           onRetry={store.refresh}
           empty={false}
         >
-          <div className="contents">
-            <Card size="sm" className="py-0">
-              <CardContent className="px-0">
-                {filtered.length === 0 ? (
-                  <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-                    {hasActiveFilters(values)
-                      ? "No results found. Change keywords or reset filters."
-                      : "No data yet."}
-                  </p>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="pl-4">Code</TableHead>
-                        <TableHead>Address</TableHead>
-                        <TableHead>Detail Street Address</TableHead>
-                        <TableHead>Coordinates</TableHead>
-                        <TableHead className="pr-4 text-right">Actions</TableHead>
+          <Card variant="outlined" className="py-0">
+            <CardContent className="p-0">
+              {filtered.length === 0 ? (
+                <p className="px-4 py-10 text-center text-sm text-muted-foreground">
+                  {hasActiveFilters(values)
+                    ? "No results found. Change keywords or reset filters."
+                    : "No data yet."}
+                </p>
+              ) : (
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Code</TableCell>
+                      <TableCell>Address</TableCell>
+                      <TableCell>Detail Street Address</TableCell>
+                      <TableCell>Coordinates</TableCell>
+                      <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filtered.map((location) => (
+                      <TableRow key={location.id}>
+                        <TableCell>
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label={location.code}
+                            className="font-mono"
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {location.address ?? "—"}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {location.detailStreetAddress}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">
+                          {formatCoordinates(location)}
+                        </TableCell>
+                        <TableCell align="right">
+                          <ItemActions
+                            label={location.code}
+                            blockReason={deleteBlockReason(location.id)}
+                            onEdit={() =>
+                              setDialog({ open: true, item: location })
+                            }
+                            onDelete={() => setPendingDelete(location)}
+                          />
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filtered.map((location) => (
-                        <TableRow key={location.id}>
-                          <TableCell className="pl-4">
-                            <Badge variant="outline" className="font-mono">
-                              {location.code}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {location.address ?? "—"}
-                          </TableCell>
-                          <TableCell className="whitespace-normal! text-muted-foreground">
-                            {location.detailStreetAddress}
-                          </TableCell>
-                          <TableCell className="font-mono text-xs text-muted-foreground">
-                            {formatCoordinates(location)}
-                          </TableCell>
-                          <TableCell className="pr-4">
-                            <ItemActions
-                              label={location.code}
-                              blockReason={deleteBlockReason(location.id)}
-                              onEdit={() =>
-                                setDialog({ open: true, item: location })
-                              }
-                              onDelete={() => setPendingDelete(location)}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         </StoreState>
       </div>
 
