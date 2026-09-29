@@ -3,18 +3,16 @@
 import * as React from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Search, X } from "lucide-react"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import FormControl from "@mui/material/FormControl"
+import FormLabel from "@mui/material/FormLabel"
+import InputAdornment from "@mui/material/InputAdornment"
+import MenuItem from "@mui/material/MenuItem"
+import OutlinedInput from "@mui/material/OutlinedInput"
+import Select from "@mui/material/Select"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   buildFilterQuery,
   hasActiveFilters,
@@ -55,7 +53,7 @@ export function FilterBar({
   }
 
   return (
-    <Card size="sm">
+    <Card variant="outlined">
       <CardContent className="space-y-3">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {fields.map((field) =>
@@ -66,62 +64,62 @@ export function FilterBar({
                   event.preventDefault()
                   navigate({})
                 }}
-                className="space-y-1.5"
               >
-                <Label htmlFor={`filter-${field.name}`}>{field.label}</Label>
-                <div className="relative">
-                  <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                  <Input
+                <FormControl fullWidth>
+                  <FormLabel htmlFor={`filter-${field.name}`}>
+                    {field.label}
+                  </FormLabel>
+                  <OutlinedInput
                     id={`filter-${field.name}`}
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder={field.placeholder}
-                    className="pr-14 pl-8"
+                    size="small"
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Search className="size-3.5" />
+                      </InputAdornment>
+                    }
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <Button type="submit" size="small" variant="text">
+                          Search
+                        </Button>
+                      </InputAdornment>
+                    }
                   />
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    size="xs"
-                    className="absolute top-1/2 right-1 -translate-y-1/2"
-                  >
-                    Search
-                  </Button>
-                </div>
+                </FormControl>
               </form>
             ) : (
-              <div key={field.name} className="space-y-1.5">
-                <Label>{field.label}</Label>
+              <FormControl key={field.name} fullWidth>
+                <FormLabel htmlFor={`filter-${field.name}`}>
+                  {field.label}
+                </FormLabel>
                 <Select
-                  items={[
-                    { label: field.allLabel, value: "" },
-                    ...field.options,
-                  ]}
+                  id={`filter-${field.name}`}
                   value={values[field.name] ?? ""}
-                  onValueChange={(value) =>
-                    navigate({ [field.name]: value ?? "" })
+                  onChange={(event) =>
+                    navigate({ [field.name]: event.target.value })
                   }
+                  displayEmpty
+                  size="small"
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder={field.allLabel} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">{field.allLabel}</SelectItem>
-                    {field.options.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                  <MenuItem value="">{field.allLabel}</MenuItem>
+                  {field.options.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
                 </Select>
-              </div>
+              </FormControl>
             )
           )}
         </div>
 
         {hasActiveFilters(values) ? (
           <div className="flex justify-end">
-            <Button variant="ghost" size="sm" onClick={reset}>
-              <X />
+            <Button variant="text" size="small" onClick={reset}>
+              <X className="size-4" />
               Reset filters
             </Button>
           </div>

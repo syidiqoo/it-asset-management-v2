@@ -1,19 +1,13 @@
 "use client"
 
 import * as React from "react"
-
-import { TriangleAlert } from "lucide-react"
-
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import Alert from "@mui/material/Alert"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
 
 export function ConfirmDeleteDialog({
   open,
@@ -49,27 +43,34 @@ export function ConfirmDeleteDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog
+      open={open}
+      onClose={() => handleOpenChange(false)}
+      maxWidth="xs"
+      fullWidth
+    >
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
+        <DialogContentText>{description}</DialogContentText>
         {error ? (
-          <Alert variant="destructive">
-            <TriangleAlert />
-            <AlertDescription>{error}</AlertDescription>
+          <Alert severity="error" className="mt-4">
+            {error}
           </Alert>
         ) : null}
-        <DialogFooter>
-          <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button variant="destructive" disabled={busy} onClick={confirm}>
-            {busy ? "Deleting…" : "Delete"}
-          </Button>
-        </DialogFooter>
       </DialogContent>
+      <DialogActions>
+        <Button variant="outlined" onClick={() => handleOpenChange(false)}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          disabled={busy}
+          onClick={confirm}
+        >
+          {busy ? "Deleting…" : "Delete"}
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }

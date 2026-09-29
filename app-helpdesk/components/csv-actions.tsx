@@ -8,32 +8,23 @@ import {
   FileText,
   FileUp,
 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { TriangleAlert } from "lucide-react"
+import Alert from "@mui/material/Alert"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
 import { toast } from "sonner"
 import { parseCsv } from "@/lib/csv"
-import {
-  downloadPdfReport,
-  type PdfExportData,
-} from "@/lib/report"
+import { downloadPdfReport, type PdfExportData } from "@/lib/report"
 
 const PREVIEW_ROWS = 5
 const PREVIEW_CELLS = 6
@@ -56,6 +47,7 @@ export function CsvActions({
   pdf?: PdfExport
 }) {
   const [open, setOpen] = React.useState(false)
+  const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null)
   const [fileName, setFileName] = React.useState<string | null>(null)
   const [rows, setRows] = React.useState<string[][]>([])
   const [importing, setImporting] = React.useState(false)
@@ -67,6 +59,11 @@ export function CsvActions({
     setRows([])
     setError(null)
     if (inputRef.current) inputRef.current.value = ""
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    reset()
   }
 
   const handleFile = async (file: File | undefined) => {
@@ -105,50 +102,77 @@ export function CsvActions({
   return (
     <>
       {pdf ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
-            <Download />
+        <>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Download className="size-4" />}
+            endIcon={<ChevronDown className="size-4" />}
+            onClick={(event) => setMenuAnchor(event.currentTarget)}
+          >
             Export
-            <ChevronDown />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem onClick={handleExportPdf}>
-              <FileText />
+          </Button>
+          <Menu
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={() => setMenuAnchor(null)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <MenuItem
+              onClick={() => {
+                setMenuAnchor(null)
+                handleExportPdf()
+              }}
+            >
+              <FileText className="mr-2 size-4" />
               Export PDF
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onExport}>
-              <FileSpreadsheet />
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setMenuAnchor(null)
+                onExport()
+              }}
+            >
+              <FileSpreadsheet className="mr-2 size-4" />
               Export CSV
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </MenuItem>
+          </Menu>
+        </>
       ) : (
-        <Button variant="outline" size="sm" onClick={onExport}>
-          <Download />
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<Download className="size-4" />}
+          onClick={onExport}
+        >
           Export CSV
         </Button>
       )}
 
+      <Button
+        variant="outlined"
+        size="small"
+        startIcon={<FileUp className="size-4" />}
+        onClick={() => setOpen(true)}
+      >
+        Import CSV
+      </Button>
+
       <Dialog
         open={open}
-        onOpenChange={(next) => {
-          setOpen(next)
-          if (!next) reset()
-        }}
+        onClose={handleClose}
+        maxWidth="md"
+        fullWidth
+        scroll="body"
       >
-        <DialogTrigger render={<Button variant="outline" size="sm" />}>
-          <FileUp />
-          Import CSV
-        </DialogTrigger>
-        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Import CSV</DialogTitle>
-            <DialogDescription>
-              Required columns: {columns.join(", ")}.
-            </DialogDescription>
-          </DialogHeader>
+        <DialogTitle>Import CSV</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText>
+            Required columns: {columns.join(", ")}.
+          </DialogContentText>
 
-          <div className="space-y-3">
+          <div className="mt-3 space-y-3">
             <label
               htmlFor="csv-file"
               className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-dashed bg-muted/40 px-4 py-6 text-center transition-colors hover:bg-muted/70"
@@ -171,20 +195,20 @@ export function CsvActions({
             </label>
 
             {rows.length > 0 ? (
-              <Table>
-                <TableHeader>
+              <Table size="small">
+                <TableHead>
                   <TableRow>
                     {previewHeader.map((cell, index) => (
-                      <TableHead
+                      <TableCell
                         key={index}
                         className="max-w-32 truncate text-xs"
                         title={cell}
                       >
                         {cell}
-                      </TableHead>
+                      </TableCell>
                     ))}
                   </TableRow>
-                </TableHeader>
+                </TableHead>
                 <TableBody>
                   {previewRows.map((row, index) => (
                     <TableRow key={index}>
@@ -207,38 +231,30 @@ export function CsvActions({
               <p className="text-xs text-muted-foreground">
                 Showing {previewRows.length} of {Math.max(rows.length - 1, 0)}{" "}
                 data rows, {previewHeader.length} of {header.length} columns
-                {hiddenCount > 0
-                  ? ` (${hiddenCount} more hidden)`
-                  : ""}
-                .
+                {hiddenCount > 0 ? ` (${hiddenCount} more hidden)` : ""}.
               </p>
             ) : null}
 
-            {error ? (
-              <Alert variant="destructive">
-                <TriangleAlert />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            ) : null}
+            {error ? <Alert severity="error">{error}</Alert> : null}
 
             <p className="rounded-lg border bg-muted/40 p-3 text-xs break-words text-muted-foreground">
               {note}
             </p>
           </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Close
-            </Button>
-            <Button
-              disabled={!onImport || rows.length === 0 || importing}
-              onClick={handleImport}
-            >
-              <FileUp />
-              {importing ? "Importing..." : "Import"}
-            </Button>
-          </DialogFooter>
         </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<FileUp className="size-4" />}
+            disabled={!onImport || rows.length === 0 || importing}
+            onClick={handleImport}
+          >
+            {importing ? "Importing..." : "Import"}
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   )

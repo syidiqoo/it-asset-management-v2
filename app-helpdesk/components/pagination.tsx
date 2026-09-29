@@ -1,10 +1,12 @@
 "use client"
 
 import type { ReactNode } from "react"
-import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import Button from "@mui/material/Button"
 
-import { Button } from "@/components/ui/button"
+import Link from "@/components/ui/link"
+
+const ICON_BUTTON = "size-7 min-w-0 p-0"
 
 function pageWindow(page: number, pageCount: number): (number | "gap")[] {
   if (pageCount <= 7) {
@@ -43,7 +45,13 @@ function PageActionButton({
 }) {
   if (disabled || (!buildHref && !onPageChange)) {
     return (
-      <Button variant="outline" size="icon-sm" disabled aria-label={label}>
+      <Button
+        variant="outlined"
+        size="small"
+        className={ICON_BUTTON}
+        disabled
+        aria-label={label}
+      >
         {children}
       </Button>
     )
@@ -51,8 +59,9 @@ function PageActionButton({
   if (onPageChange) {
     return (
       <Button
-        variant="outline"
-        size="icon-sm"
+        variant="outlined"
+        size="small"
+        className={ICON_BUTTON}
         onClick={() => onPageChange(targetPage)}
         aria-label={label}
       >
@@ -62,11 +71,11 @@ function PageActionButton({
   }
   return (
     <Button
-      variant="outline"
-      size="icon-sm"
-      render={
-        <Link href={(buildHref as (page: number) => string)(targetPage)} />
-      }
+      variant="outlined"
+      size="small"
+      className={ICON_BUTTON}
+      component={Link}
+      href={(buildHref as (page: number) => string)(targetPage)}
       aria-label={label}
     >
       {children}
@@ -88,8 +97,9 @@ function PageNumberButton({
   if (onPageChange) {
     return (
       <Button
-        variant={active ? "default" : "outline"}
-        size="icon-sm"
+        variant={active ? "contained" : "outlined"}
+        size="small"
+        className={ICON_BUTTON}
         onClick={() => onPageChange(item)}
         aria-current={active ? "page" : undefined}
       >
@@ -99,9 +109,11 @@ function PageNumberButton({
   }
   return (
     <Button
-      variant={active ? "default" : "outline"}
-      size="icon-sm"
-      render={<Link href={(buildHref as (page: number) => string)(item)} />}
+      variant={active ? "contained" : "outlined"}
+      size="small"
+      className={ICON_BUTTON}
+      component={Link}
+      href={(buildHref as (page: number) => string)(item)}
       aria-current={active ? "page" : undefined}
     >
       {item}
@@ -151,7 +163,7 @@ export function Pagination({
           buildHref={buildHref}
           onPageChange={onPageChange}
         >
-          <ChevronLeft />
+          <ChevronLeft className="size-4" />
         </PageActionButton>
 
         {pageWindow(page, pageCount).map((item, index) =>
@@ -180,7 +192,7 @@ export function Pagination({
           buildHref={buildHref}
           onPageChange={onPageChange}
         >
-          <ChevronRight />
+          <ChevronRight className="size-4" />
         </PageActionButton>
       </div>
     </div>
