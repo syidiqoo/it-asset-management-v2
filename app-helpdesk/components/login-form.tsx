@@ -4,12 +4,13 @@ import * as React from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2, LogIn } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { TriangleAlert } from "lucide-react"
+import Alert from "@mui/material/Alert"
+import Button from "@mui/material/Button"
+import FormControl from "@mui/material/FormControl"
+import FormLabel from "@mui/material/FormLabel"
+import IconButton from "@mui/material/IconButton"
+import InputAdornment from "@mui/material/InputAdornment"
+import OutlinedInput from "@mui/material/OutlinedInput"
 
 export function LoginForm() {
   const router = useRouter()
@@ -51,73 +52,77 @@ export function LoginForm() {
       <div className="flex items-center justify-center p-6 sm:p-10">
         <div className="w-full max-w-sm space-y-8">
           <div className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Sign in
-            </h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
             <p className="text-sm text-muted-foreground">
               Enter your credentials to continue
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="login-username">Username</Label>
-              <Input
+            <FormControl fullWidth>
+              <FormLabel htmlFor="login-username" className="mb-1.5">
+                Username
+              </FormLabel>
+              <OutlinedInput
                 id="login-username"
                 value={username}
                 onChange={(event) => {
                   setUsername(event.target.value)
                   if (error) setError(null)
                 }}
-                className="h-11 rounded-xl px-3.5"
+                className="h-11 rounded-xl"
                 autoComplete="username"
                 autoFocus
                 required
               />
-            </div>
+            </FormControl>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="login-password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="login-password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(event) => {
-                    setPassword(event.target.value)
-                    if (error) setError(null)
-                  }}
-                  className="h-11 rounded-xl pr-11 pl-3.5"
-                  autoComplete="current-password"
-                  required
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  aria-pressed={showPassword}
-                  onClick={() => setShowPassword((previous) => !previous)}
-                >
-                  {showPassword ? <EyeOff /> : <Eye />}
-                </Button>
-              </div>
-            </div>
+            <FormControl fullWidth>
+              <FormLabel htmlFor="login-password" className="mb-1.5">
+                Password
+              </FormLabel>
+              <OutlinedInput
+                id="login-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(event) => {
+                  setPassword(event.target.value)
+                  if (error) setError(null)
+                }}
+                className="h-11 rounded-xl"
+                autoComplete="current-password"
+                required
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                      aria-pressed={showPassword}
+                      edge="end"
+                      size="small"
+                      onClick={() => setShowPassword((previous) => !previous)}
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
 
-            {error ? (
-              <Alert variant="destructive">
-                <TriangleAlert />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            ) : null}
+            {error ? <Alert severity="error">{error}</Alert> : null}
 
             <Button
               type="submit"
-              className="h-11 w-full rounded-xl"
+              variant="contained"
+              className="h-11 w-full gap-1.5 rounded-xl"
               disabled={loading}
             >
-              {loading ? <Loader2 className="animate-spin" /> : <LogIn />}
+              {loading ? (
+                <Loader2 className="animate-spin" size={16} />
+              ) : (
+                <LogIn size={16} />
+              )}
               {loading ? "Signing in…" : "Sign in"}
             </Button>
           </form>
