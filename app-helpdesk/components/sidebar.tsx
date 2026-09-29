@@ -16,8 +16,8 @@ import {
   Wifi,
   type LucideIcon,
 } from "lucide-react"
+import Button from "@mui/material/Button"
 
-import { Button } from "@/components/ui/button"
 import { useSessionUser, useSignOut } from "@/components/use-session-user"
 import { ROLE_LABEL } from "@/lib/users"
 import { cn } from "@/lib/utils"
@@ -243,12 +243,12 @@ export function Sidebar({ version }: { version: string }) {
             </div>
           </div>
           <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start text-muted-foreground"
+            variant="text"
+            color="inherit"
+            className="w-full justify-start gap-1.5 text-muted-foreground"
             onClick={signOut}
           >
-            <LogOut />
+            <LogOut className="size-4" />
             Log out
           </Button>
         </div>
