@@ -19,7 +19,7 @@ import { formatDate } from "@/lib/format"
 import type { PdfColumn } from "@/lib/report"
 import {
   collectDescendantIds,
-  departmentPath,
+  departmentName,
   flattenDepartments,
 } from "@/lib/departments"
 import {
@@ -134,7 +134,7 @@ export function AssetsView({
         store.categories.find((item) => item.id === asset.categoryId)?.name ??
           "",
         employeeName(asset.employeeId),
-        departmentPath(store.departments, asset.departmentId) ?? "",
+        departmentName(store.departments, asset.departmentId) ?? "",
         asset.condition,
         asset.updatedAt,
         asset.purchaseDate ?? "",
@@ -165,7 +165,7 @@ export function AssetsView({
     asset.serialNumber ?? "",
     store.categories.find((item) => item.id === asset.categoryId)?.name ?? "",
     employeeName(asset.employeeId),
-    departmentPath(store.departments, asset.departmentId) ?? "",
+    departmentName(store.departments, asset.departmentId) ?? "",
     asset.condition,
     asset.purchaseDate ? formatDate(asset.purchaseDate) : "",
     asset.note ?? "",

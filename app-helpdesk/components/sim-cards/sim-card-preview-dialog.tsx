@@ -3,6 +3,8 @@
 import * as React from "react"
 import {
   ArrowRightLeft,
+  ChevronLeft,
+  ChevronRight,
   Info,
   Pencil,
   Smartphone,
@@ -65,6 +67,11 @@ function Section({
 export function SimCardPreviewDialog({
   card,
   canWrite,
+  position,
+  hasPrev,
+  hasNext,
+  onPrev,
+  onNext,
   onClose,
   onEdit,
   onMove,
@@ -72,6 +79,11 @@ export function SimCardPreviewDialog({
 }: {
   card: SimCard | null
   canWrite: boolean
+  position: string
+  hasPrev: boolean
+  hasNext: boolean
+  onPrev: () => void
+  onNext: () => void
   onClose: () => void
   onEdit: (card: SimCard) => void
   onMove: (card: SimCard) => void
@@ -109,6 +121,29 @@ export function SimCardPreviewDialog({
         {card ? (
           <>
             <header className="flex items-start gap-3 border-b bg-muted/40 p-4">
+              <div className="flex shrink-0 items-center gap-1.5">
+                <Button
+                  variant="outline"
+                  size="icon-lg"
+                  disabled={!hasPrev}
+                  aria-label="Previous SIM card"
+                  title="Previous SIM card"
+                  onClick={onPrev}
+                >
+                  <ChevronLeft className="size-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon-lg"
+                  disabled={!hasNext}
+                  aria-label="Next SIM card"
+                  title="Next SIM card"
+                  onClick={onNext}
+                >
+                  <ChevronRight className="size-5" />
+                </Button>
+              </div>
+
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Smartphone className="size-5" />
               </div>
@@ -121,6 +156,10 @@ export function SimCardPreviewDialog({
                   {group} • IT Asset Management
                 </DialogDescription>
               </div>
+
+              <span className="self-center text-xs tabular-nums text-muted-foreground">
+                {position}
+              </span>
             </header>
 
             <div className="flex flex-col gap-3 bg-muted/20 p-4">

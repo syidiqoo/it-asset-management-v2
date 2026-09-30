@@ -4,6 +4,8 @@ import * as React from "react"
 import Link from "next/link"
 import {
   ArrowRightLeft,
+  ChevronLeft,
+  ChevronRight,
   FileText,
   History,
   ImageIcon,
@@ -121,12 +123,22 @@ function AssetImage({ url, name }: { url: string | null; name: string }) {
 export function AssetPreviewDialog({
   asset,
   canWrite,
+  position,
+  hasPrev,
+  hasNext,
+  onPrev,
+  onNext,
   onClose,
   onDelete,
   onMove,
 }: {
   asset: Asset | null
   canWrite: boolean
+  position: string
+  hasPrev: boolean
+  hasNext: boolean
+  onPrev: () => void
+  onNext: () => void
   onClose: () => void
   onDelete: (asset: Asset) => void
   onMove: (asset: Asset) => void
@@ -255,6 +267,29 @@ export function AssetPreviewDialog({
         {asset ? (
           <>
             <header className="flex items-start gap-3 border-b bg-muted/40 p-4">
+              <div className="flex shrink-0 items-center gap-1.5">
+                <Button
+                  variant="outline"
+                  size="icon-lg"
+                  disabled={!hasPrev}
+                  aria-label="Previous asset"
+                  title="Previous asset"
+                  onClick={onPrev}
+                >
+                  <ChevronLeft className="size-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon-lg"
+                  disabled={!hasNext}
+                  aria-label="Next asset"
+                  title="Next asset"
+                  onClick={onNext}
+                >
+                  <ChevronRight className="size-5" />
+                </Button>
+              </div>
+
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Laptop className="size-5" />
               </div>
@@ -267,6 +302,10 @@ export function AssetPreviewDialog({
                   {category} • IT Asset Management
                 </DialogDescription>
               </div>
+
+              <span className="self-center text-xs tabular-nums text-muted-foreground">
+                {position}
+              </span>
 
               {hasHistory ? (
                 <Button

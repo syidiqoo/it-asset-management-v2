@@ -145,6 +145,17 @@ export function SimCardsView({ values }: { values: FilterValues }) {
     setDialogOpen(true)
   }
 
+  const previewList: SimCard[] = preview
+    ? groups.main.some((item) => item.id === preview.id)
+      ? groups.main
+      : groups.available.some((item) => item.id === preview.id)
+        ? groups.available
+        : groups.terminated
+    : []
+  const previewIndex = preview
+    ? previewList.findIndex((item) => item.id === preview.id)
+    : -1
+
   const openEdit = (card: SimCard) => {
     setEditing(card)
     setDialogOpen(true)
@@ -269,6 +280,13 @@ export function SimCardsView({ values }: { values: FilterValues }) {
       <SimCardPreviewDialog
         card={preview}
         canWrite={canWrite}
+        position={
+          previewIndex >= 0 ? `${previewIndex + 1} / ${previewList.length}` : ""
+        }
+        hasPrev={previewIndex > 0}
+        hasNext={previewIndex >= 0 && previewIndex < previewList.length - 1}
+        onPrev={() => setPreview(previewList[previewIndex - 1] ?? null)}
+        onNext={() => setPreview(previewList[previewIndex + 1] ?? null)}
         onClose={() => setPreview(null)}
         onEdit={(card) => {
           setPreview(null)

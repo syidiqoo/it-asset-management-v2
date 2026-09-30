@@ -26,7 +26,6 @@ import { csvFileName, downloadCsv } from "@/lib/csv"
 import {
   collectDescendantIds,
   departmentName,
-  departmentPath,
   flattenDepartments,
 } from "@/lib/departments"
 import {
@@ -107,7 +106,7 @@ export function EmployeeView({ values }: { values: FilterValues }) {
       CSV_COLUMNS,
       filtered.map((employee) => [
         employee.name,
-        departmentPath(store.departments, employee.departmentId) ?? "",
+        departmentName(store.departments, employee.departmentId) ?? "",
       ])
     )
   }

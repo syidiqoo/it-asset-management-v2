@@ -1,11 +1,18 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2, LogIn } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -47,18 +54,18 @@ export function LoginForm() {
   }
 
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
-      <div className="flex items-center justify-center p-6 sm:p-10">
-        <div className="w-full max-w-sm space-y-8">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Sign in
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Enter your credentials to continue
-            </p>
-          </div>
-
+    <div className="flex min-h-svh items-center justify-center p-6">
+      <Card className="w-full max-w-md [--card-spacing:--spacing(8)] shadow-sm">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold tracking-tight">
+            IT Helpdesk Asset Management
+          </CardTitle>
+          <CardDescription>
+            Enter your credentials to continue. Manage office IT assets, SIM
+            cards, and internet data all in one place.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="login-username">Username</Label>
@@ -121,19 +128,11 @@ export function LoginForm() {
               {loading ? "Signing in…" : "Sign in"}
             </Button>
           </form>
-        </div>
-      </div>
-
-      <div className="relative hidden bg-muted lg:block">
-        <Image
-          src="/cocpit.png"
-          alt=""
-          fill
-          priority
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          className="object-cover"
-        />
-      </div>
+        </CardContent>
+        <CardFooter className="justify-center text-sm text-muted-foreground">
+          Trouble signing in? Contact your IT Administrator.
+        </CardFooter>
+      </Card>
     </div>
   )
 }

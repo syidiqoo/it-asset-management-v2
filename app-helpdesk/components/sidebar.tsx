@@ -74,8 +74,9 @@ function Brand({ version }: { version: string }) {
         <MonitorSmartphone className="size-4" />
       </div>
       <div className="leading-tight">
-        <p className="text-sm font-semibold">IT Helpdesk</p>
-        <p className="text-xs text-muted-foreground">IT Asset Management</p>
+        <p className="text-sm font-semibold leading-snug">
+          IT Helpdesk Asset Management
+        </p>
         <p className="text-[10px] text-muted-foreground/80">v{version}</p>
       </div>
     </div>

@@ -96,6 +96,10 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
   const categoryName = (id: number) =>
     store.categories.find((category) => category.id === id)?.name ?? "—"
 
+  const previewIndex = preview
+    ? assets.findIndex((item) => item.id === preview.id)
+    : -1
+
   const employeeName = (id: number | null) =>
     id === null
       ? "—"
@@ -208,6 +212,13 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
       <AssetPreviewDialog
         asset={preview}
         canWrite={canWrite}
+        position={
+          previewIndex >= 0 ? `${previewIndex + 1} / ${assets.length}` : ""
+        }
+        hasPrev={previewIndex > 0}
+        hasNext={previewIndex >= 0 && previewIndex < assets.length - 1}
+        onPrev={() => setPreview(assets[previewIndex - 1] ?? null)}
+        onNext={() => setPreview(assets[previewIndex + 1] ?? null)}
         onClose={() => setPreview(null)}
         onDelete={(asset) => {
           setPreview(null)
