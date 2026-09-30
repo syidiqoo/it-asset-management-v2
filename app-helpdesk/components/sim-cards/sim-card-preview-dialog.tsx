@@ -107,6 +107,21 @@ export function SimCardPreviewDialog({
         "—")
   const group = card === null ? "" : SIM_CARD_SECTION_LABEL[simCardSection(card)]
 
+  React.useEffect(() => {
+    if (!card) return
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft" && hasPrev) {
+        event.preventDefault()
+        onPrev()
+      } else if (event.key === "ArrowRight" && hasNext) {
+        event.preventDefault()
+        onNext()
+      }
+    }
+    window.addEventListener("keydown", handler, true)
+    return () => window.removeEventListener("keydown", handler, true)
+  }, [card, hasPrev, hasNext, onPrev, onNext])
+
   return (
     <Dialog
       open={card !== null}
@@ -116,34 +131,11 @@ export function SimCardPreviewDialog({
     >
       <DialogContent
         showCloseButton={false}
-        className="max-h-[calc(100dvh-2rem)] gap-0 overflow-hidden overflow-y-auto p-0 sm:max-w-2xl"
+        className="flex max-h-[calc(100dvh-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
       >
         {card ? (
           <>
-            <header className="flex items-start gap-3 border-b bg-muted/40 p-4">
-              <div className="flex shrink-0 items-center gap-1.5">
-                <Button
-                  variant="outline"
-                  size="icon-lg"
-                  disabled={!hasPrev}
-                  aria-label="Previous SIM card"
-                  title="Previous SIM card"
-                  onClick={onPrev}
-                >
-                  <ChevronLeft className="size-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon-lg"
-                  disabled={!hasNext}
-                  aria-label="Next SIM card"
-                  title="Next SIM card"
-                  onClick={onNext}
-                >
-                  <ChevronRight className="size-5" />
-                </Button>
-              </div>
-
+            <header className="flex shrink-0 items-start gap-3 border-b bg-muted/40 p-4">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Smartphone className="size-5" />
               </div>
@@ -156,13 +148,9 @@ export function SimCardPreviewDialog({
                   {group} • IT Asset Management
                 </DialogDescription>
               </div>
-
-              <span className="self-center text-xs tabular-nums text-muted-foreground">
-                {position}
-              </span>
             </header>
 
-            <div className="flex flex-col gap-3 bg-muted/20 p-4">
+            <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto bg-muted/20 p-4">
               <Section icon={Info} title="SIM Card Information">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Employee">{employee}</Field>
@@ -204,7 +192,34 @@ export function SimCardPreviewDialog({
           </>
         ) : null}
 
-        <DialogFooter className="mx-0 mb-0 rounded-b-xl border-t bg-muted/50 p-4">
+        <DialogFooter className="mx-0 mb-0 shrink-0 rounded-b-xl border-t bg-muted/50 p-4">
+          <div className="flex items-center gap-2 sm:mr-auto">
+            <Button
+              variant="outline"
+              size="icon-lg"
+              className="size-10"
+              disabled={!hasPrev}
+              aria-label="Previous SIM card"
+              title="Previous SIM card (←)"
+              onClick={onPrev}
+            >
+              <ChevronLeft className="size-5" />
+            </Button>
+            <span className="text-sm tabular-nums text-muted-foreground">
+              {position}
+            </span>
+            <Button
+              variant="outline"
+              size="icon-lg"
+              className="size-10"
+              disabled={!hasNext}
+              aria-label="Next SIM card"
+              title="Next SIM card (→)"
+              onClick={onNext}
+            >
+              <ChevronRight className="size-5" />
+            </Button>
+          </div>
           {card && canWrite ? (
             <>
               <Button variant="outline" onClick={() => onMove(card)}>
