@@ -26,17 +26,19 @@ import {
   flattenDepartments,
   MAX_DEPARTMENT_LEVEL,
 } from "@/lib/departments"
-import type { Department, DepartmentNode } from "@/lib/types"
+import type { Department, DepartmentNode, Location } from "@/lib/types"
 
 type DepartmentDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   department: DepartmentNode | null
   departments: Department[]
+  locations: Location[]
   defaultParentId: number | null
   onSubmit: (
     name: string,
-    parentId: number | null
+    parentId: number | null,
+    locationId: number | null
   ) => string | null | Promise<string | null>
 }
 
@@ -57,6 +59,7 @@ export function DepartmentDialog({
 function DepartmentDialogForm({
   department,
   departments,
+  locations,
   defaultParentId,
   onSubmit,
   onDone,
@@ -72,6 +75,9 @@ function DepartmentDialogForm({
       : defaultParentId === null
         ? ""
         : String(defaultParentId)
+  )
+  const [location, setLocation] = React.useState(
+    department?.locationId ? String(department.locationId) : ""
   )
   const [error, setError] = React.useState<string | null>(null)
 
@@ -89,6 +95,17 @@ function DepartmentDialogForm({
     ? (parentOptions.find((node) => String(node.id) === parent)?.level ?? 1)
     : 0
 
+  const locationOptions = React.useMemo(
+    () =>
+      [...locations]
+        .sort((a, b) => Number(a.code) - Number(b.code))
+        .map((item) => ({
+          label: `${item.code} · ${item.address ?? item.detailStreetAddress}`,
+          value: String(item.id),
+        })),
+    [locations]
+  )
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -98,7 +115,11 @@ function DepartmentDialogForm({
       return
     }
 
-    const message = await onSubmit(trimmed, parent ? Number(parent) : null)
+    const message = await onSubmit(
+      trimmed,
+      parent ? Number(parent) : null,
+      location ? Number(location) : null
+    )
     if (message) {
       setError(message)
       return
@@ -157,6 +178,33 @@ function DepartmentDialogForm({
           </Select>
           <p className="text-xs text-muted-foreground">
             This department will be at level {parentLevel + 1}.
+          </p>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label>Location</Label>
+          <Select
+            items={[
+              { label: "— No location —", value: "" },
+              ...locationOptions,
+            ]}
+            value={location}
+            onValueChange={(value) => setLocation(value ?? "")}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="— No location —" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">— No location —</SelectItem>
+              {locationOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            Used by the Summary page to group this department under a location.
           </p>
         </div>
 

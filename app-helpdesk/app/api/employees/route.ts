@@ -14,9 +14,11 @@ export async function POST(request: Request) {
   const parsed = employeeSchema.safeParse(await request.json().catch(() => null))
   if (!parsed.success) return fail(zodMessage(parsed.error))
 
-  const { name, departmentId } = parsed.data
+  const { name, positionId, departmentId } = parsed.data
   try {
-    const item = await db.employee.create({ data: { name, departmentId } })
+    const item = await db.employee.create({
+      data: { name, positionId, departmentId },
+    })
     return ok(serializeEmployee(item), 201)
   } catch (error) {
     return prismaError(error, "Employee could not be created.")

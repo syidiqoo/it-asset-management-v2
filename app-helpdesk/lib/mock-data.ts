@@ -21,30 +21,30 @@ export const seedCategories: Category[] = [
 ]
 
 export const seedDepartments: Department[] = [
-  { id: 1, name: "IT", parentId: null, createdAt: "2026-01-05" },
-  { id: 2, name: "HR", parentId: null, createdAt: "2026-01-05" },
-  { id: 3, name: "Finance", parentId: null, createdAt: "2026-01-05" },
-  { id: 4, name: "Operations", parentId: null, createdAt: "2026-01-05" },
-  { id: 5, name: "Infrastructure", parentId: 1, createdAt: "2026-01-06" },
-  { id: 6, name: "Network", parentId: 5, createdAt: "2026-01-06" },
-  { id: 7, name: "Base", parentId: 4, createdAt: "2026-01-07" },
-  { id: 8, name: "Base Jakarta", parentId: 7, createdAt: "2026-01-07" },
-  { id: 9, name: "Base Surabaya", parentId: 7, createdAt: "2026-01-07" },
-  { id: 10, name: "Support", parentId: 4, createdAt: "2026-01-08" },
-  { id: 11, name: "Recruitment", parentId: 2, createdAt: "2026-01-08" },
+  { id: 1, name: "IT", parentId: null, locationId: null, createdAt: "2026-01-05" },
+  { id: 2, name: "HR", parentId: null, locationId: null, createdAt: "2026-01-05" },
+  { id: 3, name: "Finance", parentId: null, locationId: null, createdAt: "2026-01-05" },
+  { id: 4, name: "Operations", parentId: null, locationId: null, createdAt: "2026-01-05" },
+  { id: 5, name: "Infrastructure", parentId: 1, locationId: null, createdAt: "2026-01-06" },
+  { id: 6, name: "Network", parentId: 5, locationId: null, createdAt: "2026-01-06" },
+  { id: 7, name: "Base", parentId: 4, locationId: null, createdAt: "2026-01-07" },
+  { id: 8, name: "Base Jakarta", parentId: 7, locationId: null, createdAt: "2026-01-07" },
+  { id: 9, name: "Base Surabaya", parentId: 7, locationId: null, createdAt: "2026-01-07" },
+  { id: 10, name: "Support", parentId: 4, locationId: null, createdAt: "2026-01-08" },
+  { id: 11, name: "Recruitment", parentId: 2, locationId: null, createdAt: "2026-01-08" },
 ]
 
 export const seedEmployees: Employee[] = [
-  { id: 1, name: "Budi Santoso", departmentId: 5, createdAt: "2026-01-10" },
-  { id: 2, name: "Siti Nurhaliza", departmentId: 2, createdAt: "2026-01-10" },
-  { id: 3, name: "Agus Prasetyo", departmentId: 8, createdAt: "2026-01-11" },
-  { id: 4, name: "Dewi Lestari", departmentId: 3, createdAt: "2026-01-11" },
-  { id: 5, name: "Rizky Ramadhan", departmentId: 6, createdAt: "2026-01-12" },
-  { id: 6, name: "Andi Wijaya", departmentId: 9, createdAt: "2026-01-12" },
-  { id: 7, name: "Maya Anggraini", departmentId: 10, createdAt: "2026-01-13" },
-  { id: 8, name: "Fajar Nugroho", departmentId: 5, createdAt: "2026-01-13" },
-  { id: 9, name: "Putri Handayani", departmentId: 11, createdAt: "2026-01-14" },
-  { id: 10, name: "Hendra Gunawan", departmentId: 4, createdAt: "2026-01-14" },
+  { id: 1, name: "Budi Santoso", positionId: null, departmentId: 5, createdAt: "2026-01-10" },
+  { id: 2, name: "Siti Nurhaliza", positionId: null, departmentId: 2, createdAt: "2026-01-10" },
+  { id: 3, name: "Agus Prasetyo", positionId: null, departmentId: 8, createdAt: "2026-01-11" },
+  { id: 4, name: "Dewi Lestari", positionId: null, departmentId: 3, createdAt: "2026-01-11" },
+  { id: 5, name: "Rizky Ramadhan", positionId: null, departmentId: 6, createdAt: "2026-01-12" },
+  { id: 6, name: "Andi Wijaya", positionId: null, departmentId: 9, createdAt: "2026-01-12" },
+  { id: 7, name: "Maya Anggraini", positionId: null, departmentId: 10, createdAt: "2026-01-13" },
+  { id: 8, name: "Fajar Nugroho", positionId: null, departmentId: 5, createdAt: "2026-01-13" },
+  { id: 9, name: "Putri Handayani", positionId: null, departmentId: 11, createdAt: "2026-01-14" },
+  { id: 10, name: "Hendra Gunawan", positionId: null, departmentId: 4, createdAt: "2026-01-14" },
 ]
 
 export const seedSimPackages: SimPackage[] = [

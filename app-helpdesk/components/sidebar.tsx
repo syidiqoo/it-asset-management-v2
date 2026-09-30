@@ -7,6 +7,7 @@ import {
   BookOpen,
   Boxes,
   ChevronDown,
+  ClipboardList,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -34,6 +35,7 @@ const MAIN_ITEMS: {
   { href: "/assets", label: "Asset Data", icon: Boxes },
   { href: "/sim-cards", label: "SIM Card", icon: Smartphone },
   { href: "/data-internet", label: "Internet Data", icon: Wifi },
+  { href: "/summary", label: "Summary", icon: ClipboardList, adminOnly: true },
   { href: "/dokumentasi", label: "Dokumentasi", icon: BookOpen },
   { href: "/bast", label: "BAST", icon: FileText, adminOnly: true },
 ]
@@ -42,6 +44,7 @@ const SETTINGS_ITEMS: { href: string; label: string }[] = [
   { href: `${SETTINGS_PREFIX}/kategori`, label: "Category" },
   { href: `${SETTINGS_PREFIX}/employee`, label: "Employee" },
   { href: `${SETTINGS_PREFIX}/department`, label: "Department" },
+  { href: `${SETTINGS_PREFIX}/position`, label: "Position" },
   { href: `${SETTINGS_PREFIX}/sim-package`, label: "SIM Package" },
   { href: `${SETTINGS_PREFIX}/location`, label: "Location" },
   { href: `${SETTINGS_PREFIX}/user`, label: "User" },

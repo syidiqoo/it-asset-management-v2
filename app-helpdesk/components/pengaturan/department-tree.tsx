@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Building2, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react"
+import { Building2, ChevronDown, MapPin, Pencil, Plus, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/tooltip"
 import { buildDepartmentTree, MAX_DEPARTMENT_LEVEL } from "@/lib/departments"
 import { cn } from "@/lib/utils"
-import type { Department, DepartmentNode } from "@/lib/types"
+import type { Department, DepartmentNode, Location } from "@/lib/types"
 
 export function DepartmentTree({
   departments,
+  locations = [],
   onAddChild,
   onEdit,
   onDelete,
@@ -22,6 +23,7 @@ export function DepartmentTree({
   emptyLabel = "No departments yet.",
 }: {
   departments: Department[]
+  locations?: Location[]
   onAddChild: (department: DepartmentNode) => void
   onEdit: (department: DepartmentNode) => void
   onDelete: (department: DepartmentNode) => void
@@ -31,6 +33,12 @@ export function DepartmentTree({
   const [collapsed, setCollapsed] = React.useState<Set<number>>(
     () => new Set()
   )
+
+  const locationCodeById = React.useMemo(() => {
+    const map = new Map<number, string>()
+    for (const location of locations) map.set(location.id, location.code)
+    return map
+  }, [locations])
 
   const rows = React.useMemo(() => {
     const result: { node: DepartmentNode; hasChildren: boolean }[] = []
@@ -104,6 +112,15 @@ export function DepartmentTree({
 
             <Building2 className="size-4 shrink-0 text-muted-foreground" />
             <span className="truncate text-sm font-medium">{node.name}</span>
+            {node.locationId !== null && locationCodeById.has(node.locationId) ? (
+              <span
+                className="inline-flex shrink-0 items-center gap-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
+                title={`Location ${locationCodeById.get(node.locationId)}`}
+              >
+                <MapPin className="size-3" />
+                {locationCodeById.get(node.locationId)}
+              </span>
+            ) : null}
             <div className="ml-auto flex shrink-0 items-center gap-1">
               {canAddChild ? (
                 <Button

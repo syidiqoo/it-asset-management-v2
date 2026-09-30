@@ -17,17 +17,19 @@ export function serializeDepartment(item: {
   id: number
   name: string
   parentId: number | null
+  locationId: number | null
   createdAt: Date
 }) {
   return {
     id: item.id,
     name: item.name,
     parentId: item.parentId,
+    locationId: item.locationId,
     createdAt: toDay(item.createdAt) ?? "",
   }
 }
 
-export function serializeEmployee(item: {
+export function serializePosition(item: {
   id: number
   name: string
   departmentId: number | null
@@ -36,6 +38,22 @@ export function serializeEmployee(item: {
   return {
     id: item.id,
     name: item.name,
+    departmentId: item.departmentId,
+    createdAt: toDay(item.createdAt) ?? "",
+  }
+}
+
+export function serializeEmployee(item: {
+  id: number
+  name: string
+  positionId: number | null
+  departmentId: number | null
+  createdAt: Date
+}) {
+  return {
+    id: item.id,
+    name: item.name,
+    positionId: item.positionId,
     departmentId: item.departmentId,
     createdAt: toDay(item.createdAt) ?? "",
   }

@@ -5,12 +5,14 @@ import type {
   Department,
   Employee,
   Location,
+  Position,
   SimPackage,
 } from "@/lib/types"
 
 export const CATEGORY_FILTER_NAMES = ["q"]
 export const EMPLOYEE_FILTER_NAMES = ["q", "department"]
 export const DEPARTMENT_FILTER_NAMES = ["q", "top"]
+export const POSITION_FILTER_NAMES = ["q", "department"]
 export const SIM_PACKAGE_FILTER_NAMES = ["q"]
 export const LOCATION_FILTER_NAMES = ["q", "coordinates"]
 
@@ -57,6 +59,26 @@ export function filterEmployees(
       return false
     }
     if (query && !includesText(employee.name, query)) return false
+    return true
+  })
+}
+
+export function filterPositions(
+  positions: Position[],
+  values: FilterValues,
+  options: { departmentIds: Set<number> | null }
+): Position[] {
+  const query = (values.q ?? "").trim().toLowerCase()
+
+  return positions.filter((position) => {
+    if (
+      options.departmentIds &&
+      (position.departmentId === null ||
+        !options.departmentIds.has(position.departmentId))
+    ) {
+      return false
+    }
+    if (query && !includesText(position.name, query)) return false
     return true
   })
 }

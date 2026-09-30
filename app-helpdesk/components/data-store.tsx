@@ -12,6 +12,8 @@ import type {
   InternetDataInput,
   Location,
   LocationInput,
+  Position,
+  PositionInput,
   SimCard,
   SimCardInput,
   SimPackage,
@@ -35,6 +37,7 @@ type DataStore = {
   assets: Asset[]
   categories: Category[]
   departments: Department[]
+  positions: Position[]
   employees: Employee[]
   simPackages: SimPackage[]
   simCards: SimCard[]
@@ -49,18 +52,31 @@ type DataStore = {
   createCategory: (name: string) => Promise<void>
   updateCategory: (id: number, name: string) => Promise<void>
   deleteCategory: (id: number) => Promise<void>
-  createDepartment: (name: string, parentId: number | null) => Promise<void>
+  createDepartment: (
+    name: string,
+    parentId: number | null,
+    locationId: number | null
+  ) => Promise<void>
   updateDepartment: (
     id: number,
     name: string,
-    parentId: number | null
+    parentId: number | null,
+    locationId: number | null
   ) => Promise<void>
   deleteDepartment: (id: number) => Promise<void>
-  createEmployee: (name: string, departmentId: number | null) => Promise<void>
+  createPosition: (input: PositionInput) => Promise<void>
+  updatePosition: (id: number, input: PositionInput) => Promise<void>
+  deletePosition: (id: number) => Promise<void>
+  createEmployee: (
+    name: string,
+    departmentId: number | null,
+    positionId: number | null
+  ) => Promise<void>
   updateEmployee: (
     id: number,
     name: string,
-    departmentId: number | null
+    departmentId: number | null,
+    positionId: number | null
   ) => Promise<void>
   deleteEmployee: (id: number) => Promise<void>
   createSimPackage: (name: string) => Promise<void>
@@ -88,6 +104,7 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
   const [assets, setAssets] = React.useState<Asset[]>([])
   const [categories, setCategories] = React.useState<Category[]>([])
   const [departments, setDepartments] = React.useState<Department[]>([])
+  const [positions, setPositions] = React.useState<Position[]>([])
   const [employees, setEmployees] = React.useState<Employee[]>([])
   const [simPackages, setSimPackages] = React.useState<SimPackage[]>([])
   const [simCards, setSimCards] = React.useState<SimCard[]>([])
@@ -102,6 +119,7 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
         assetsData,
         categoriesData,
         departmentsData,
+        positionsData,
         employeesData,
         simPackagesData,
         simCardsData,
@@ -111,6 +129,7 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
         request<Asset[]>("/api/assets"),
         request<Category[]>("/api/categories"),
         request<Department[]>("/api/departments"),
+        request<Position[]>("/api/positions"),
         request<Employee[]>("/api/employees"),
         request<SimPackage[]>("/api/sim-packages"),
         request<SimCard[]>("/api/sim-cards"),
@@ -120,6 +139,7 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
       setAssets(assetsData)
       setCategories(categoriesData)
       setDepartments(departmentsData)
+      setPositions(positionsData)
       setEmployees(employeesData)
       setSimPackages(simPackagesData)
       setSimCards(simCardsData)
@@ -144,6 +164,7 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
       assets,
       categories,
       departments,
+      positions,
       employees,
       simPackages,
       simCards,
@@ -205,17 +226,17 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
         await request(`/api/categories/${id}`, { method: "DELETE" })
         setCategories((items) => items.filter((item) => item.id !== id))
       },
-      async createDepartment(name, parentId) {
+      async createDepartment(name, parentId, locationId) {
         const item = await request<Department>("/api/departments", {
           method: "POST",
-          body: JSON.stringify({ name, parentId }),
+          body: JSON.stringify({ name, parentId, locationId }),
         })
         setDepartments((items) => [...items, item])
       },
-      async updateDepartment(id, name, parentId) {
+      async updateDepartment(id, name, parentId, locationId) {
         const item = await request<Department>(`/api/departments/${id}`, {
           method: "PUT",
-          body: JSON.stringify({ name, parentId }),
+          body: JSON.stringify({ name, parentId, locationId }),
         })
         setDepartments((items) => items.map((x) => (x.id === id ? item : x)))
       },
@@ -223,19 +244,37 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
         await request(`/api/departments/${id}`, { method: "DELETE" })
         setDepartments((items) => items.filter((item) => item.id !== id))
       },
-      async createEmployee(name, departmentId) {
+      async createEmployee(name, departmentId, positionId) {
         const item = await request<Employee>("/api/employees", {
           method: "POST",
-          body: JSON.stringify({ name, departmentId }),
+          body: JSON.stringify({ name, departmentId, positionId }),
         })
         setEmployees((items) => [...items, item])
       },
-      async updateEmployee(id, name, departmentId) {
+      async updateEmployee(id, name, departmentId, positionId) {
         const item = await request<Employee>(`/api/employees/${id}`, {
           method: "PUT",
-          body: JSON.stringify({ name, departmentId }),
+          body: JSON.stringify({ name, departmentId, positionId }),
         })
         setEmployees((items) => items.map((x) => (x.id === id ? item : x)))
+      },
+      async createPosition(input) {
+        const item = await request<Position>("/api/positions", {
+          method: "POST",
+          body: JSON.stringify(input),
+        })
+        setPositions((items) => [...items, item])
+      },
+      async updatePosition(id, input) {
+        const item = await request<Position>(`/api/positions/${id}`, {
+          method: "PUT",
+          body: JSON.stringify(input),
+        })
+        setPositions((items) => items.map((x) => (x.id === id ? item : x)))
+      },
+      async deletePosition(id) {
+        await request(`/api/positions/${id}`, { method: "DELETE" })
+        setPositions((items) => items.filter((item) => item.id !== id))
       },
       async deleteEmployee(id) {
         await request(`/api/employees/${id}`, { method: "DELETE" })
@@ -392,6 +431,7 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
     assets,
     categories,
     departments,
+    positions,
     employees,
     simPackages,
     simCards,

@@ -19,10 +19,17 @@ export const categorySchema = z.object({
 export const departmentSchema = z.object({
   name: z.string().trim().min(1, "Department name is required."),
   parentId: z.number().int().positive().nullable(),
+  locationId: z.number().int().positive().nullable(),
+})
+
+export const positionSchema = z.object({
+  name: z.string().trim().min(1, "Position name is required."),
+  departmentId: z.number().int().positive().nullable(),
 })
 
 export const employeeSchema = z.object({
   name: z.string().trim().min(1, "Employee name is required."),
+  positionId: z.number().int().positive().nullable(),
   departmentId: z.number().int().positive().nullable(),
 })
 

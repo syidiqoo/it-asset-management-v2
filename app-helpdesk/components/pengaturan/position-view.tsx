@@ -8,10 +8,9 @@ import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
 import { StickyHeader } from "@/components/sticky-header"
 import { StoreState } from "@/components/store-state"
-import { CsvActions } from "@/components/csv-actions"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
-import { EmployeeDialog } from "@/components/pengaturan/dialogs/employee-dialog"
 import { ItemActions } from "@/components/pengaturan/item-actions"
+import { PositionDialog } from "@/components/pengaturan/dialogs/position-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -22,29 +21,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { csvFileName, downloadCsv } from "@/lib/csv"
-import {
-  collectDescendantIds,
-  departmentName,
-  flattenDepartments,
-} from "@/lib/departments"
+import { departmentName, collectDescendantIds, flattenDepartments } from "@/lib/departments"
 import {
   hasActiveFilters,
   type FilterField,
   type FilterValues,
 } from "@/lib/filters"
-import { filterEmployees } from "@/lib/master-data"
-import type { Employee } from "@/lib/types"
+import { filterPositions } from "@/lib/master-data"
+import type { Position } from "@/lib/types"
 
-const CSV_COLUMNS = ["Name", "Department"]
-
-export function EmployeeView({ values }: { values: FilterValues }) {
+export function PositionView({ values }: { values: FilterValues }) {
   const store = useDataStore()
   const [dialog, setDialog] = React.useState<{
     open: boolean
-    item: Employee | null
+    item: Position | null
   }>({ open: false, item: null })
-  const [pendingDelete, setPendingDelete] = React.useState<Employee | null>(null)
+  const [pendingDelete, setPendingDelete] = React.useState<Position | null>(
+    null
+  )
 
   const departmentIds = React.useMemo(
     () =>
@@ -55,8 +49,8 @@ export function EmployeeView({ values }: { values: FilterValues }) {
   )
 
   const filtered = React.useMemo(
-    () => filterEmployees(store.employees, values, { departmentIds }),
-    [store.employees, values, departmentIds]
+    () => filterPositions(store.positions, values, { departmentIds }),
+    [store.positions, values, departmentIds]
   )
 
   const fields: FilterField[] = [
@@ -64,7 +58,7 @@ export function EmployeeView({ values }: { values: FilterValues }) {
       type: "search",
       name: "q",
       label: "Search",
-      placeholder: "Employee name",
+      placeholder: "Position name",
     },
     {
       type: "select",
@@ -80,68 +74,35 @@ export function EmployeeView({ values }: { values: FilterValues }) {
 
   const submit = async (
     name: string,
-    departmentId: number | null,
-    positionId: number | null
-  ) => {
+    departmentId: number | null
+  ): Promise<string | null> => {
     const editing = dialog.item
 
     try {
-      if (editing) {
-        await store.updateEmployee(editing.id, name, departmentId, positionId)
-      } else {
-        await store.createEmployee(name, departmentId, positionId)
-      }
+      if (editing) await store.updatePosition(editing.id, { name, departmentId })
+      else await store.createPosition({ name, departmentId })
     } catch (err) {
       return err instanceof Error ? err.message : "Save failed."
     }
     return null
   }
 
-  const blockReason = (id: number) => {
-    if (store.assets.some((asset) => asset.employeeId === id)) {
-      return "Employee still holds assets."
-    }
-    if (store.simCards.some((card) => card.employeeId === id)) {
-      return "Employee still holds SIM cards."
-    }
-    return null
-  }
-
-  const exportCsv = () => {
-    downloadCsv(
-      csvFileName("employee"),
-      CSV_COLUMNS,
-      filtered.map((employee) => [
-        employee.name,
-        departmentName(store.departments, employee.departmentId) ?? "",
-      ])
-    )
-  }
-
-  const importCsv = async (rows: string[][]) => {
-    return store.importEmployees(rows)
-  }
+  const blockReason = (id: number) =>
+    store.employees.some((employee) => employee.positionId === id)
+      ? "Position is still used by employees."
+      : null
 
   return (
     <div className="flex flex-col">
       <StickyHeader>
         <PageHeader
-          title="Employee"
-          description="Asset and SIM card holders."
+          title="Position"
+          description="Job titles per department, used as employee positions."
           actions={
-            <>
-              <CsvActions
-                columns={CSV_COLUMNS}
-                onExport={exportCsv}
-                fileHint="Columns: Name, Department — or the sample format: ID, Nama, ..., Posisi."
-                note="Import is all-or-nothing: one bad row cancels the whole process. Department must already exist; rows whose name already exists are skipped."
-                onImport={importCsv}
-              />
-              <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-                <Plus />
-                Add Employee
-              </Button>
-            </>
+            <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
+              <Plus />
+              Add Position
+            </Button>
           }
         />
         <FilterBar fields={fields} values={values} />
@@ -168,37 +129,30 @@ export function EmployeeView({ values }: { values: FilterValues }) {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="pl-4">Name</TableHead>
-                        <TableHead>Position</TableHead>
                         <TableHead>Department</TableHead>
                         <TableHead className="pr-4 text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filtered.map((employee) => (
-                        <TableRow key={employee.id}>
+                      {filtered.map((position) => (
+                        <TableRow key={position.id}>
                           <TableCell className="pl-4 font-medium">
-                            {employee.name}
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {store.positions.find(
-                              (position) =>
-                                position.id === employee.positionId
-                            )?.name ?? "—"}
+                            {position.name}
                           </TableCell>
                           <TableCell className="text-muted-foreground">
                             {departmentName(
                               store.departments,
-                              employee.departmentId
+                              position.departmentId
                             ) ?? "—"}
                           </TableCell>
                           <TableCell className="pr-4">
                             <ItemActions
-                              label={employee.name}
-                              blockReason={blockReason(employee.id)}
+                              label={position.name}
+                              blockReason={blockReason(position.id)}
                               onEdit={() =>
-                                setDialog({ open: true, item: employee })
+                                setDialog({ open: true, item: position })
                               }
-                              onDelete={() => setPendingDelete(employee)}
+                              onDelete={() => setPendingDelete(position)}
                             />
                           </TableCell>
                         </TableRow>
@@ -212,14 +166,13 @@ export function EmployeeView({ values }: { values: FilterValues }) {
         </StoreState>
       </div>
 
-      <EmployeeDialog
+      <PositionDialog
         open={dialog.open}
         onOpenChange={(open) =>
           setDialog((previous) => ({ ...previous, open }))
         }
-        employee={dialog.item}
+        position={dialog.item}
         departments={store.departments}
-        positions={store.positions}
         onSubmit={submit}
       />
 
@@ -229,11 +182,11 @@ export function EmployeeView({ values }: { values: FilterValues }) {
           if (!open) setPendingDelete(null)
         }}
         title={`Delete ${pendingDelete?.name}?`}
-        description="Employee will be removed from master data. This action cannot be undone."
+        description="Position will be removed from master data. This action cannot be undone."
         onConfirm={async () => {
           if (!pendingDelete) return
           try {
-            await store.deleteEmployee(pendingDelete.id)
+            await store.deletePosition(pendingDelete.id)
           } catch (error) {
             return error instanceof Error ? error.message : "Delete failed."
           }

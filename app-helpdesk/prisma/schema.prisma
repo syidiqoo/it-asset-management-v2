@@ -14,26 +14,44 @@ model Category {
 }
 
 model Department {
-  id        Int          @id @default(autoincrement())
-  name      String
-  parentId  Int?
-  parent    Department?  @relation("DeptChildren", fields: [parentId], references: [id], onDelete: Restrict)
-  children  Department[] @relation("DeptChildren")
-  employees Employee[]
-  assets    Asset[]
-  simCards  SimCard[]
-  createdAt DateTime     @default(now())
+  id         Int          @id @default(autoincrement())
+  name       String
+  parentId   Int?
+  parent     Department?  @relation("DeptChildren", fields: [parentId], references: [id], onDelete: Restrict)
+  children   Department[] @relation("DeptChildren")
+  locationId Int?
+  location   Location?    @relation("DepartmentLocation", fields: [locationId], references: [id], onDelete: SetNull)
+  employees  Employee[]
+  positions  Position[]
+  assets     Asset[]
+  simCards   SimCard[]
+  createdAt  DateTime     @default(now())
 
   @@index([parentId])
+  @@index([locationId])
 }
 
 model Employee {
   id           Int         @id @default(autoincrement())
   name         String
+  positionId   Int?
+  position     Position?   @relation(fields: [positionId], references: [id], onDelete: SetNull)
   departmentId Int?
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: Restrict)
   assets       Asset[]
   simCards     SimCard[]
+  createdAt    DateTime    @default(now())
+
+  @@index([positionId])
+  @@index([departmentId])
+}
+
+model Position {
+  id           Int         @id @default(autoincrement())
+  name         String
+  departmentId Int?
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  employees    Employee[]
   createdAt    DateTime    @default(now())
 
   @@index([departmentId])
@@ -103,6 +121,7 @@ model Location {
   longitude           Float?
   createdAt           DateTime       @default(now())
   internet            InternetData[]
+  departments         Department[]   @relation("DepartmentLocation")
 }
 
 model InternetData {

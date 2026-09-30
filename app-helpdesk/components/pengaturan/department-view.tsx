@@ -66,12 +66,19 @@ export function DepartmentView({ values }: { values: FilterValues }) {
     },
   ]
 
-  const submit = async (name: string, parentId: number | null) => {
+  const submit = async (
+    name: string,
+    parentId: number | null,
+    locationId: number | null
+  ) => {
     const editing = dialog.item
 
     try {
-      if (editing) await store.updateDepartment(editing.id, name, parentId)
-      else await store.createDepartment(name, parentId)
+      if (editing) {
+        await store.updateDepartment(editing.id, name, parentId, locationId)
+      } else {
+        await store.createDepartment(name, parentId, locationId)
+      }
     } catch (err) {
       return err instanceof Error ? err.message : "Save failed."
     }
@@ -152,6 +159,7 @@ export function DepartmentView({ values }: { values: FilterValues }) {
               <CardContent className="px-0">
                 <DepartmentTree
                   departments={filtered}
+                  locations={store.locations}
                   emptyLabel={
                     hasActiveFilters(values)
                       ? "No results found. Change keywords or reset filters."
@@ -179,6 +187,7 @@ export function DepartmentView({ values }: { values: FilterValues }) {
         }
         department={dialog.item}
         departments={store.departments}
+        locations={store.locations}
         defaultParentId={dialog.parentId}
         onSubmit={submit}
       />

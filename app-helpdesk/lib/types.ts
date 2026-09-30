@@ -16,12 +16,23 @@ export type Department = {
   id: number
   name: string
   parentId: number | null
+  locationId: number | null
   createdAt: string
 }
+
+export type Position = {
+  id: number
+  name: string
+  departmentId: number | null
+  createdAt: string
+}
+
+export type PositionInput = Omit<Position, "id" | "createdAt">
 
 export type Employee = {
   id: number
   name: string
+  positionId: number | null
   departmentId: number | null
   createdAt: string
 }

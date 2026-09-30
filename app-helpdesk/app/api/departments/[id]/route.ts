@@ -22,7 +22,7 @@ export async function PUT(
   )
   if (!parsed.success) return fail(zodMessage(parsed.error))
 
-  const { name, parentId } = parsed.data
+  const { name, parentId, locationId } = parsed.data
   if (parentId === id) return fail("Parent department not found.", 400)
 
   const departments = await db.department.findMany()
@@ -31,6 +31,11 @@ export async function PUT(
       item.id !== id && item.name.trim().toLowerCase() === name.toLowerCase()
   )
   if (existing) return fail("Department name is already in use.", 409)
+
+  if (locationId !== null) {
+    const location = await db.location.findUnique({ where: { id: locationId } })
+    if (!location) return fail("Location not found.", 400)
+  }
 
   if (parentId !== null) {
     const descendants = collectDescendantIds(departments, id)
@@ -49,7 +54,7 @@ export async function PUT(
   try {
     const item = await db.department.update({
       where: { id },
-      data: { name, parentId },
+      data: { name, parentId, locationId },
     })
     return ok(serializeDepartment(item))
   } catch (error) {

@@ -22,16 +22,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { flattenDepartments } from "@/lib/departments"
-import type { Department, Employee } from "@/lib/types"
+import type { Department, Employee, Position } from "@/lib/types"
 
 type EmployeeDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   employee: Employee | null
   departments: Department[]
+  positions: Position[]
   onSubmit: (
     name: string,
-    departmentId: number | null
+    departmentId: number | null,
+    positionId: number | null
   ) => string | null | Promise<string | null>
 }
 
@@ -52,6 +54,7 @@ export function EmployeeDialog({
 function EmployeeDialogForm({
   employee,
   departments,
+  positions,
   onSubmit,
   onDone,
 }: Omit<EmployeeDialogProps, "open" | "onOpenChange"> & {
@@ -63,12 +66,42 @@ function EmployeeDialogForm({
       ? ""
       : String(employee.departmentId)
   )
+  const [position, setPosition] = React.useState(
+    employee?.positionId === null || employee?.positionId === undefined
+      ? ""
+      : String(employee.positionId)
+  )
   const [error, setError] = React.useState<string | null>(null)
 
   const departmentOptions = React.useMemo(
     () => flattenDepartments(departments),
     [departments]
   )
+
+  // Positions follow the selected department.
+  const positionOptions = React.useMemo(
+    () =>
+      department === ""
+        ? []
+        : positions.filter(
+            (position) => position.departmentId === Number(department)
+          ),
+    [positions, department]
+  )
+
+  const handleDepartmentChange = (value: string | null) => {
+    const next = value ?? ""
+    setDepartment(next)
+    // Reset the position when it does not belong to the new department.
+    if (
+      position !== "" &&
+      positions.find(
+        (item) => String(item.id) === position && item.departmentId !== null
+      )?.departmentId !== Number(next)
+    ) {
+      setPosition("")
+    }
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -79,7 +112,11 @@ function EmployeeDialogForm({
       return
     }
 
-    const message = await onSubmit(trimmed, department ? Number(department) : null)
+    const message = await onSubmit(
+      trimmed,
+      department ? Number(department) : null,
+      position ? Number(position) : null
+    )
     if (message) {
       setError(message)
       return
@@ -95,7 +132,8 @@ function EmployeeDialogForm({
           {employee ? "Edit Employee" : "Add Employee"}
         </DialogTitle>
         <DialogDescription>
-          Employees are used as asset and SIM card holders.
+          Employees are used as asset and SIM card holders. Position options
+          follow the selected department.
         </DialogDescription>
       </DialogHeader>
 
@@ -121,7 +159,7 @@ function EmployeeDialogForm({
               })),
             ]}
             value={department}
-            onValueChange={(value) => setDepartment(value ?? "")}
+            onValueChange={handleDepartmentChange}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="— No department —" />
@@ -135,6 +173,42 @@ function EmployeeDialogForm({
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label>Position</Label>
+          <Select
+            items={[
+              { label: "— No position —", value: "" },
+              ...positionOptions.map((item) => ({
+                label: item.name,
+                value: String(item.id),
+              })),
+            ]}
+            value={position}
+            onValueChange={(value) => setPosition(value ?? "")}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue
+                placeholder={
+                  department === ""
+                    ? "Pilih department dahulu"
+                    : "— No position —"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">— No position —</SelectItem>
+              {positionOptions.map((item) => (
+                <SelectItem key={item.id} value={String(item.id)}>
+                  {item.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            Position list comes from Settings → Position for this department.
+          </p>
         </div>
 
         {error ? <p className="text-xs text-destructive">{error}</p> : null}

@@ -22,7 +22,11 @@ export async function GET() {
 }
 
 async function checkLevel(
-  departments: { id: number; parentId: number | null }[],
+  departments: {
+    id: number
+    parentId: number | null
+    locationId: number | null
+  }[],
   parentId: number | null,
   editingId?: number
 ): Promise<string | null> {
@@ -46,18 +50,25 @@ export async function POST(request: Request) {
   )
   if (!parsed.success) return fail(zodMessage(parsed.error))
 
-  const { name, parentId } = parsed.data
+  const { name, parentId, locationId } = parsed.data
   const departments = await db.department.findMany()
   const existing = departments.find(
     (item) => item.name.trim().toLowerCase() === name.toLowerCase()
   )
   if (existing) return fail("Department name is already in use.", 409)
 
+  if (locationId !== null) {
+    const location = await db.location.findUnique({ where: { id: locationId } })
+    if (!location) return fail("Location not found.", 400)
+  }
+
   const levelError = await checkLevel(departments, parentId)
   if (levelError) return fail(levelError)
 
   try {
-    const item = await db.department.create({ data: { name, parentId } })
+    const item = await db.department.create({
+      data: { name, parentId, locationId },
+    })
     return ok(serializeDepartment(item), 201)
   } catch (error) {
     return prismaError(error, "Department could not be created.")

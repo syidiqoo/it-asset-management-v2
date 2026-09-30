@@ -17,7 +17,11 @@ export async function PUT(
   try {
     const item = await db.employee.update({
       where: { id },
-      data: { name: parsed.data.name, departmentId: parsed.data.departmentId },
+      data: {
+        name: parsed.data.name,
+        positionId: parsed.data.positionId,
+        departmentId: parsed.data.departmentId,
+      },
     })
     return ok(serializeEmployee(item))
   } catch (error) {
