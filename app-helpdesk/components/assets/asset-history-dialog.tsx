@@ -57,9 +57,9 @@ export function AssetHistoryDialog({
     >
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Riwayat File</DialogTitle>
+          <DialogTitle>File History</DialogTitle>
           <DialogDescription>
-            {asset.name} — 5 versi terakhir yang tersimpan.
+            {asset.name} — last 5 saved versions.
           </DialogDescription>
         </DialogHeader>
 
@@ -67,7 +67,7 @@ export function AssetHistoryDialog({
           <section className="space-y-2">
             <h3 className="flex items-center gap-2 text-xs font-medium">
               <ImageIcon className="size-3.5 text-primary" />
-              Foto ({imageItems.length})
+              Photos ({imageItems.length})
             </h3>
             {imageItems.length > 0 ? (
               <div className="grid grid-cols-[repeat(auto-fill,minmax(104px,1fr))] gap-2">
@@ -97,7 +97,7 @@ export function AssetHistoryDialog({
               </div>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Belum ada riwayat foto.
+                No photo history yet.
               </p>
             )}
 
@@ -110,8 +110,8 @@ export function AssetHistoryDialog({
               >
                 <RotateCcw />
                 {restoring === selected.url
-                  ? "Mengembalikan..."
-                  : "Jadikan foto aktif"}
+                  ? "Restoring..."
+                  : "Set as active photo"}
               </Button>
             ) : null}
           </section>
@@ -119,7 +119,7 @@ export function AssetHistoryDialog({
           <section className="space-y-2">
             <h3 className="flex items-center gap-2 text-xs font-medium">
               <FileText className="size-3.5 text-primary" />
-              Dokumen ({documentItems.length})
+              Documents ({documentItems.length})
             </h3>
             {documentItems.length > 0 ? (
               <ul className="space-y-1.5">
@@ -141,8 +141,8 @@ export function AssetHistoryDialog({
                         variant="outline"
                         size="icon-sm"
                         className="shrink-0"
-                        aria-label={`Jadikan dokumen aktif: ${item.label}`}
-                        title="Jadikan dokumen aktif"
+                        aria-label={`Set as active document: ${item.label}`}
+                        title="Set as active document"
                         disabled={restoring === item.url}
                         onClick={() => onRestore("document", item.url)}
                       >
@@ -154,7 +154,7 @@ export function AssetHistoryDialog({
               </ul>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Belum ada riwayat dokumen.
+                No document history yet.
               </p>
             )}
           </section>

@@ -213,7 +213,7 @@ export function AssetPreviewDialog({
     if (!asset) return []
     const items: AssetHistoryItem[] = []
     if (asset.imageUrl) {
-      items.push({ url: asset.imageUrl, label: "Saat ini", current: true })
+      items.push({ url: asset.imageUrl, label: "Current", current: true })
     }
     for (const entry of history?.image ?? []) {
       if (entry.url !== asset.imageUrl) {
@@ -231,7 +231,7 @@ export function AssetPreviewDialog({
     if (!asset) return []
     const items: AssetHistoryItem[] = []
     if (asset.docUrl) {
-      items.push({ url: asset.docUrl, label: "Dokumen saat ini", current: true })
+      items.push({ url: asset.docUrl, label: "Current document", current: true })
     }
     for (const entry of history?.document ?? []) {
       if (entry.url !== asset.docUrl) {
@@ -261,7 +261,7 @@ export function AssetPreviewDialog({
       await store.updateAsset(asset.id, input)
     } catch (error) {
       setRestoreError(
-        error instanceof Error ? error.message : "Gagal mengembalikan file."
+        error instanceof Error ? error.message : "Failed to restore file."
       )
     } finally {
       setRestoring(null)
@@ -300,8 +300,8 @@ export function AssetPreviewDialog({
                   variant="outline"
                   size="icon-lg"
                   className="relative shrink-0"
-                  aria-label="Lihat riwayat file"
-                  title="Riwayat foto & dokumen (5 versi terakhir)"
+                  aria-label="View file history"
+                  title="Photo & document history (last 5 versions)"
                   onClick={() => {
                     setRestoreError(null)
                     setHistoryOpen(true)

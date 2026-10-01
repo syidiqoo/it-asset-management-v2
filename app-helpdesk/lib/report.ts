@@ -18,7 +18,7 @@ export function reportFileName(prefix: string, extension: string): string {
   return `${prefix} - ${date}.${extension}`
 }
 
-const timestampFormatter = new Intl.DateTimeFormat("id-ID", {
+const timestampFormatter = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "long",
   year: "numeric",
@@ -43,7 +43,7 @@ export function downloadPdfReport(data: PdfExportData): void {
   doc.setFont("helvetica", "normal")
   doc.setFontSize(9)
   doc.text(
-    `Dicetak ${timestampFormatter.format(new Date())} · ${data.rows.length} data`,
+    `Printed ${timestampFormatter.format(new Date())} · ${data.rows.length} records`,
     pageWidth / 2,
     20,
     { align: "center" }

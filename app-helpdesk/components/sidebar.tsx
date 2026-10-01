@@ -36,7 +36,7 @@ const MAIN_ITEMS: {
   { href: "/sim-cards", label: "SIM Card", icon: Smartphone },
   { href: "/data-internet", label: "Internet Data", icon: Wifi },
   { href: "/summary", label: "Summary", icon: ClipboardList, adminOnly: true },
-  { href: "/dokumentasi", label: "Dokumentasi", icon: BookOpen },
+  { href: "/dokumentasi", label: "Documentation", icon: BookOpen },
   { href: "/bast", label: "BAST", icon: FileText, adminOnly: true },
 ]
 
@@ -59,7 +59,7 @@ const itemClassName = (active: boolean) =>
     "flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
     active
       ? "bg-sidebar-accent text-sidebar-accent-foreground"
-      : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
   )
 
 const subItemClassName = (active: boolean) =>
@@ -67,7 +67,7 @@ const subItemClassName = (active: boolean) =>
     "rounded-md px-2.5 py-1.5 text-sm whitespace-nowrap transition-colors",
     active
       ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-      : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
   )
 
 function Brand({ version }: { version: string }) {
@@ -80,7 +80,7 @@ function Brand({ version }: { version: string }) {
         <p className="text-sm font-semibold leading-snug">
           IT Helpdesk Asset Management
         </p>
-        <p className="text-[10px] text-muted-foreground/80">v{version}</p>
+        <p className="text-xs text-sidebar-foreground/70">v{version}</p>
       </div>
     </div>
   )
@@ -241,7 +241,7 @@ export function Sidebar({ version }: { version: string }) {
             </div>
             <div className="min-w-0 leading-tight">
               <p className="truncate text-sm font-medium">{sessionUser?.name ?? "—"}</p>
-              <p className="truncate text-xs text-muted-foreground">
+              <p className="truncate text-xs text-sidebar-foreground/70">
                 {sessionUser ? ROLE_LABEL[sessionUser.role] : "—"}
               </p>
             </div>
@@ -249,7 +249,7 @@ export function Sidebar({ version }: { version: string }) {
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start text-muted-foreground"
+            className="w-full justify-start text-sidebar-foreground/70"
             onClick={signOut}
           >
             <LogOut />

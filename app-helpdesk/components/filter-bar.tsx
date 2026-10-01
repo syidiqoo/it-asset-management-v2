@@ -101,7 +101,7 @@ export function FilterBar({
                     navigate({ [field.name]: value ?? "" })
                   }
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full" aria-label={field.label}>
                     <SelectValue placeholder={field.allLabel} />
                   </SelectTrigger>
                   <SelectContent>

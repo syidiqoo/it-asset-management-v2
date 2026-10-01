@@ -183,11 +183,11 @@ export function AssetsView({
                 <CsvActions
                   columns={CSV_IMPORT_COLUMNS}
                   onExport={exportCsv}
-                  fileHint="App columns or the sample format (No, Kategori Inventaris, Asset Name, ...). User/Username columns are ignored."
+                  fileHint="App columns or the sample format (No, Inventory Category, Asset Name, ...). User/Username columns are ignored."
                   note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Asset Code already exists are skipped; duplicate codes inside one file are rejected."
                   onImport={importCsv}
                   pdf={{
-                    title: "Laporan Data Aset",
+                    title: "Asset Data Report",
                     columns: PDF_COLUMNS,
                     rows: pdfRows,
                     filePrefix: "asset-data",

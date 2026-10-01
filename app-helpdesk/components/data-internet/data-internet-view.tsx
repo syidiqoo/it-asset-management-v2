@@ -1,11 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Inbox, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react"
+import { Inbox, Plus } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
 import { CsvActions } from "@/components/csv-actions"
 import { InternetDialog } from "@/components/data-internet/internet-dialog"
+import { InternetPreviewDialog } from "@/components/data-internet/internet-preview-dialog"
 import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
 import { Pagination } from "@/components/pagination"
@@ -22,13 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Table,
   TableBody,
@@ -71,6 +65,7 @@ export function DataInternetView({
   const canWrite = sessionUser?.role === "admin"
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [editing, setEditing] = React.useState<InternetData | null>(null)
+  const [preview, setPreview] = React.useState<InternetData | null>(null)
   const [target, setTarget] = React.useState<InternetData | null>(null)
 
   const locationLabel = React.useCallback(
@@ -132,6 +127,10 @@ export function DataInternetView({
     (page - 1) * INTERNET_PAGE_SIZE,
     page * INTERNET_PAGE_SIZE
   )
+
+  const previewIndex = preview
+    ? pageItems.findIndex((item) => item.id === preview.id)
+    : -1
 
   const buildHref = (target: number) => {
     const query = buildFilterQuery(values, target)
@@ -219,7 +218,7 @@ export function DataInternetView({
                   note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose Internet ID already exists are skipped. Location must already exist in Location master — unmatched ones are saved without a location."
                   onImport={importCsv}
                   pdf={{
-                    title: "Laporan Internet Data",
+                    title: "Internet Data Report",
                     columns: PDF_COLUMNS,
                     rows: pdfRows,
                     filePrefix: "internet-data",
@@ -279,17 +278,16 @@ export function DataInternetView({
                     <TableHead className="text-right">Bandwidth</TableHead>
                     <TableHead>Customer Name</TableHead>
                     <TableHead className="text-right">Monthly Cost</TableHead>
-                    <TableHead className={canWrite ? undefined : "pr-4"}>
-                      Payment Method
-                    </TableHead>
-                    {canWrite ? (
-                      <TableHead className="pr-4 text-right">Actions</TableHead>
-                    ) : null}
+                    <TableHead className="pr-4">Payment Method</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {pageItems.map((item) => (
-                    <TableRow key={item.id}>
+                    <TableRow
+                      key={item.id}
+                      className="cursor-pointer"
+                      onClick={() => setPreview(item)}
+                    >
                       <TableCell className="pl-4 font-mono text-xs font-medium">
                         {item.internetId}
                       </TableCell>
@@ -309,40 +307,9 @@ export function DataInternetView({
                       <TableCell className="text-right font-medium tabular-nums">
                         {formatCurrency(item.monthlyCost)}
                       </TableCell>
-                      <TableCell className="text-muted-foreground">
+                      <TableCell className="pr-4 text-muted-foreground">
                         {item.paymentMethod ?? "—"}
                       </TableCell>
-                      {canWrite ? (
-                      <TableCell className="pr-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger
-                            render={
-                              <Button
-                                variant="ghost"
-                                size="icon-sm"
-                                aria-label={`Actions for ${item.internetId}`}
-                              />
-                            }
-                          >
-                            <MoreHorizontal />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuItem onClick={() => openEdit(item)}>
-                              <Pencil />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              variant="destructive"
-                              onClick={() => setTarget(item)}
-                            >
-                              <Trash2 />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                      ) : null}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -370,6 +337,27 @@ export function DataInternetView({
         onOpenChange={setDialogOpen}
         item={editing}
         onSubmit={submit}
+      />
+
+      <InternetPreviewDialog
+        item={preview}
+        canWrite={canWrite}
+        position={
+          previewIndex >= 0 ? `${previewIndex + 1} / ${pageItems.length}` : ""
+        }
+        hasPrev={previewIndex > 0}
+        hasNext={previewIndex >= 0 && previewIndex < pageItems.length - 1}
+        onPrev={() => setPreview(pageItems[previewIndex - 1] ?? null)}
+        onNext={() => setPreview(pageItems[previewIndex + 1] ?? null)}
+        onClose={() => setPreview(null)}
+        onEdit={(item) => {
+          setPreview(null)
+          openEdit(item)
+        }}
+        onDelete={(item) => {
+          setPreview(null)
+          setTarget(item)
+        }}
       />
 
       <Dialog

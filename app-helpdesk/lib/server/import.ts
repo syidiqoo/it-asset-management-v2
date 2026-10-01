@@ -781,3 +781,140 @@ export async function applySimCardImport(
     unknownPackages: [...unknownPackages],
   }
 }
+
+export async function applyCategoryImport(
+  tx: ImportTx,
+  rows: string[][]
+): Promise<{ created: number; skipped: number }> {
+  const { header, items } = dataRows(rows)
+  const lowered = header.map((cell) => cell.toLowerCase())
+  if (lowered[0] !== "name") {
+    throw new Error("Header must be: Name.")
+  }
+
+  const existing = new Set(
+    (await tx.category.findMany()).map((item) =>
+      item.name.trim().toLowerCase()
+    )
+  )
+  const seen = new Set<string>()
+  const pending: { name: string }[] = []
+  let skipped = 0
+
+  items.forEach((row, rowIndex) => {
+    const line = rowIndex + 2
+    const name = (row[0] ?? "").trim()
+    if (!name) throw new Error(`Row ${line}: name is required.`)
+    const key = name.toLowerCase()
+    if (seen.has(key)) {
+      throw new Error(`Row ${line}: duplicate name in file.`)
+    }
+    seen.add(key)
+    if (existing.has(key)) {
+      skipped += 1
+      return
+    }
+    pending.push({ name })
+  })
+
+  if (pending.length > 0) {
+    await tx.category.createMany({ data: pending })
+  }
+  return { created: pending.length, skipped }
+}
+
+export async function applySimPackageImport(
+  tx: ImportTx,
+  rows: string[][]
+): Promise<{ created: number; skipped: number }> {
+  const { header, items } = dataRows(rows)
+  const lowered = header.map((cell) => cell.toLowerCase())
+  if (lowered[0] !== "name") {
+    throw new Error("Header must be: Name.")
+  }
+
+  const existing = new Set(
+    (await tx.simPackage.findMany()).map((item) =>
+      item.name.trim().toLowerCase()
+    )
+  )
+  const seen = new Set<string>()
+  const pending: { name: string }[] = []
+  let skipped = 0
+
+  items.forEach((row, rowIndex) => {
+    const line = rowIndex + 2
+    const name = (row[0] ?? "").trim()
+    if (!name) throw new Error(`Row ${line}: name is required.`)
+    const key = name.toLowerCase()
+    if (seen.has(key)) {
+      throw new Error(`Row ${line}: duplicate name in file.`)
+    }
+    seen.add(key)
+    if (existing.has(key)) {
+      skipped += 1
+      return
+    }
+    pending.push({ name })
+  })
+
+  if (pending.length > 0) {
+    await tx.simPackage.createMany({ data: pending })
+  }
+  return { created: pending.length, skipped }
+}
+
+export async function applyPositionImport(
+  tx: ImportTx,
+  rows: string[][]
+): Promise<{ created: number; skipped: number }> {
+  const { header, items } = dataRows(rows)
+  const lowered = header.map((cell) => cell.toLowerCase())
+  if (lowered[0] !== "name" || lowered[1] !== "department") {
+    throw new Error("Header must be: Name, Department.")
+  }
+
+  const index = await departmentIndex(tx)
+  const existing = new Set(
+    (await tx.position.findMany()).map((item) =>
+      `${item.name.trim().toLowerCase()}::${item.departmentId ?? ""}`
+    )
+  )
+  const seen = new Set<string>()
+  const pending: { name: string; departmentId: number | null }[] = []
+  let skipped = 0
+
+  items.forEach((row, rowIndex) => {
+    const line = rowIndex + 2
+    const name = (row[0] ?? "").trim()
+    if (!name) throw new Error(`Row ${line}: name is required.`)
+
+    const departmentRaw = (row[1] ?? "").trim()
+    let departmentId: number | null = null
+    if (!isEmptyRef(departmentRaw)) {
+      const found = index.byPath.get(departmentRaw.toLowerCase())
+      if (!found) {
+        throw new Error(
+          `Row ${line}: department "${departmentRaw}" not found. Import departments first.`
+        )
+      }
+      departmentId = found
+    }
+
+    const key = `${name.toLowerCase()}::${departmentId ?? ""}`
+    if (seen.has(key)) {
+      throw new Error(`Row ${line}: duplicate position in file.`)
+    }
+    seen.add(key)
+    if (existing.has(key)) {
+      skipped += 1
+      return
+    }
+    pending.push({ name, departmentId })
+  })
+
+  if (pending.length > 0) {
+    await tx.position.createMany({ data: pending })
+  }
+  return { created: pending.length, skipped }
+}

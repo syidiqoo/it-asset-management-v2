@@ -21,21 +21,21 @@ export function BastDocument({ doc }: { doc: BastDocumentData }) {
     <div className="bast-print-area">
       <div className="bast-sheet mx-auto w-full max-w-[210mm] bg-white p-[16mm] text-[11pt] leading-relaxed text-black shadow-sm ring-1 ring-foreground/10">
         <h1 className="text-center text-[14pt] font-bold tracking-wide underline">
-          BERITA ACARA SERAH TERIMA
+          HANDOVER REPORT
         </h1>
 
         <p className="mt-6">
-          Pada hari ini {formatBastDay(doc.date)} telah dilakukan serah terima
-          aset/inventaris.
+          On {formatBastDay(doc.date)}, an asset/inventory handover was
+          conducted.
         </p>
 
         <div className="mt-4 grid grid-cols-[11rem_1fr] gap-x-1">
-          <LabelRow label="Kepada" value={doc.receiverName || "—"} />
+          <LabelRow label="To" value={doc.receiverName || "—"} />
           <LabelRow
-            label="Departemen/Base"
+            label="Department/Base"
             value={doc.receiverDepartment || "—"}
           />
-          <LabelRow label="Berupa" value="" />
+          <LabelRow label="Consisting of" value="" />
         </div>
 
         <table className="mt-2 w-full border-collapse text-[10.5pt]">
@@ -69,7 +69,7 @@ export function BastDocument({ doc }: { doc: BastDocumentData }) {
           </tbody>
         </table>
 
-        <p className="mt-4">Kelengkapan lainnya :</p>
+        <p className="mt-4">Other accessories :</p>
         {doc.accessories.length > 0 ? (
           <ol className="mt-1 list-decimal space-y-0.5 pl-6">
             {doc.accessories.map((line) => (
@@ -80,7 +80,7 @@ export function BastDocument({ doc }: { doc: BastDocumentData }) {
           <p className="mt-1">&nbsp;</p>
         )}
 
-        <p className="mt-4">Aturan:</p>
+        <p className="mt-4">Rules:</p>
         <ol className="mt-1 list-decimal space-y-1 pl-6">
           {BAST_RULES.map((rule) => (
             <li key={rule}>{rule}</li>
@@ -88,8 +88,8 @@ export function BastDocument({ doc }: { doc: BastDocumentData }) {
         </ol>
 
         <p className="mt-4">
-          Demikian berita acara ini dibuat dengan sebenar-benarnya dan
-          dipergunakan untuk kepentingan perusahaan.
+          This report is hereby made truthfully and for the benefit of the
+          company.
         </p>
 
         <p className="mt-8 text-right">
@@ -98,11 +98,11 @@ export function BastDocument({ doc }: { doc: BastDocumentData }) {
 
         <div className="mt-6 grid grid-cols-2 gap-8 text-center">
           <div>
-            <p>Yang Menerima,</p>
+            <p>Received by,</p>
             <p className="mt-16">( {doc.receiverName || "…"} )</p>
           </div>
           <div>
-            <p>Diserahkan Oleh,</p>
+            <p>Delivered by,</p>
             <p className="mt-16">( {doc.giverName || "…"} )</p>
           </div>
         </div>

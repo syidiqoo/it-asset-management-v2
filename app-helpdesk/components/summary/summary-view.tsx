@@ -7,7 +7,6 @@ import {
   ChevronDown,
   Laptop,
   Monitor,
-  PackageOpen,
   Printer,
   Radio,
   Smartphone,
@@ -20,16 +19,16 @@ import { PageHeader } from "@/components/page-header"
 import { StickyHeader } from "@/components/sticky-header"
 import { StoreState } from "@/components/store-state"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
 import { buildDepartmentTree } from "@/lib/departments"
 import {
   summarizeDepartment,
   type SummaryCard,
   type SummaryInput,
   type SummaryItem,
+  type SummaryPerson,
   type SummaryUnit,
 } from "@/lib/summary"
-import type { DepartmentNode } from "@/lib/types"
+import type { DepartmentNode, InternetData } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const ITEM_ICONS: Record<SummaryItem["icon"], LucideIcon> = {
@@ -41,294 +40,176 @@ const ITEM_ICONS: Record<SummaryItem["icon"], LucideIcon> = {
   other: Box,
 }
 
-// Aksen per section department: warna jadi penanda grup, bukan dekorasi.
-// Setiap aksen selalu ditemani teks/angka, jadi tidak pernah color-alone.
-type Accent = {
-  dot: string
-  chip: string
-  badge: string
-}
-
-const SECTION_ACCENTS: Accent[] = [
-  {
-    dot: "bg-primary",
-    chip: "bg-primary/10 text-primary",
-    badge: "bg-primary/10 text-primary dark:text-primary",
-  },
-  {
-    dot: "bg-emerald-500",
-    chip: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-    badge:
-      "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-300",
-  },
-  {
-    dot: "bg-amber-500",
-    chip: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
-    badge:
-      "bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:bg-amber-500/15 dark:text-amber-300",
-  },
-  {
-    dot: "bg-violet-500",
-    chip: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
-    badge:
-      "bg-violet-500/10 text-violet-700 ring-violet-500/20 dark:bg-violet-500/15 dark:text-violet-300",
-  },
-]
-
-function ItemRow({ item }: { item: SummaryItem }) {
+function ItemTag({ item }: { item: SummaryItem }) {
   const Icon = ITEM_ICONS[item.icon]
+  const isSim = item.icon === "sim"
   return (
-    <div className="flex min-w-0 items-center gap-2 text-sm">
-      <Icon className="size-3.5 shrink-0 text-muted-foreground" />
-      <span className="w-16 shrink-0 text-xs text-muted-foreground">
-        {item.label}
-      </span>
-      <span
-        className={cn("truncate font-medium", item.icon === "sim" && "font-mono text-xs")}
-      >
-        {item.value}
-      </span>
-    </div>
+    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+      <Icon className="size-3 shrink-0" aria-hidden />
+      <span className={cn(isSim && "font-mono")}>{item.value}</span>
+    </span>
   )
 }
 
-function InternetBadges({
-  items,
-  small = false,
-}: {
-  items: { id: number; service: string; bandwidthMbps: number | null }[]
-  small?: boolean
-}) {
-  if (items.length === 0) return null
+function PersonBlock({ person }: { person: SummaryPerson }) {
   return (
-    <div className="flex shrink-0 flex-col items-end gap-1">
-      {items.map((item) => (
-        <Badge
-          key={item.id}
-          variant="outline"
-          className={cn(
-            "gap-1 border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300",
-            small && "px-1.5 text-[10px]"
-          )}
-        >
-          <Wifi className="size-3" />
-          {item.service}
-          {item.bandwidthMbps !== null ? ` · ${item.bandwidthMbps} Mbps` : ""}
-        </Badge>
-      ))}
-    </div>
-  )
-}
-
-function PersonCard({ person }: { person: SummaryCard["persons"][number] }) {
-  return (
-    <div className="rounded-lg border bg-muted/30 p-3">
-      <div className="flex min-w-0 items-baseline gap-2">
-        <p className="text-sm font-medium">{person.employee.name}</p>
+    <div className="px-3 py-1.5">
+      <div className="flex items-baseline gap-2">
+        <span className="text-sm font-medium">{person.employee.name}</span>
         {person.positionLabel ? (
-          <p className="truncate text-xs text-muted-foreground">
+          <span className="truncate text-xs text-muted-foreground">
             {person.positionLabel}
-          </p>
+          </span>
         ) : null}
       </div>
       {person.items.length > 0 ? (
-        <div className="mt-2 grid gap-x-6 gap-y-1.5 @md:grid-cols-2">
+        <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
           {person.items.map((item, index) => (
-            <ItemRow key={`${item.label}-${index}`} item={item} />
+            <ItemTag key={`${item.label}-${index}`} item={item} />
           ))}
         </div>
       ) : (
-        <p className="mt-1 text-xs text-muted-foreground">
-          Belum ada aset atau SIM.
+        <p className="text-xs text-muted-foreground">
+          No assets or SIM cards.
         </p>
       )}
     </div>
   )
 }
 
-function UnitCard({ unit, accent }: { unit: SummaryUnit; accent: Accent }) {
-  return (
-    <div className="rounded-lg border bg-background p-3">
-      <div className="flex items-start gap-2">
-        <p className="min-w-0 flex-1 truncate text-sm font-semibold">
-          {unit.department.name}
-        </p>
-        <Badge
-          variant="secondary"
-          className={cn("shrink-0 text-[10px]", accent.badge)}
-        >
-          Unit · {unit.personCount} org
-        </Badge>
-        <InternetBadges items={unit.internet} small />
-      </div>
-      <div className="mt-2 space-y-2">
-        {unit.persons.map((person) => (
-          <PersonCard key={person.employee.id} person={person} />
-        ))}
-        {unit.units.map((child) => (
-          <UnitCard key={child.department.id} unit={child} accent={accent} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function SummaryCardView({
-  summary,
-  accent,
+function DepartmentCard({
+  name,
+  location,
+  internet,
+  persons,
+  units,
 }: {
-  summary: SummaryCard
-  accent: Accent
+  name: string
+  location: string | null
+  internet: InternetData[]
+  persons: SummaryPerson[]
+  units: SummaryUnit[]
 }) {
+  const hasContent = persons.length > 0 || units.length > 0
+
   return (
-    <Card className="@container w-full">
-      <div className="flex items-start gap-3 border-b p-4">
-        <div
-          className={cn(
-            "flex size-10 shrink-0 items-center justify-center rounded-lg",
-            accent.chip
-          )}
-        >
-          <Building2 className="size-5" />
-        </div>
+    <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="flex items-start gap-2 border-b bg-muted/40 px-3 py-2">
+        <Building2
+          className="mt-0.5 size-3.5 shrink-0 text-primary"
+          aria-hidden
+        />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-base font-semibold">{summary.title}</p>
-          {summary.identity ? (
-            <p className="truncate text-xs text-muted-foreground">
-              {summary.identity}
-            </p>
+          <p className="truncate text-sm font-semibold">{name}</p>
+          {location ? (
+            <p className="truncate text-xs text-muted-foreground">{location}</p>
           ) : null}
-          <p className="text-xs text-muted-foreground">{summary.subtitle}</p>
         </div>
-        <InternetBadges items={summary.internet} />
+        {internet.length > 0 ? (
+          <div className="flex shrink-0 flex-wrap justify-end gap-1">
+            {internet.map((item) => (
+              <Badge
+                key={item.id}
+                variant="outline"
+                className="gap-1 border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300"
+              >
+                <Wifi className="size-3" aria-hidden />
+                {item.service}
+                {item.bandwidthMbps !== null
+                  ? ` · ${item.bandwidthMbps} Mbps`
+                  : ""}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
       </div>
 
-      <CardContent className="space-y-4">
-        {summary.persons.length > 0 ? (
-          <section className="space-y-2">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Personel {summary.title}
-            </p>
-            {summary.persons.map((person) => (
-              <PersonCard key={person.employee.id} person={person} />
-            ))}
-          </section>
-        ) : null}
-
-        {summary.units.length > 0 ? (
-          <section className="space-y-2">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Unit di bawah {summary.title}
-            </p>
-            {summary.units.map((unit) => (
-              <UnitCard
-                key={unit.department.id}
-                unit={unit}
-                accent={accent}
+      {hasContent ? (
+        <div className="divide-y">
+          {persons.map((person) => (
+            <PersonBlock key={person.employee.id} person={person} />
+          ))}
+          {units.map((unit) => (
+            <div key={unit.department.id} className="p-2">
+              <DepartmentCard
+                name={unit.department.name}
+                location={unit.location}
+                internet={unit.internet}
+                persons={unit.persons}
+                units={unit.units}
               />
-            ))}
-          </section>
-        ) : null}
-
-        {summary.persons.length === 0 && summary.units.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">
-            Belum ada personel maupun unit di department ini.
-          </p>
-        ) : null}
-
-        {summary.unassignedAssets > 0 || summary.unassignedSims > 0 ? (
-          <p className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-1.5 text-xs text-amber-700 dark:text-amber-300">
-            <PackageOpen className="mt-0.5 size-3.5 shrink-0" />
-            <span>
-              {summary.unassignedAssets} asset & {summary.unassignedSims} SIM
-              tanpa pemegang di lingkup ini.
-            </span>
-          </p>
-        ) : null}
-      </CardContent>
-    </Card>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="px-3 py-2 text-xs text-muted-foreground">
+          No personnel yet.
+        </p>
+      )}
+    </div>
   )
 }
 
 function SummarySection({
   root,
   input,
-  accent,
   defaultOpen = false,
 }: {
   root: DepartmentNode
   input: SummaryInput
-  accent: Accent
   defaultOpen?: boolean
 }) {
   const [open, setOpen] = React.useState(defaultOpen)
 
-  // Cards for each direct child department; a leaf top-level department
-  // renders its own card.
-  const summaries = React.useMemo(() => {
+  const cards = React.useMemo(() => {
     const subjects = root.children.length > 0 ? root.children : [root]
     return subjects
       .map((subject) => summarizeDepartment(subject, input))
       .filter((card): card is SummaryCard => card !== null)
   }, [root, input])
 
-  const personCount = summaries.reduce(
-    (total, card) => total + card.personCount,
-    0
-  )
-
   return (
-    <Card size="sm">
-      <CardContent className="space-y-4">
-        <button
-          type="button"
-          onClick={() => setOpen((previous) => !previous)}
-          aria-expanded={open}
-          className="flex w-full items-center gap-3 text-left"
-        >
-          <span
-            className={cn("size-2 shrink-0 rounded-full", accent.dot)}
-            aria-hidden
-          />
-          <div className="min-w-0 flex-1 space-y-0.5">
-            <p className="text-sm font-medium">{root.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {summaries.length} department · {personCount} orang
-            </p>
-          </div>
-          <Badge
-            variant="secondary"
-            className={cn("shrink-0 tabular-nums", accent.badge)}
-          >
-            {summaries.length}
-          </Badge>
-          <ChevronDown
-            className={cn(
-              "size-4 shrink-0 text-muted-foreground transition-transform",
-              open && "rotate-180"
-            )}
-          />
-        </button>
+    <div className="rounded-lg border bg-card">
+      <button
+        type="button"
+        onClick={() => setOpen((previous) => !previous)}
+        aria-expanded={open}
+        className="flex w-full items-center gap-2.5 px-3 py-2 text-left"
+      >
+        <ChevronDown
+          className={cn(
+            "size-4 shrink-0 text-muted-foreground transition-transform",
+            open && "rotate-180"
+          )}
+        />
+        <p className="min-w-0 flex-1 truncate text-sm font-semibold">
+          {root.name}
+        </p>
+      </button>
 
-        {open ? (
-          summaries.length === 0 ? (
-            <p className="px-4 py-8 text-center text-sm text-muted-foreground">
-              Belum ada department di grup ini.
+      {open ? (
+        <div className="border-t p-2">
+          {cards.length === 0 ? (
+            <p className="px-3 py-6 text-center text-sm text-muted-foreground">
+              No departments in this group yet.
             </p>
           ) : (
-            <div className="grid items-start gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {summaries.map((card) => (
-                <SummaryCardView
+            <div className="grid items-start gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {cards.map((card) => (
+                <DepartmentCard
                   key={card.departmentId}
-                  summary={card}
-                  accent={accent}
+                  name={card.title}
+                  location={card.location}
+                  internet={card.internet}
+                  persons={card.persons}
+                  units={card.units}
                 />
               ))}
             </div>
-          )
-        ) : null}
-      </CardContent>
-    </Card>
+          )}
+        </div>
+      ) : null}
+    </div>
   )
 }
 
@@ -359,21 +240,21 @@ export function SummaryView() {
       <StickyHeader>
         <PageHeader
           title="Summary"
-          description="Ringkasan per department: lokasi, personel dan posisinya, aset, SIM card, serta layanan internet."
+          description="Employees and their assets, SIM cards, and internet — grouped by department."
         />
       </StickyHeader>
 
-      <div className="flex flex-col gap-4 p-4 md:p-6">
+      <div className="flex flex-col gap-3 p-4 md:p-6">
         <StoreState
           loading={store.loading}
           error={store.error}
           onRetry={store.refresh}
           empty={false}
         >
-          <div className="flex flex-col gap-4">
+          <div className="contents">
             {roots.length === 0 ? (
               <p className="py-10 text-center text-sm text-muted-foreground">
-                Belum ada department.
+                No departments yet.
               </p>
             ) : (
               roots.map((root, index) => (
@@ -381,7 +262,6 @@ export function SummaryView() {
                   key={root.id}
                   root={root}
                   input={input}
-                  accent={SECTION_ACCENTS[index % SECTION_ACCENTS.length]}
                   defaultOpen={index === 0}
                 />
               ))

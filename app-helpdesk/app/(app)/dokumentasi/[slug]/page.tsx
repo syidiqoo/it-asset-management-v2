@@ -24,7 +24,7 @@ export async function generateMetadata(
   })
 
   return {
-    title: doc ? `${doc.title} — IT Helpdesk` : "Dokumentasi — IT Helpdesk",
+    title: doc ? `${doc.title} — IT Helpdesk` : "Documentation — IT Helpdesk",
   }
 }
 
@@ -46,7 +46,7 @@ export default async function DocPage(props: PageProps<"/dokumentasi/[slug]">) {
           render={<Link href="/dokumentasi" />}
         >
           <ArrowLeft />
-          Dokumentasi
+          Documentation
         </Button>
         <PageHeader
           title={doc.title}

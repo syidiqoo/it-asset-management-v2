@@ -310,7 +310,7 @@ function SimCardForm({
             id="sim-note"
             value={form.note}
             onChange={(event) => set("note", event.target.value)}
-            placeholder="Catatan tambahan, mis. nomor sudah tidak dipakai"
+            placeholder="Additional note, e.g. number no longer in use"
             rows={3}
           />
         </div>

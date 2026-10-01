@@ -263,7 +263,7 @@ function LocationDialogForm({
             id="location-address"
             value={form.address}
             onChange={(event) => set("address", event.target.value)}
-            placeholder="Kantor Pusat"
+            placeholder="Head Office"
           />
           {errors.address ? (
             <p className="text-xs text-destructive">{errors.address}</p>
@@ -280,7 +280,7 @@ function LocationDialogForm({
             id="location-detail-street"
             value={form.detailStreetAddress}
             onChange={(event) => set("detailStreetAddress", event.target.value)}
-            placeholder="Gedung Utama, Jl. Jenderal Sudirman No. 1, Jakarta Pusat"
+            placeholder="Main Building, Jl. Jenderal Sudirman No. 1, Jakarta Pusat"
             rows={2}
           />
           {errors.detailStreetAddress ? (

@@ -128,7 +128,7 @@ export function DepartmentView({ values }: { values: FilterValues }) {
               <CsvActions
                 columns={CSV_COLUMNS}
                 onExport={exportCsv}
-                fileHint="Columns: Name, Parent — or the sample format: ID, Nama, Induk."
+                fileHint="Columns: Name, Parent — or the sample format: ID, Name, Parent."
                 note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose name already exists are skipped."
                 onImport={importCsv}
               />

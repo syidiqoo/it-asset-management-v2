@@ -1,4 +1,4 @@
-import { collectDescendantIds, flattenDepartments } from "@/lib/departments"
+import { flattenDepartments } from "@/lib/departments"
 import type {
   Asset,
   Category,
@@ -33,25 +33,19 @@ export type SummaryPerson = {
 
 export type SummaryUnit = {
   department: DepartmentNode
+  location: string | null
   internet: InternetData[]
   persons: SummaryPerson[]
   units: SummaryUnit[]
-  personCount: number
-  simCount: number
 }
 
 export type SummaryCard = {
   departmentId: number
   title: string
-  identity: string | null
-  subtitle: string
-  personCount: number
-  simCount: number
+  location: string | null
   internet: InternetData[]
   persons: SummaryPerson[]
   units: SummaryUnit[]
-  unassignedAssets: number
-  unassignedSims: number
 }
 
 export type SummaryInput = {
@@ -86,6 +80,16 @@ function categoryIcon(name: string): SummaryItemIcon {
     return "monitor"
   }
   return "other"
+}
+
+function locationLabelFor(
+  locationId: number | null,
+  input: SummaryInput
+): string | null {
+  if (locationId === null) return null
+  const location = input.locations.find((item) => item.id === locationId)
+  if (!location) return null
+  return `${location.code} · ${location.address ?? location.detailStreetAddress}`
 }
 
 function employeesByDepartmentMap(employees: Employee[]) {
@@ -168,41 +172,15 @@ function buildUnit(
   const internet =
     node.locationId === null
       ? []
-      : input.internetData.filter(
-          (item) => item.locationId === node.locationId
-        )
+      : input.internetData.filter((item) => item.locationId === node.locationId)
 
-  const personCount =
-    persons.length + units.reduce((total, unit) => total + unit.personCount, 0)
-  const simCount =
-    persons.reduce(
-      (total, person) =>
-        total + person.items.filter((item) => item.icon === "sim").length,
-      0
-    ) + units.reduce((total, unit) => total + unit.simCount, 0)
-
-  return { department: node, internet, persons, units, personCount, simCount }
-}
-
-function countUnassigned(departmentIds: Set<number>, input: SummaryInput) {
   return {
-    assets: input.assets.filter(
-      (asset) =>
-        asset.employeeId === null &&
-        asset.departmentId !== null &&
-        departmentIds.has(asset.departmentId)
-    ).length,
-    sims: input.simCards.filter(
-      (sim) =>
-        sim.employeeId === null &&
-        sim.departmentId !== null &&
-        departmentIds.has(sim.departmentId)
-    ).length,
+    department: node,
+    location: locationLabelFor(node.locationId, input),
+    internet,
+    persons,
+    units,
   }
-}
-
-function countsLine(units: number, persons: number, sims: number) {
-  return `${units} unit · ${persons} orang · ${sims} SIM`
 }
 
 export function summarizeDepartment(
@@ -222,47 +200,14 @@ export function summarizeDepartment(
   const internet =
     root.locationId === null
       ? []
-      : input.internetData.filter(
-          (item) => item.locationId === root.locationId
-        )
-
-  const location =
-    root.locationId === null
-      ? null
-      : (input.locations.find((item) => item.id === root.locationId) ?? null)
-  const locationLabel = location
-    ? `Lokasi ${location.code} · ${location.address ?? location.detailStreetAddress}`
-    : null
-  const identity =
-    [root.path === root.name ? null : root.path, locationLabel]
-      .filter(Boolean)
-      .join(" · ") || null
-
-  const personCount =
-    persons.length + units.reduce((total, unit) => total + unit.personCount, 0)
-  const simCount =
-    persons.reduce(
-      (total, person) =>
-        total + person.items.filter((item) => item.icon === "sim").length,
-      0
-    ) + units.reduce((total, unit) => total + unit.simCount, 0)
-
-  const unassigned = countUnassigned(
-    collectDescendantIds(input.departments, root.id),
-    input
-  )
+      : input.internetData.filter((item) => item.locationId === root.locationId)
 
   return {
     departmentId: root.id,
     title: root.name,
-    identity,
-    subtitle: countsLine(units.length, personCount, simCount),
-    personCount,
-    simCount,
+    location: locationLabelFor(root.locationId, input),
     internet,
     persons,
     units,
-    unassignedAssets: unassigned.assets,
-    unassignedSims: unassigned.sims,
   }
 }

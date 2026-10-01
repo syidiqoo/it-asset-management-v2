@@ -136,7 +136,8 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
     <>
       <Card size="sm" className="py-0">
         <CardContent className="px-0">
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="pl-4">Category</TableHead>
@@ -205,7 +206,8 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 

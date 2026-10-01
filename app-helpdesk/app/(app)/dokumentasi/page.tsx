@@ -27,7 +27,7 @@ import { getSession } from "@/lib/server/auth"
 import { db } from "@/lib/server/db"
 
 export const metadata: Metadata = {
-  title: "Dokumentasi — IT Helpdesk",
+  title: "Documentation — IT Helpdesk",
 }
 
 const FIELDS: FilterField[] = [
@@ -35,7 +35,7 @@ const FIELDS: FilterField[] = [
     type: "search",
     name: "q",
     label: "Search",
-    placeholder: "Judul atau isi dokumen",
+    placeholder: "Title or document content",
   },
 ]
 
@@ -75,8 +75,8 @@ export default async function DokumentasiPage(
     <div className="flex flex-col">
       <StickyHeader>
         <PageHeader
-          title="Dokumentasi"
-          description="Dokumentasi internal tim IT — topologi jaringan, prosedur, dan catatan operasional."
+          title="Documentation"
+          description="Internal IT team documentation — network topology, procedures, and operational notes."
           actions={
             canWrite ? (
               <Button size="sm" render={<Link href="/dokumentasi/new" />}>
@@ -103,7 +103,7 @@ export default async function DokumentasiPage(
                 <p className="text-sm text-muted-foreground">
                   {filtered
                     ? "Change keywords or reset filters to see other data."
-                    : "Buat dokumen pertama untuk memulai wiki ini."}
+                    : "Create the first document to start this wiki."}
                 </p>
               </div>
               {canWrite && !filtered ? (

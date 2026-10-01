@@ -93,6 +93,9 @@ type DataStore = {
   importAssets: (rows: string[][]) => Promise<string>
   importInternetData: (rows: string[][]) => Promise<string>
   importSimCards: (rows: string[][]) => Promise<string>
+  importCategories: (rows: string[][]) => Promise<string>
+  importPositions: (rows: string[][]) => Promise<string>
+  importSimPackages: (rows: string[][]) => Promise<string>
   refresh: () => Promise<void>
 }
 
@@ -423,6 +426,30 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
             : ""
 
         return `Imported ${result.imported} SIM cards, skipped ${result.skipped} with existing MSISDN.${noPhoneNote}${duplicateNote}${unknownNote}`
+      },
+      async importCategories(rows) {
+        const result = await request<{ created: number; skipped: number }>(
+          "/api/categories/import",
+          { method: "POST", body: JSON.stringify({ rows }) }
+        )
+        await refresh()
+        return `Imported ${result.created} categories, skipped ${result.skipped} existing.`
+      },
+      async importPositions(rows) {
+        const result = await request<{ created: number; skipped: number }>(
+          "/api/positions/import",
+          { method: "POST", body: JSON.stringify({ rows }) }
+        )
+        await refresh()
+        return `Imported ${result.created} positions, skipped ${result.skipped} existing.`
+      },
+      async importSimPackages(rows) {
+        const result = await request<{ created: number; skipped: number }>(
+          "/api/sim-packages/import",
+          { method: "POST", body: JSON.stringify({ rows }) }
+        )
+        await refresh()
+        return `Imported ${result.created} SIM packages, skipped ${result.skipped} existing.`
       },
     }
   }, [

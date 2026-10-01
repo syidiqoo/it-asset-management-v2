@@ -62,10 +62,10 @@ export function DashboardView() {
     <div className="flex flex-col gap-6 p-4 md:p-6">
       <div className="space-y-1">
         <h1 className="text-xl font-semibold tracking-tight">
-          Selamat datang, {sessionUser?.name ?? "—"}
+          Welcome, {sessionUser?.name ?? "—"}
         </h1>
         <p className="text-sm text-muted-foreground">
-          Ringkasan IT assets dan inventory kantor — {today}
+          Summary of office IT assets and inventory — {today}
         </p>
       </div>
 

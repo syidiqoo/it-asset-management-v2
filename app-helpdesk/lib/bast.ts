@@ -15,22 +15,22 @@ export type BastDocument = {
 }
 
 export const BAST_RULES = [
-  "Seluruh Aset barang inventaris yang diserahkan pada berita acara ini ditunjukan untuk kepentingan bisnis perusahaan dan bukan untuk kepentingan pribadi.",
-  "Bersamaan dengan penandatanganan surat ini, maka seluruh tanggung jawab atas barang inventaris yang tertulis BERPINDAH TANGAN kepada pihak yang menerima barang tersebut untuk menjaga dan merawat barang tersebut.",
-  "Bila terjadi kerusakan atau cacat secara fisik pada barang saat masa pemakaian barang tersebut oleh pihak penerima, maka pihak penerima HARUS mengganti nilai valuasi kerusakan barang tersebut sesuai dengan valuasi kerusakan barang atau komponennya.",
-  "Aturan ini berlaku setelah pihak yang menyerahkan dan pihak penerima menandatangani surat serah terima ini.",
+  "All inventory assets handed over under this report are intended for the company's business purposes and not for personal use.",
+  "Upon signing this document, all responsibility for the listed inventory items TRANSFERS to the receiving party, who must safeguard and maintain those items.",
+  "If physical damage or defects occur to the items during the receiving party's use, the receiving party MUST compensate the assessed value of the damage according to the valuation of the damaged items or components.",
+  "These terms take effect once both the delivering and receiving parties sign this handover document.",
 ]
 
 export const BAST_CITY_DEFAULT = "Pangandaran"
 
-const dayFormatter = new Intl.DateTimeFormat("id-ID", {
+const dayFormatter = new Intl.DateTimeFormat("en-GB", {
   weekday: "long",
   day: "numeric",
   month: "long",
   year: "numeric",
 })
 
-const dateFormatter = new Intl.DateTimeFormat("id-ID", {
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "long",
   year: "numeric",
@@ -53,7 +53,7 @@ export function formatBastDate(value: string): string {
 }
 
 export function bastFileName(receiverName: string, date: string): string {
-  const name = receiverName.trim() || "Tanpa Penerima"
+  const name = receiverName.trim() || "No Recipient"
   const safeName = name.replace(/[\\/:*?"<>|]+/g, "").replace(/\s+/g, " ")
   const parts = date ? date.split("-").reverse() : []
   const datePart = parts.length === 3 ? parts.join("-") : ""

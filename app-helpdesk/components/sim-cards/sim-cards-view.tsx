@@ -226,7 +226,7 @@ export function SimCardsView({ values }: { values: FilterValues }) {
                   note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose MSISDN already exists are skipped. Employee, Department, or Package that is not in master is left empty, so the card lands in Available."
                   onImport={importCsv}
                   pdf={{
-                    title: "Laporan SIM Card",
+                    title: "SIM Card Report",
                     columns: PDF_COLUMNS,
                     rows: pdfRows,
                     filePrefix: "sim-card",

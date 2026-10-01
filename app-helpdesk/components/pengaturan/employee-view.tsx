@@ -133,7 +133,7 @@ export function EmployeeView({ values }: { values: FilterValues }) {
               <CsvActions
                 columns={CSV_COLUMNS}
                 onExport={exportCsv}
-                fileHint="Columns: Name, Department — or the sample format: ID, Nama, ..., Posisi."
+                fileHint="Columns: Name, Department — or the sample format: ID, Name, ..., Position."
                 note="Import is all-or-nothing: one bad row cancels the whole process. Department must already exist; rows whose name already exists are skipped."
                 onImport={importCsv}
               />

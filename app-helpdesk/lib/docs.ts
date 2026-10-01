@@ -7,5 +7,5 @@ export function slugify(value: string): string {
     .slice(0, 80)
     .replace(/^-+|-+$/g, "")
 
-  return slug || "dokumen"
+  return slug || "document"
 }

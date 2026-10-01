@@ -4,6 +4,7 @@ import * as React from "react"
 import { Plus } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { CsvActions } from "@/components/csv-actions"
 import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
 import { StickyHeader } from "@/components/sticky-header"
@@ -14,6 +15,7 @@ import { EntityList } from "@/components/pengaturan/entity-list"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { hasActiveFilters, type FilterField, type FilterValues } from "@/lib/filters"
+import { csvFileName, downloadCsv } from "@/lib/csv"
 import { filterSimPackages } from "@/lib/master-data"
 import type { SimPackage } from "@/lib/types"
 
@@ -25,6 +27,8 @@ const FIELDS: FilterField[] = [
     placeholder: "Package name",
   },
 ]
+
+const CSV_COLUMNS = ["Name"]
 
 export function SimPackageView({ values }: { values: FilterValues }) {
   const store = useDataStore()
@@ -52,6 +56,18 @@ export function SimPackageView({ values }: { values: FilterValues }) {
     return null
   }
 
+  const exportCsv = () => {
+    downloadCsv(
+      csvFileName("sim-package"),
+      CSV_COLUMNS,
+      filtered.map((item) => [item.name])
+    )
+  }
+
+  const importCsv = async (rows: string[][]) => {
+    return store.importSimPackages(rows)
+  }
+
   const blockReason = (id: number) =>
     store.simCards.some((card) => card.packageId === id)
       ? "Package is still used by SIM cards."
@@ -64,10 +80,19 @@ export function SimPackageView({ values }: { values: FilterValues }) {
           title="SIM Package"
           description="Data packages available for SIM card inventory."
           actions={
-            <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-              <Plus />
-              Add Package
-            </Button>
+            <>
+              <CsvActions
+                columns={CSV_COLUMNS}
+                onExport={exportCsv}
+                fileHint="Columns: Name."
+                note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose name already exists are skipped."
+                onImport={importCsv}
+              />
+              <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
+                <Plus />
+                Add Package
+              </Button>
+            </>
           }
         />
         <FilterBar fields={FIELDS} values={values} />

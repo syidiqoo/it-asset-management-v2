@@ -4,6 +4,7 @@ import * as React from "react"
 import { Plus } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { CsvActions } from "@/components/csv-actions"
 import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
 import { StickyHeader } from "@/components/sticky-header"
@@ -14,6 +15,7 @@ import { EntityList } from "@/components/pengaturan/entity-list"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { hasActiveFilters, type FilterField, type FilterValues } from "@/lib/filters"
+import { csvFileName, downloadCsv } from "@/lib/csv"
 import { filterCategories } from "@/lib/master-data"
 import type { Category } from "@/lib/types"
 
@@ -25,6 +27,8 @@ const FIELDS: FilterField[] = [
     placeholder: "Category name",
   },
 ]
+
+const CSV_COLUMNS = ["Name"]
 
 export function CategoryView({ values }: { values: FilterValues }) {
   const store = useDataStore()
@@ -51,6 +55,18 @@ export function CategoryView({ values }: { values: FilterValues }) {
     return null
   }
 
+  const exportCsv = () => {
+    downloadCsv(
+      csvFileName("category"),
+      CSV_COLUMNS,
+      filtered.map((item) => [item.name])
+    )
+  }
+
+  const importCsv = async (rows: string[][]) => {
+    return store.importCategories(rows)
+  }
+
   const blockReason = (id: number) =>
     store.assets.some((asset) => asset.categoryId === id)
       ? "Category is still used by assets."
@@ -63,10 +79,19 @@ export function CategoryView({ values }: { values: FilterValues }) {
           title="Category"
           description="Asset inventory categories, e.g. Laptop, Phone, PC, or Printer."
           actions={
-            <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-              <Plus />
-              Add Category
-            </Button>
+            <>
+              <CsvActions
+                columns={CSV_COLUMNS}
+                onExport={exportCsv}
+                fileHint="Columns: Name."
+                note="Import is all-or-nothing: one bad row cancels the whole process. Rows whose name already exists are skipped."
+                onImport={importCsv}
+              />
+              <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
+                <Plus />
+                Add Category
+              </Button>
+            </>
           }
         />
         <FilterBar fields={FIELDS} values={values} />

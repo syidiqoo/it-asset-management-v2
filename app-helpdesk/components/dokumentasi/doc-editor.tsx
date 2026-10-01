@@ -178,12 +178,12 @@ export function DocEditor({ doc }: { doc?: Doc }) {
           render={<Link href="/dokumentasi" />}
         >
           <ArrowLeft />
-          Dokumentasi
+          Documentation
         </Button>
 
         <PageHeader
           title={doc ? "Edit Document" : "New Document"}
-          description="Tulis dokumentasi dalam format Markdown. Perubahan belum tersimpan sampai kamu menekan Save."
+          description="Write documentation in Markdown format. Changes are not saved until you press Save."
         />
 
         <Card size="sm">
@@ -192,13 +192,13 @@ export function DocEditor({ doc }: { doc?: Doc }) {
               label="Title"
               htmlFor="doc-title"
               error={errors.title}
-              hint="Judul yang tampil di daftar dan halaman dokumen."
+              hint="The title shown in the list and on the document page."
             >
               <Input
                 id="doc-title"
                 value={form.title}
                 onChange={(event) => onTitleChange(event.target.value)}
-                placeholder="Topologi Internet Kantor"
+                placeholder="Office Internet Topology"
               />
             </Field>
 
@@ -206,7 +206,7 @@ export function DocEditor({ doc }: { doc?: Doc }) {
               label="Slug"
               htmlFor="doc-slug"
               error={errors.slug}
-              hint="Alamat URL dokumen. Terisi otomatis dari judul, bisa diubah."
+              hint="The document's URL address. Auto-filled from the title, editable."
             >
               <Input
                 id="doc-slug"
@@ -215,7 +215,7 @@ export function DocEditor({ doc }: { doc?: Doc }) {
                   setSlugEdited(true)
                   set("slug", event.target.value)
                 }}
-                placeholder="topologi-internet-kantor"
+                placeholder="office-internet-topology"
               />
             </Field>
 
@@ -224,13 +224,13 @@ export function DocEditor({ doc }: { doc?: Doc }) {
                 label="Summary"
                 htmlFor="doc-summary"
                 error={errors.summary}
-                hint="Opsional. Satu baris ringkasan untuk daftar dokumentasi."
+                hint="Optional. One-line summary for the documentation list."
               >
                 <Input
                   id="doc-summary"
                   value={form.summary}
                   onChange={(event) => set("summary", event.target.value)}
-                  placeholder="Ringkasan singkat isi dokumen."
+                  placeholder="Short summary of the document content."
                 />
               </Field>
             </div>
@@ -266,15 +266,15 @@ export function DocEditor({ doc }: { doc?: Doc }) {
                 value={form.content}
                 spellCheck={false}
                 onChange={(event) => set("content", event.target.value)}
-                placeholder={"## Ringkasan\n\nTulis di sini..."}
+                placeholder={"## Summary\n\nWrite here..."}
                 className="min-h-96 font-mono text-xs leading-6"
               />
               {errors.content ? (
                 <p className="text-xs text-destructive">{errors.content}</p>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  {uploadHint("image")} — unggah hasil export draw.io lewat
-                  Insert image untuk menyisipkannya sebagai gambar.
+                  {uploadHint("image")} — upload draw.io exports via Insert
+                  image to insert them as images.
                 </p>
               )}
             </CardContent>
@@ -288,7 +288,7 @@ export function DocEditor({ doc }: { doc?: Doc }) {
                   <Markdown content={form.content} />
                 ) : (
                   <p className="py-12 text-center text-sm text-muted-foreground">
-                    Belum ada isi untuk ditampilkan.
+                    Nothing to preview yet.
                   </p>
                 )}
               </div>

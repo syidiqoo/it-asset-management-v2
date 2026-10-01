@@ -35,8 +35,8 @@ export function DocDeleteButton({ id, title }: { id: number; title: string }) {
         title="Delete document"
         description={
           <>
-            Dokumen <span className="font-medium">{title}</span> akan dihapus
-            permanen. Tindakan ini tidak bisa dibatalkan.
+            The document <span className="font-medium">{title}</span> will be
+            permanently deleted. This action cannot be undone.
           </>
         }
         onConfirm={remove}

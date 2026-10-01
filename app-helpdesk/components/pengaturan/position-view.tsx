@@ -4,6 +4,7 @@ import * as React from "react"
 import { Plus } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
+import { CsvActions } from "@/components/csv-actions"
 import { FilterBar } from "@/components/filter-bar"
 import { PageHeader } from "@/components/page-header"
 import { StickyHeader } from "@/components/sticky-header"
@@ -27,8 +28,11 @@ import {
   type FilterField,
   type FilterValues,
 } from "@/lib/filters"
+import { csvFileName, downloadCsv } from "@/lib/csv"
 import { filterPositions } from "@/lib/master-data"
 import type { Position } from "@/lib/types"
+
+const CSV_COLUMNS = ["Name", "Department"]
 
 export function PositionView({ values }: { values: FilterValues }) {
   const store = useDataStore()
@@ -87,6 +91,21 @@ export function PositionView({ values }: { values: FilterValues }) {
     return null
   }
 
+  const exportCsv = () => {
+    downloadCsv(
+      csvFileName("position"),
+      CSV_COLUMNS,
+      filtered.map((position) => [
+        position.name,
+        departmentName(store.departments, position.departmentId) ?? "",
+      ])
+    )
+  }
+
+  const importCsv = async (rows: string[][]) => {
+    return store.importPositions(rows)
+  }
+
   const blockReason = (id: number) =>
     store.employees.some((employee) => employee.positionId === id)
       ? "Position is still used by employees."
@@ -99,10 +118,19 @@ export function PositionView({ values }: { values: FilterValues }) {
           title="Position"
           description="Job titles per department, used as employee positions."
           actions={
-            <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
-              <Plus />
-              Add Position
-            </Button>
+            <>
+              <CsvActions
+                columns={CSV_COLUMNS}
+                onExport={exportCsv}
+                fileHint="Columns: Name, Department."
+                note="Import is all-or-nothing: one bad row cancels the whole process. Department must already exist; rows whose name already exists in that department are skipped."
+                onImport={importCsv}
+              />
+              <Button size="sm" onClick={() => setDialog({ open: true, item: null })}>
+                <Plus />
+                Add Position
+              </Button>
+            </>
           }
         />
         <FilterBar fields={fields} values={values} />
