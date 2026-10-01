@@ -56,7 +56,21 @@ function MoveSimCardForm({
   const [employeeId, setEmployeeId] = React.useState(
     card.employeeId === null ? "" : String(card.employeeId)
   )
+  const [departmentId, setDepartmentId] = React.useState(
+    card.departmentId === null ? "" : String(card.departmentId)
+  )
   const [error, setError] = React.useState<string | null>(null)
+
+  const handleEmployeeChange = (value: string | null) => {
+    const nextId = value ?? ""
+    const employee = nextId
+      ? store.employees.find((item) => String(item.id) === nextId)
+      : undefined
+    setEmployeeId(nextId)
+    if (employee?.departmentId != null) {
+      setDepartmentId(String(employee.departmentId))
+    }
+  }
 
   const handleMove = async () => {
     if (section === "main" && !employeeId) {
@@ -74,7 +88,7 @@ function MoveSimCardForm({
             : section === "terminated"
               ? card.employeeId
               : null,
-        departmentId: card.departmentId,
+        departmentId: departmentId ? Number(departmentId) : null,
         packageId: card.packageId,
         clsDomestic: card.clsDomestic,
         clsRoaming: card.clsRoaming,
@@ -142,7 +156,7 @@ function MoveSimCardForm({
                   })),
                 ]}
                 value={employeeId}
-                onValueChange={(value) => setEmployeeId(value ?? "")}
+                onValueChange={handleEmployeeChange}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select employee" />

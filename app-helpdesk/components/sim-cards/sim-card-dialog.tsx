@@ -102,6 +102,51 @@ function SimCardForm({
     [store.departments]
   )
 
+  const employeeOptions = React.useMemo(
+    () =>
+      form.departmentId
+        ? store.employees.filter(
+            (employee) => String(employee.departmentId) === form.departmentId
+          )
+        : store.employees,
+    [store.employees, form.departmentId]
+  )
+
+  const handleEmployeeChange = (value: string | null) => {
+    const employeeId = value ?? ""
+    const employee = employeeId
+      ? store.employees.find((item) => String(item.id) === employeeId)
+      : undefined
+    setForm((previous) => ({
+      ...previous,
+      employeeId,
+      departmentId:
+        employee?.departmentId != null
+          ? String(employee.departmentId)
+          : employeeId
+            ? ""
+            : previous.departmentId,
+    }))
+  }
+
+  const handleDepartmentChange = (value: string | null) => {
+    const departmentId = value ?? ""
+    setForm((previous) => {
+      const employeeFits =
+        !previous.employeeId ||
+        store.employees.some(
+          (item) =>
+            String(item.id) === previous.employeeId &&
+            String(item.departmentId) === departmentId
+        )
+      return {
+        ...previous,
+        departmentId,
+        employeeId: employeeFits ? previous.employeeId : "",
+      }
+    })
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -163,20 +208,20 @@ function SimCardForm({
           <Select
             items={[
               { label: "— No holder —", value: "" },
-              ...store.employees.map((employee) => ({
+              ...employeeOptions.map((employee) => ({
                 label: employee.name,
                 value: String(employee.id),
               })),
             ]}
             value={form.employeeId}
-            onValueChange={(value) => set("employeeId", value ?? "")}
+            onValueChange={handleEmployeeChange}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="— No holder —" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">— No holder —</SelectItem>
-              {store.employees.map((employee) => (
+              {employeeOptions.map((employee) => (
                 <SelectItem key={employee.id} value={String(employee.id)}>
                   {employee.name}
                 </SelectItem>
@@ -196,7 +241,7 @@ function SimCardForm({
               })),
             ]}
             value={form.departmentId}
-            onValueChange={(value) => set("departmentId", value ?? "")}
+            onValueChange={handleDepartmentChange}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="— No department —" />

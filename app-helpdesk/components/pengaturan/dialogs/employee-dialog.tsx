@@ -82,7 +82,7 @@ function EmployeeDialogForm({
   const positionOptions = React.useMemo(
     () =>
       department === ""
-        ? []
+        ? positions
         : positions.filter(
             (position) => position.departmentId === Number(department)
           ),
@@ -100,6 +100,18 @@ function EmployeeDialogForm({
       )?.departmentId !== Number(next)
     ) {
       setPosition("")
+    }
+  }
+
+  const handlePositionChange = (value: string | null) => {
+    const next = value ?? ""
+    setPosition(next)
+    // Selecting a position fills in the department it belongs to.
+    const selected = next
+      ? positions.find((item) => String(item.id) === next)
+      : undefined
+    if (selected?.departmentId != null) {
+      setDepartment(String(selected.departmentId))
     }
   }
 
@@ -186,16 +198,10 @@ function EmployeeDialogForm({
               })),
             ]}
             value={position}
-            onValueChange={(value) => setPosition(value ?? "")}
+            onValueChange={handlePositionChange}
           >
             <SelectTrigger className="w-full">
-              <SelectValue
-                placeholder={
-                  department === ""
-                    ? "Pilih department dahulu"
-                    : "— No position —"
-                }
-              />
+              <SelectValue placeholder="— No position —" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">— No position —</SelectItem>

@@ -7,6 +7,7 @@ import {
   ChevronDown,
   Laptop,
   Monitor,
+  PackageOpen,
   Printer,
   Radio,
   Smartphone,
@@ -40,6 +41,40 @@ const ITEM_ICONS: Record<SummaryItem["icon"], LucideIcon> = {
   other: Box,
 }
 
+// Aksen per section department: warna jadi penanda grup, bukan dekorasi.
+// Setiap aksen selalu ditemani teks/angka, jadi tidak pernah color-alone.
+type Accent = {
+  dot: string
+  chip: string
+  badge: string
+}
+
+const SECTION_ACCENTS: Accent[] = [
+  {
+    dot: "bg-primary",
+    chip: "bg-primary/10 text-primary",
+    badge: "bg-primary/10 text-primary dark:text-primary",
+  },
+  {
+    dot: "bg-emerald-500",
+    chip: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    badge:
+      "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-300",
+  },
+  {
+    dot: "bg-amber-500",
+    chip: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+    badge:
+      "bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:bg-amber-500/15 dark:text-amber-300",
+  },
+  {
+    dot: "bg-violet-500",
+    chip: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+    badge:
+      "bg-violet-500/10 text-violet-700 ring-violet-500/20 dark:bg-violet-500/15 dark:text-violet-300",
+  },
+]
+
 function ItemRow({ item }: { item: SummaryItem }) {
   const Icon = ITEM_ICONS[item.icon]
   return (
@@ -71,7 +106,10 @@ function InternetBadges({
         <Badge
           key={item.id}
           variant="outline"
-          className={cn("gap-1 bg-primary/5", small && "px-1.5 text-[10px]")}
+          className={cn(
+            "gap-1 border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300",
+            small && "px-1.5 text-[10px]"
+          )}
         >
           <Wifi className="size-3" />
           {item.service}
@@ -94,7 +132,7 @@ function PersonCard({ person }: { person: SummaryCard["persons"][number] }) {
         ) : null}
       </div>
       {person.items.length > 0 ? (
-        <div className="mt-2 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+        <div className="mt-2 grid gap-x-6 gap-y-1.5 @md:grid-cols-2">
           {person.items.map((item, index) => (
             <ItemRow key={`${item.label}-${index}`} item={item} />
           ))}
@@ -108,14 +146,17 @@ function PersonCard({ person }: { person: SummaryCard["persons"][number] }) {
   )
 }
 
-function UnitCard({ unit }: { unit: SummaryUnit }) {
+function UnitCard({ unit, accent }: { unit: SummaryUnit; accent: Accent }) {
   return (
     <div className="rounded-lg border bg-background p-3">
       <div className="flex items-start gap-2">
         <p className="min-w-0 flex-1 truncate text-sm font-semibold">
           {unit.department.name}
         </p>
-        <Badge variant="secondary" className="shrink-0 text-[10px]">
+        <Badge
+          variant="secondary"
+          className={cn("shrink-0 text-[10px]", accent.badge)}
+        >
           Unit · {unit.personCount} org
         </Badge>
         <InternetBadges items={unit.internet} small />
@@ -125,18 +166,29 @@ function UnitCard({ unit }: { unit: SummaryUnit }) {
           <PersonCard key={person.employee.id} person={person} />
         ))}
         {unit.units.map((child) => (
-          <UnitCard key={child.department.id} unit={child} />
+          <UnitCard key={child.department.id} unit={child} accent={accent} />
         ))}
       </div>
     </div>
   )
 }
 
-function SummaryCardView({ summary }: { summary: SummaryCard }) {
+function SummaryCardView({
+  summary,
+  accent,
+}: {
+  summary: SummaryCard
+  accent: Accent
+}) {
   return (
-    <Card className="w-full">
+    <Card className="@container w-full">
       <div className="flex items-start gap-3 border-b p-4">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div
+          className={cn(
+            "flex size-10 shrink-0 items-center justify-center rounded-lg",
+            accent.chip
+          )}
+        >
           <Building2 className="size-5" />
         </div>
         <div className="min-w-0 flex-1">
@@ -169,7 +221,11 @@ function SummaryCardView({ summary }: { summary: SummaryCard }) {
               Unit di bawah {summary.title}
             </p>
             {summary.units.map((unit) => (
-              <UnitCard key={unit.department.id} unit={unit} />
+              <UnitCard
+                key={unit.department.id}
+                unit={unit}
+                accent={accent}
+              />
             ))}
           </section>
         ) : null}
@@ -181,9 +237,12 @@ function SummaryCardView({ summary }: { summary: SummaryCard }) {
         ) : null}
 
         {summary.unassignedAssets > 0 || summary.unassignedSims > 0 ? (
-          <p className="text-xs text-muted-foreground">
-            {summary.unassignedAssets} asset & {summary.unassignedSims} SIM
-            tanpa pemegang di lingkup ini.
+          <p className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-1.5 text-xs text-amber-700 dark:text-amber-300">
+            <PackageOpen className="mt-0.5 size-3.5 shrink-0" />
+            <span>
+              {summary.unassignedAssets} asset & {summary.unassignedSims} SIM
+              tanpa pemegang di lingkup ini.
+            </span>
           </p>
         ) : null}
       </CardContent>
@@ -194,10 +253,12 @@ function SummaryCardView({ summary }: { summary: SummaryCard }) {
 function SummarySection({
   root,
   input,
+  accent,
   defaultOpen = false,
 }: {
   root: DepartmentNode
   input: SummaryInput
+  accent: Accent
   defaultOpen?: boolean
 }) {
   const [open, setOpen] = React.useState(defaultOpen)
@@ -225,13 +286,20 @@ function SummarySection({
           aria-expanded={open}
           className="flex w-full items-center gap-3 text-left"
         >
+          <span
+            className={cn("size-2 shrink-0 rounded-full", accent.dot)}
+            aria-hidden
+          />
           <div className="min-w-0 flex-1 space-y-0.5">
             <p className="text-sm font-medium">{root.name}</p>
             <p className="text-xs text-muted-foreground">
               {summaries.length} department · {personCount} orang
             </p>
           </div>
-          <Badge variant="secondary" className="shrink-0 tabular-nums">
+          <Badge
+            variant="secondary"
+            className={cn("shrink-0 tabular-nums", accent.badge)}
+          >
             {summaries.length}
           </Badge>
           <ChevronDown
@@ -243,17 +311,21 @@ function SummarySection({
         </button>
 
         {open ? (
-          <div className="space-y-4">
-            {summaries.length === 0 ? (
-              <p className="px-4 py-8 text-center text-sm text-muted-foreground">
-                Belum ada department di grup ini.
-              </p>
-            ) : (
-              summaries.map((card) => (
-                <SummaryCardView key={card.departmentId} summary={card} />
-              ))
-            )}
-          </div>
+          summaries.length === 0 ? (
+            <p className="px-4 py-8 text-center text-sm text-muted-foreground">
+              Belum ada department di grup ini.
+            </p>
+          ) : (
+            <div className="grid items-start gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {summaries.map((card) => (
+                <SummaryCardView
+                  key={card.departmentId}
+                  summary={card}
+                  accent={accent}
+                />
+              ))}
+            </div>
+          )
         ) : null}
       </CardContent>
     </Card>
@@ -309,6 +381,7 @@ export function SummaryView() {
                   key={root.id}
                   root={root}
                   input={input}
+                  accent={SECTION_ACCENTS[index % SECTION_ACCENTS.length]}
                   defaultOpen={index === 0}
                 />
               ))

@@ -58,8 +58,22 @@ function MoveAssetForm({
   const [employeeId, setEmployeeId] = React.useState(
     asset.employeeId === null ? "" : String(asset.employeeId)
   )
+  const [departmentId, setDepartmentId] = React.useState(
+    asset.departmentId === null ? "" : String(asset.departmentId)
+  )
   const [condition, setCondition] = React.useState<Condition>(asset.condition)
   const [error, setError] = React.useState<string | null>(null)
+
+  const handleEmployeeChange = (value: string | null) => {
+    const nextId = value ?? ""
+    const employee = nextId
+      ? store.employees.find((item) => String(item.id) === nextId)
+      : undefined
+    setEmployeeId(nextId)
+    if (employee?.departmentId != null) {
+      setDepartmentId(String(employee.departmentId))
+    }
+  }
 
   const handleMove = async () => {
     if (section === "main" && !employeeId) {
@@ -75,7 +89,7 @@ function MoveAssetForm({
         code: asset.code,
         serialNumber: asset.serialNumber,
         employeeId: section === "main" ? Number(employeeId) : null,
-        departmentId: asset.departmentId,
+        departmentId: departmentId ? Number(departmentId) : null,
         condition:
           section === "broken"
             ? condition === "Good" || condition === "Fair"
@@ -152,7 +166,7 @@ function MoveAssetForm({
                   })),
                 ]}
                 value={employeeId}
-                onValueChange={(value) => setEmployeeId(value ?? "")}
+                onValueChange={handleEmployeeChange}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select employee" />
