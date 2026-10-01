@@ -259,12 +259,26 @@ function InternetDialogForm({
 
         <div className="space-y-1.5">
           <Label htmlFor="internet-payment">Payment Method</Label>
-          <Input
-            id="internet-payment"
+          <Select
+            items={[
+              { label: "— No payment method —", value: "" },
+              { label: "Transfer", value: "Transfer" },
+              { label: "Virtual Account", value: "Virtual Account" },
+              { label: "Credit Card", value: "Credit Card" },
+            ]}
             value={form.paymentMethod}
-            onChange={(event) => set("paymentMethod", event.target.value)}
-            placeholder="Virtual Account"
-          />
+            onValueChange={(value) => set("paymentMethod", value ?? "")}
+          >
+            <SelectTrigger id="internet-payment" className="w-full">
+              <SelectValue placeholder="— No payment method —" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">— No payment method —</SelectItem>
+              <SelectItem value="Transfer">Transfer</SelectItem>
+              <SelectItem value="Virtual Account">Virtual Account</SelectItem>
+              <SelectItem value="Credit Card">Credit Card</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-1.5">
