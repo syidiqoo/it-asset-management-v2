@@ -48,6 +48,7 @@ const SETTINGS_ITEMS: { href: string; label: string }[] = [
   { href: `${SETTINGS_PREFIX}/sim-package`, label: "SIM Package" },
   { href: `${SETTINGS_PREFIX}/location`, label: "Location" },
   { href: `${SETTINGS_PREFIX}/user`, label: "User" },
+  { href: `${SETTINGS_PREFIX}/backup-restore`, label: "Backup / Restore" },
   { href: `${SETTINGS_PREFIX}/delete-data`, label: "Delete Data" },
 ]
 
