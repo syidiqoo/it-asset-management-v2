@@ -44,4 +44,5 @@ next-env.d.ts
 /.commandcode
 
 # markdown files
+/.md
 *.md
