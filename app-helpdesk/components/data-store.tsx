@@ -18,6 +18,7 @@ import type {
   SimCardInput,
   SimPackage,
 } from "@/lib/types"
+import type { ResetDataResult } from "@/lib/reset-data"
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
@@ -96,6 +97,7 @@ type DataStore = {
   importCategories: (rows: string[][]) => Promise<string>
   importPositions: (rows: string[][]) => Promise<string>
   importSimPackages: (rows: string[][]) => Promise<string>
+  resetData: (confirm: string) => Promise<ResetDataResult>
   refresh: () => Promise<void>
 }
 
@@ -450,6 +452,14 @@ export function DataStoreProvider({ children }: { children: React.ReactNode }) {
         )
         await refresh()
         return `Imported ${result.created} SIM packages, skipped ${result.skipped} existing.`
+      },
+      async resetData(confirm) {
+        const result = await request<ResetDataResult>(
+          "/api/settings/reset-data",
+          { method: "POST", body: JSON.stringify({ confirm }) }
+        )
+        await refresh()
+        return result
       },
     }
   }, [
