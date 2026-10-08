@@ -1,13 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  ChevronDown,
-  Download,
-  FileSpreadsheet,
-  FileText,
-  FileUp,
-} from "lucide-react"
+import { FileSpreadsheet, FileText, FileUp, MoreVertical } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,12 +11,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -104,30 +98,40 @@ export function CsvActions({
 
   return (
     <>
-      {pdf ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
-            <Download />
-            Export
-            <ChevronDown />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              size="icon-sm"
+              aria-label="Import / export data"
+            />
+          }
+        >
+          <MoreVertical />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-44">
+          {pdf ? (
             <DropdownMenuItem onClick={handleExportPdf}>
               <FileText />
               Export PDF
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onExport}>
-              <FileSpreadsheet />
-              Export CSV
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <Button variant="outline" size="sm" onClick={onExport}>
-          <Download />
-          Export CSV
-        </Button>
-      )}
+          ) : null}
+          <DropdownMenuItem onClick={onExport}>
+            <FileSpreadsheet />
+            Export CSV
+          </DropdownMenuItem>
+          {onImport ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <FileUp />
+                Import CSV
+              </DropdownMenuItem>
+            </>
+          ) : null}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <Dialog
         open={open}
@@ -136,10 +140,6 @@ export function CsvActions({
           if (!next) reset()
         }}
       >
-        <DialogTrigger render={<Button variant="outline" size="sm" />}>
-          <FileUp />
-          Import CSV
-        </DialogTrigger>
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Import CSV</DialogTitle>
