@@ -44,7 +44,8 @@ yarn-error.log*
 next-env.d.ts
 
 # commandcode ai folder
-/.commandcode
+.commandcode/*
+.md/*
 
 # markdown files
 /.md
