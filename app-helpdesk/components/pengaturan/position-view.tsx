@@ -163,7 +163,13 @@ export function PositionView({ values }: { values: FilterValues }) {
                     </TableHeader>
                     <TableBody>
                       {filtered.map((position) => (
-                        <TableRow key={position.id}>
+                        <TableRow
+                          key={position.id}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setDialog({ open: true, item: position })
+                          }
+                        >
                           <TableCell className="pl-4 font-medium">
                             {position.name}
                           </TableCell>

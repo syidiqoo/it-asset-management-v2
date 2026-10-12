@@ -169,7 +169,11 @@ export function UserView({ values }: { values: FilterValues }) {
                     </TableHeader>
                     <TableBody>
                       {filtered.map((user) => (
-                        <TableRow key={user.id}>
+                        <TableRow
+                          key={user.id}
+                          className="cursor-pointer"
+                          onClick={() => setDialog({ open: true, item: user })}
+                        >
                           <TableCell className="pl-4 font-medium">
                             {user.name}
                           </TableCell>

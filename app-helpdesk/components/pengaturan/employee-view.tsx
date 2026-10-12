@@ -175,7 +175,13 @@ export function EmployeeView({ values }: { values: FilterValues }) {
                     </TableHeader>
                     <TableBody>
                       {filtered.map((employee) => (
-                        <TableRow key={employee.id}>
+                        <TableRow
+                          key={employee.id}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setDialog({ open: true, item: employee })
+                          }
+                        >
                           <TableCell className="pl-4 font-medium">
                             {employee.name}
                           </TableCell>

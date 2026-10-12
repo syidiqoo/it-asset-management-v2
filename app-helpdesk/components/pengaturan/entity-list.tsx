@@ -41,7 +41,11 @@ export function EntityList({
       </TableHeader>
       <TableBody>
         {items.map((item) => (
-          <TableRow key={item.id}>
+          <TableRow
+            key={item.id}
+            className="cursor-pointer"
+            onClick={() => onEdit(item)}
+          >
             <TableCell className="pl-4 font-medium">{item.name}</TableCell>
             <TableCell className="pr-4">
               <ItemActions
