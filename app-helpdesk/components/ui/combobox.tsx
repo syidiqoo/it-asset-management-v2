@@ -43,13 +43,28 @@ export function Combobox({
     [items, emptyLabel]
   )
 
+  const selectedLabel = labelByValue.get(value) ?? ""
+  const [query, setQuery] = React.useState("")
+  const [open, setOpen] = React.useState(false)
+
+  // Saat popup tertutup, input menampilkan nama yang sedang terpilih.
+  // Saat popup dibuka, input dikosongkan agar pengguna bisa langsung mengetik
+  // tanpa perlu menghapus teks lebih dulu.
+  const inputValue = open ? query : selectedLabel
+
   return (
     <ComboboxPrimitive.Root
       items={values}
       value={value}
       disabled={disabled}
+      inputValue={inputValue}
+      onInputValueChange={setQuery}
       itemToStringLabel={(item) => labelByValue.get(item) ?? ""}
       onValueChange={(next) => onValueChange(next ?? null)}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen)
+        if (nextOpen) setQuery("")
+      }}
     >
       <ComboboxPrimitive.InputGroup
         data-slot="combobox-input-group"
