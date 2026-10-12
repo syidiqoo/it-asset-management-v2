@@ -8,6 +8,7 @@ export const ASSET_FILTER_NAMES = [
   "category",
   "condition",
   "department",
+  "outStatus",
 ]
 
 export const CSV_IMPORT_COLUMNS = [
@@ -22,15 +23,19 @@ export const CSV_IMPORT_COLUMNS = [
   "Note",
 ]
 
-export type AssetSectionKey = "main" | "available" | "broken"
+export type AssetSectionKey = "main" | "available" | "broken" | "out"
 
 export const ASSET_SECTION_LABEL: Record<AssetSectionKey, string> = {
   main: "Main Asset",
   available: "Available Asset",
   broken: "Broken Asset",
+  out: "Out Asset",
 }
 
 export function assetSection(asset: Asset): AssetSectionKey {
+  if (asset.outStatus !== null) {
+    return "out"
+  }
   if (asset.condition === "Damaged" || asset.condition === "Under Repair") {
     return "broken"
   }
@@ -51,12 +56,16 @@ export function filterAssets(
   const query = (values.q ?? "").trim().toLowerCase()
   const category = values.category ?? ""
   const condition = values.condition ?? ""
+  const outStatus = values.outStatus ?? ""
 
   return assets.filter((asset) => {
     if (category && asset.categoryId !== Number(category)) {
       return false
     }
     if (condition && asset.condition !== condition) {
+      return false
+    }
+    if (outStatus && asset.outStatus !== outStatus) {
       return false
     }
     if (

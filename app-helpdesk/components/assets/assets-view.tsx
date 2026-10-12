@@ -26,7 +26,7 @@ import {
   type FilterField,
   type FilterValues,
 } from "@/lib/filters"
-import { CONDITIONS } from "@/lib/types"
+import { CONDITIONS, OUT_STATUSES } from "@/lib/types"
 
 const CSV_HEADER = [
   "Asset Name",
@@ -100,6 +100,16 @@ export function AssetsView({
     },
     {
       type: "select",
+      name: "outStatus",
+      label: "Out Status",
+      allLabel: "All out statuses",
+      options: OUT_STATUSES.map((status) => ({
+        label: status,
+        value: status,
+      })),
+    },
+    {
+      type: "select",
       name: "department",
       label: "Department",
       allLabel: "All departments",
@@ -120,6 +130,10 @@ export function AssetsView({
   )
   const broken = React.useMemo(
     () => filtered.filter((asset) => assetSection(asset) === "broken"),
+    [filtered]
+  )
+  const out = React.useMemo(
+    () => filtered.filter((asset) => assetSection(asset) === "out"),
     [filtered]
   )
 
@@ -232,6 +246,14 @@ export function AssetsView({
           description="Assets that are Damaged or Under Repair."
           assets={broken}
           unit="broken assets"
+          defaultOpen={false}
+        />
+
+        <AssetSection
+          title="Out Asset"
+          description="Assets currently In Transit, Returning, in External Repair, or Borrowed."
+          assets={out}
+          unit="out assets"
           defaultOpen={false}
         />
           </div>

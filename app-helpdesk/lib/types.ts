@@ -7,6 +7,19 @@ export const CONDITIONS: Condition[] = [
   "Under Repair",
 ]
 
+export type AssetOutStatus =
+  | "In Transit"
+  | "Returning"
+  | "External Repair"
+  | "Borrowed"
+
+export const OUT_STATUSES: AssetOutStatus[] = [
+  "In Transit",
+  "Returning",
+  "External Repair",
+  "Borrowed",
+]
+
 export type Category = {
   id: number
   name: string
@@ -46,6 +59,7 @@ export type Asset = {
   employeeId: number | null
   departmentId: number | null
   condition: Condition
+  outStatus: AssetOutStatus | null
   imageUrl: string | null
   docUrl: string | null
   recordDate: string

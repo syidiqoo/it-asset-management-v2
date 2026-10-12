@@ -1,4 +1,4 @@
-import type { Condition } from "@/lib/types"
+import type { AssetOutStatus, Condition } from "@/lib/types"
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   day: "2-digit",
@@ -18,6 +18,13 @@ export const CONDITION_BADGE_CLASS: Record<Condition, string> = {
   Fair: "border-amber-600/20 bg-amber-50 text-amber-700",
   Damaged: "border-red-600/20 bg-red-50 text-red-700",
   "Under Repair": "border-blue-600/20 bg-blue-50 text-blue-700",
+}
+
+export const OUT_STATUS_BADGE_CLASS: Record<AssetOutStatus, string> = {
+  "In Transit": "border-sky-600/20 bg-sky-50 text-sky-700",
+  Returning: "border-amber-600/20 bg-amber-50 text-amber-700",
+  "External Repair": "border-indigo-600/20 bg-indigo-50 text-indigo-700",
+  Borrowed: "border-violet-600/20 bg-violet-50 text-violet-700",
 }
 
 export function formatFileSize(bytes: number): string {

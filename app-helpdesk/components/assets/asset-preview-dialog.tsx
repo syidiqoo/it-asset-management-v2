@@ -46,6 +46,7 @@ function toAssetInput(asset: Asset): AssetInput {
     employeeId: asset.employeeId,
     departmentId: asset.departmentId,
     condition: asset.condition,
+    outStatus: asset.outStatus,
     imageUrl: asset.imageUrl,
     docUrl: asset.docUrl,
     recordDate: asset.recordDate,

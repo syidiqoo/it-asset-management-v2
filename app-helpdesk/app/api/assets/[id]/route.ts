@@ -80,6 +80,7 @@ export async function PUT(
           employeeId: parsed.data.employeeId,
           departmentId: parsed.data.departmentId,
           condition: parsed.data.condition,
+          outStatus: parsed.data.outStatus ?? null,
           imageUrl: parsed.data.imageUrl ?? null,
           docUrl: parsed.data.docUrl ?? null,
           purchaseDate: parsed.data.purchaseDate

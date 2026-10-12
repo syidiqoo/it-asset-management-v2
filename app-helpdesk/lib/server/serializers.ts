@@ -140,6 +140,7 @@ export function serializeAsset(item: {
   employeeId: number | null
   departmentId: number | null
   condition: string
+  outStatus: string | null
   imageUrl: string | null
   docUrl: string | null
   recordDate: Date

@@ -276,7 +276,7 @@ export const seedInternetData: InternetData[] = [
   },
 ]
 
-const baseAssets: Asset[] = [
+const baseAssets: Omit<Asset, "outStatus">[] = [
   {
     id: 1,
     categoryId: 1,
@@ -633,8 +633,11 @@ function isoDay(offset: number) {
   return date.toISOString().slice(0, 10)
 }
 
-function buildExtraAssets(startId: number, count: number): Asset[] {
-  const assets: Asset[] = []
+function buildExtraAssets(
+  startId: number,
+  count: number
+): Omit<Asset, "outStatus">[] {
+  const assets: Omit<Asset, "outStatus">[] = []
 
   for (let index = 0; index < count; index += 1) {
     const id = startId + index
@@ -669,7 +672,7 @@ function buildExtraAssets(startId: number, count: number): Asset[] {
 export const seedAssets: Asset[] = [
   ...baseAssets,
   ...buildExtraAssets(baseAssets.length + 1, 102),
-]
+].map((asset) => ({ ...asset, outStatus: null }))
 
 // Seed rows are all active and carry no note, so those fields use DB defaults.
 export const seedSimCards: Omit<SimCard, "terminated" | "note">[] = [

@@ -27,9 +27,20 @@ import {
   assetSection,
   type AssetSectionKey,
 } from "@/lib/assets"
-import { CONDITIONS, type Asset, type Condition } from "@/lib/types"
+import {
+  CONDITIONS,
+  OUT_STATUSES,
+  type Asset,
+  type AssetOutStatus,
+  type Condition,
+} from "@/lib/types"
 
-const SECTION_ORDER: AssetSectionKey[] = ["available", "main", "broken"]
+const SECTION_ORDER: AssetSectionKey[] = [
+  "available",
+  "main",
+  "broken",
+  "out",
+]
 
 export function MoveAssetDialog({
   asset,
@@ -63,6 +74,9 @@ function MoveAssetForm({
     asset.departmentId === null ? "" : String(asset.departmentId)
   )
   const [condition, setCondition] = React.useState<Condition>(asset.condition)
+  const [outStatus, setOutStatus] = React.useState<AssetOutStatus | null>(
+    asset.outStatus
+  )
   const [error, setError] = React.useState<string | null>(null)
 
   const handleEmployeeChange = (value: string | null) => {
@@ -79,6 +93,10 @@ function MoveAssetForm({
   const handleMove = async () => {
     if (section === "main" && !employeeId) {
       setError("Select an employee to assign this asset.")
+      return
+    }
+    if (section === "out" && !outStatus) {
+      setError("Select an out status for this asset.")
       return
     }
     setError(null)
@@ -101,6 +119,7 @@ function MoveAssetForm({
                 ? "Good"
                 : condition
               : asset.condition,
+        outStatus: section === "out" ? outStatus : null,
         imageUrl: asset.imageUrl,
         docUrl: asset.docUrl,
         recordDate: asset.recordDate,
@@ -125,7 +144,7 @@ function MoveAssetForm({
         <DialogHeader>
           <DialogTitle>Move {asset.name}</DialogTitle>
           <DialogDescription>
-            Move this asset between Available, Main, and Broken stock.
+            Move this asset between Available, Main, Broken, and Out stock.
           </DialogDescription>
         </DialogHeader>
 
@@ -189,6 +208,33 @@ function MoveAssetForm({
                 </SelectTrigger>
                 <SelectContent>
                   {CONDITIONS.map((item) => (
+                    <SelectItem key={item} value={item}>
+                      {item}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ) : null}
+
+          {section === "out" ? (
+            <div className="space-y-1.5">
+              <Label>Out Status</Label>
+              <Select
+                items={OUT_STATUSES.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+                value={outStatus ?? ""}
+                onValueChange={(value) =>
+                  setOutStatus((value as AssetOutStatus | null) ?? null)
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {OUT_STATUSES.map((item) => (
                     <SelectItem key={item} value={item}>
                       {item}
                     </SelectItem>

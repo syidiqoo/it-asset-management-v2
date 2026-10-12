@@ -12,6 +12,11 @@ export const conditionSchema = z.enum([
   "Under Repair",
 ])
 
+export const outStatusSchema = z
+  .enum(["In Transit", "Returning", "External Repair", "Borrowed"])
+  .nullable()
+  .optional()
+
 export const categorySchema = z.object({
   name: z.string().trim().min(1, "Name is required."),
 })
@@ -96,6 +101,7 @@ export const assetSchema = z.object({
   employeeId: z.number().int().positive().nullable(),
   departmentId: z.number().int().positive().nullable(),
   condition: conditionSchema,
+  outStatus: outStatusSchema,
   imageUrl: z.string().trim().min(1).nullable().optional(),
   docUrl: z.string().trim().min(1).nullable().optional(),
   purchaseDate: z.string().trim().min(1).nullable().optional(),

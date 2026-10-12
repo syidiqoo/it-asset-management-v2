@@ -22,7 +22,11 @@ import { MoveAssetDialog } from "@/components/assets/move-asset-dialog"
 import { useSessionUser } from "@/components/use-session-user"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
 import { departmentName } from "@/lib/departments"
-import { CONDITION_BADGE_CLASS, formatDate } from "@/lib/format"
+import {
+  CONDITION_BADGE_CLASS,
+  OUT_STATUS_BADGE_CLASS,
+  formatDate,
+} from "@/lib/format"
 import type { Asset } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -147,6 +151,7 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
                 <TableHead>Employee</TableHead>
                 <TableHead>Department</TableHead>
                 <TableHead>Condition</TableHead>
+                <TableHead>Out Status</TableHead>
                 <TableHead>Image</TableHead>
                 <TableHead>Document</TableHead>
                 <TableHead>Updated By</TableHead>
@@ -184,6 +189,18 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
                     >
                       {asset.condition}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {asset.outStatus ? (
+                      <Badge
+                        variant="outline"
+                        className={cn(OUT_STATUS_BADGE_CLASS[asset.outStatus])}
+                      >
+                        {asset.outStatus}
+                      </Badge>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <ImageCell asset={asset} />

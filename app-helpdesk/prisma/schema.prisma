@@ -69,6 +69,7 @@ model Asset {
   departmentId Int?
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   condition    String     @default("Good")
+  outStatus    String?
   imageUrl     String?
   docUrl       String?
   recordDate   DateTime   @db.Date

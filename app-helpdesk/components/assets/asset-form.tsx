@@ -226,6 +226,7 @@ export function AssetForm({ asset }: { asset?: Asset }) {
       employeeId: form.employeeId ? Number(form.employeeId) : null,
       departmentId: form.departmentId ? Number(form.departmentId) : null,
       condition: form.condition,
+      outStatus: asset?.outStatus ?? null,
       imageUrl: resolveUrl(imageCleared, asset?.imageUrl),
       docUrl: resolveUrl(docCleared, asset?.docUrl),
       recordDate: asset?.recordDate ?? today(),
