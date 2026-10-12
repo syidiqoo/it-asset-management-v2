@@ -69,7 +69,7 @@ export function Combobox({
       <ComboboxPrimitive.InputGroup
         data-slot="combobox-input-group"
         className={cn(
-          "flex h-8 w-full items-center gap-1 rounded-lg border border-input bg-transparent pr-1.5 pl-2.5 text-sm transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 has-disabled:cursor-not-allowed has-disabled:opacity-50 dark:bg-input/30",
+          "flex h-9 w-full items-center gap-1 rounded-lg border border-input bg-transparent pr-1.5 pl-2.5 text-sm transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 has-disabled:cursor-not-allowed has-disabled:opacity-50 dark:bg-input/30",
           className
         )}
       >

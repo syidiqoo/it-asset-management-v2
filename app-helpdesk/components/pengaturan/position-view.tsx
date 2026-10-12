@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { departmentName, collectDescendantIds, flattenDepartments } from "@/lib/departments"
+import { departmentName, collectDescendantIds } from "@/lib/departments"
 import {
   hasActiveFilters,
   type FilterField,
@@ -69,8 +69,11 @@ export function PositionView({ values }: { values: FilterValues }) {
       name: "department",
       label: "Department",
       allLabel: "All departments",
-      options: flattenDepartments(store.departments).map((department) => ({
-        label: department.path,
+      searchable: true,
+      options: store.departments
+        .sort((a, b) => a.name.localeCompare(b.name, "id"))
+        .map((department) => ({
+        label: department.name,
         value: String(department.id),
       })),
     },

@@ -16,7 +16,6 @@ const POSITION_PREFIXES = [
   "pic ",
   "principal ",
   "receiving ",
-  "ticketing ",
   "it back-end",
   "it fullstack",
   "it support",

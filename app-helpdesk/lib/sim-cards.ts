@@ -5,7 +5,6 @@ export const SIM_CARD_PAGE_SIZE = 100
 
 export const SIM_CARD_FILTER_NAMES = [
   "q",
-  "employee",
   "department",
   "package",
 ]

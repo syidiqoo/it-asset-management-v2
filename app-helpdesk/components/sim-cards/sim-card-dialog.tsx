@@ -99,7 +99,10 @@ function SimCardForm({
   }
 
   const departmentOptions = React.useMemo(
-    () => flattenDepartments(store.departments),
+    () =>
+      flattenDepartments(store.departments)
+        .filter((d) => d.parentId === null)
+        .sort((a, b) => a.name.localeCompare(b.name, "id")),
     [store.departments]
   )
 
@@ -219,33 +222,6 @@ function SimCardForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label>Department</Label>
-          <Select
-            items={[
-              { label: "— No department —", value: "" },
-              ...departmentOptions.map((department) => ({
-                label: department.path,
-                value: String(department.id),
-              })),
-            ]}
-            value={form.departmentId}
-            onValueChange={handleDepartmentChange}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="— No department —" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">— No department —</SelectItem>
-              {departmentOptions.map((department) => (
-                <SelectItem key={department.id} value={String(department.id)}>
-                  {department.path}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-1.5">
           <Label>Package</Label>
           <Select
             items={[
@@ -272,6 +248,33 @@ function SimCardForm({
           </Select>
         </div>
 
+        <div className="space-y-1.5 sm:col-span-2">
+          <Label>Department</Label>
+          <Select
+            items={[
+              { label: "— No department —", value: "" },
+              ...departmentOptions.map((department) => ({
+                label: department.name,
+                value: String(department.id),
+              })),
+            ]}
+            value={form.departmentId}
+            onValueChange={handleDepartmentChange}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="— No department —" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">— No department —</SelectItem>
+              {departmentOptions.map((department) => (
+                <SelectItem key={department.id} value={String(department.id)}>
+                  {department.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="space-y-1.5">
           <Label htmlFor="sim-cls-domestic">CLS Domestic</Label>
           <Input
@@ -282,7 +285,7 @@ function SimCardForm({
           />
         </div>
 
-        <div className="space-y-1.5 sm:col-span-2">
+        <div className="space-y-1.5">
           <Label htmlFor="sim-cls-roaming">CLS Roaming</Label>
           <Input
             id="sim-cls-roaming"

@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { collectDescendantIds, departmentPath, flattenDepartments } from "@/lib/departments"
+import { collectDescendantIds, departmentPath } from "@/lib/departments"
 import { csvFileName, downloadCsv } from "@/lib/csv"
 import { type FilterField, type FilterValues } from "@/lib/filters"
 import {
@@ -95,22 +95,14 @@ export function SimCardsView({ values }: { values: FilterValues }) {
     },
     {
       type: "select",
-      name: "employee",
-      label: "Employee",
-      allLabel: "All employees",
-      searchable: true,
-      options: store.employees.map((employee) => ({
-        label: employee.name,
-        value: String(employee.id),
-      })),
-    },
-    {
-      type: "select",
       name: "department",
       label: "Department",
       allLabel: "All departments",
-      options: flattenDepartments(store.departments).map((department) => ({
-        label: department.path,
+      searchable: true,
+      options: store.departments
+        .sort((a, b) => a.name.localeCompare(b.name, "id"))
+        .map((department) => ({
+        label: department.name,
         value: String(department.id),
       })),
     },

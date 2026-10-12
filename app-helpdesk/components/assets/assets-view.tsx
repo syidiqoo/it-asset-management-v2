@@ -20,7 +20,6 @@ import type { PdfColumn } from "@/lib/report"
 import {
   collectDescendantIds,
   departmentName,
-  flattenDepartments,
 } from "@/lib/departments"
 import {
   type FilterField,
@@ -113,8 +112,11 @@ export function AssetsView({
       name: "department",
       label: "Department",
       allLabel: "All departments",
-      options: flattenDepartments(store.departments).map((department) => ({
-        label: department.path,
+      searchable: true,
+      options: store.departments
+        .sort((a, b) => a.name.localeCompare(b.name, "id"))
+        .map((department) => ({
+        label: department.name,
         value: String(department.id),
       })),
     },
