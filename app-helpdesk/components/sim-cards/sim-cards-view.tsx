@@ -98,6 +98,7 @@ export function SimCardsView({ values }: { values: FilterValues }) {
       name: "employee",
       label: "Employee",
       allLabel: "All employees",
+      searchable: true,
       options: store.employees.map((employee) => ({
         label: employee.name,
         value: String(employee.id),

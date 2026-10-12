@@ -5,6 +5,7 @@ import { ArrowRightLeft } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
 import { Button } from "@/components/ui/button"
+import { Combobox } from "@/components/ui/combobox"
 import {
   Dialog,
   DialogContent,
@@ -157,29 +158,16 @@ function MoveAssetForm({
           {section === "main" ? (
             <div className="space-y-1.5">
               <Label>Assign to employee</Label>
-              <Select
-                items={[
-                  { label: "Select employee", value: "" },
-                  ...store.employees.map((employee) => ({
-                    label: employee.name,
-                    value: String(employee.id),
-                  })),
-                ]}
+              <Combobox
+                items={store.employees.map((employee) => ({
+                  label: employee.name,
+                  value: String(employee.id),
+                }))}
                 value={employeeId}
                 onValueChange={handleEmployeeChange}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select employee" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Select employee</SelectItem>
-                  {store.employees.map((employee) => (
-                    <SelectItem key={employee.id} value={String(employee.id)}>
-                      {employee.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                placeholder="Select employee"
+                emptyLabel="Select employee"
+              />
             </div>
           ) : null}
 

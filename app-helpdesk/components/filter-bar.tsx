@@ -6,6 +6,7 @@ import { Search, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Combobox } from "@/components/ui/combobox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -91,28 +92,40 @@ export function FilterBar({
             ) : (
               <div key={field.name} className="space-y-1.5">
                 <Label>{field.label}</Label>
-                <Select
-                  items={[
-                    { label: field.allLabel, value: "" },
-                    ...field.options,
-                  ]}
-                  value={values[field.name] ?? ""}
-                  onValueChange={(value) =>
-                    navigate({ [field.name]: value ?? "" })
-                  }
-                >
-                  <SelectTrigger className="w-full" aria-label={field.label}>
-                    <SelectValue placeholder={field.allLabel} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">{field.allLabel}</SelectItem>
-                    {field.options.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {field.searchable ? (
+                  <Combobox
+                    items={field.options}
+                    value={values[field.name] ?? ""}
+                    onValueChange={(value) =>
+                      navigate({ [field.name]: value ?? "" })
+                    }
+                    placeholder={field.allLabel}
+                    emptyLabel={field.allLabel}
+                  />
+                ) : (
+                  <Select
+                    items={[
+                      { label: field.allLabel, value: "" },
+                      ...field.options,
+                    ]}
+                    value={values[field.name] ?? ""}
+                    onValueChange={(value) =>
+                      navigate({ [field.name]: value ?? "" })
+                    }
+                  >
+                    <SelectTrigger className="w-full" aria-label={field.label}>
+                      <SelectValue placeholder={field.allLabel} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">{field.allLabel}</SelectItem>
+                      {field.options.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             )
           )}

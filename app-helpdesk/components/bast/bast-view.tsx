@@ -11,15 +11,9 @@ import { StoreState } from "@/components/store-state"
 import { useSessionUser } from "@/components/use-session-user"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Combobox } from "@/components/ui/combobox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import {
   BAST_CITY_DEFAULT,
@@ -282,7 +276,7 @@ export function BastView() {
                 <CardContent className="space-y-4">
                   <div className="space-y-1.5">
                     <Label>Employee</Label>
-                    <Select
+                    <Combobox
                       items={store.employees.map((employee) => ({
                         label: employee.name,
                         value: String(employee.id),
@@ -291,21 +285,8 @@ export function BastView() {
                       onValueChange={(value) =>
                         handleReceiverChange(value ?? "")
                       }
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="— Auto from selected assets —" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {store.employees.map((employee) => (
-                          <SelectItem
-                            key={employee.id}
-                            value={String(employee.id)}
-                          >
-                            {employee.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="— Auto from selected assets —"
+                    />
                     <p className="text-xs text-muted-foreground">
                       Filled automatically when assets are selected. Can be
                       changed manually — assets held by that recipient are

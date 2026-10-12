@@ -20,6 +20,9 @@
 # production
 /build
 
+# build info (ditulis oleh .md/deploy.sh, dibaca /api/version)
+.build-info.json
+
 # reset-data backups
 /backups
 

@@ -5,6 +5,7 @@ import { Save } from "lucide-react"
 
 import { useDataStore } from "@/components/data-store"
 import { Button } from "@/components/ui/button"
+import { Combobox } from "@/components/ui/combobox"
 import {
   Dialog,
   DialogContent,
@@ -205,29 +206,16 @@ function SimCardForm({
 
         <div className="space-y-1.5">
           <Label>Employee</Label>
-          <Select
-            items={[
-              { label: "— No holder —", value: "" },
-              ...employeeOptions.map((employee) => ({
-                label: employee.name,
-                value: String(employee.id),
-              })),
-            ]}
+          <Combobox
+            items={employeeOptions.map((employee) => ({
+              label: employee.name,
+              value: String(employee.id),
+            }))}
             value={form.employeeId}
             onValueChange={handleEmployeeChange}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="— No holder —" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">— No holder —</SelectItem>
-              {employeeOptions.map((employee) => (
-                <SelectItem key={employee.id} value={String(employee.id)}>
-                  {employee.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            placeholder="— No holder —"
+            emptyLabel="— No holder —"
+          />
         </div>
 
         <div className="space-y-1.5">

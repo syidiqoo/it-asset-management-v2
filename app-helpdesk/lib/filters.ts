@@ -8,6 +8,7 @@ export type FilterField =
       label: string
       allLabel: string
       options: { label: string; value: string }[]
+      searchable?: boolean
     }
 
 export function parseFilterValues(
