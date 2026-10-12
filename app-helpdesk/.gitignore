@@ -50,3 +50,6 @@ next-env.d.ts
 # markdown files
 /.md
 *.md
+
+# database documentation (kept tracked despite *.md ignore)
+!docs/DATABASE.md

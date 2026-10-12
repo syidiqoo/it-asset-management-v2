@@ -159,7 +159,13 @@ export function LocationView({ values }: { values: FilterValues }) {
                     </TableHeader>
                     <TableBody>
                       {filtered.map((location) => (
-                        <TableRow key={location.id}>
+                        <TableRow
+                          key={location.id}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setDialog({ open: true, item: location })
+                          }
+                        >
                           <TableCell className="pl-4">
                             <Badge variant="outline" className="font-mono">
                               {location.code}

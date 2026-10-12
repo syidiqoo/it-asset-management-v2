@@ -21,7 +21,10 @@ export function ItemActions({
   blockReason?: string | null
 }) {
   return (
-    <div className="flex items-center justify-end gap-1">
+    <div
+      className="ml-auto flex w-fit items-center justify-end gap-1"
+      onClick={(event) => event.stopPropagation()}
+    >
       <Button
         variant="ghost"
         size="icon-sm"

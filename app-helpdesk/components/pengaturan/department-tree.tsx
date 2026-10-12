@@ -82,7 +82,8 @@ export function DepartmentTree({
         return (
           <div
             key={node.id}
-            className="flex items-center gap-2 border-b px-4 py-2 last:border-b-0"
+            className="flex cursor-pointer items-center gap-2 border-b px-4 py-2 last:border-b-0"
+            onClick={() => onEdit(node)}
           >
             <span
               aria-hidden
@@ -97,7 +98,10 @@ export function DepartmentTree({
                 className="shrink-0"
                 aria-label={`${expanded ? "Collapse" : "Expand"} ${node.name}`}
                 aria-expanded={expanded}
-                onClick={() => toggle(node.id)}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  toggle(node.id)
+                }}
               >
                 <ChevronDown
                   className={cn(
@@ -121,7 +125,10 @@ export function DepartmentTree({
                 {locationCodeById.get(node.locationId)}
               </span>
             ) : null}
-            <div className="ml-auto flex shrink-0 items-center gap-1">
+            <div
+              className="ml-auto flex shrink-0 items-center gap-1"
+              onClick={(event) => event.stopPropagation()}
+            >
               {canAddChild ? (
                 <Button
                   variant="ghost"
