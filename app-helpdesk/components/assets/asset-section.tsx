@@ -60,7 +60,7 @@ export function AssetSection({
 
         {open ? (
           <div className="space-y-4">
-            <AssetTable assets={pageItems} />
+            <AssetTable assets={pageItems} showOutStatus={title === "Out Asset"} />
 
             {assets.length > 0 ? (
               <Pagination

@@ -85,7 +85,7 @@ function DocumentCell({
   )
 }
 
-export function AssetTable({ assets }: { assets: Asset[] }) {
+export function AssetTable({ assets, showOutStatus }: { assets: Asset[], showOutStatus?: boolean }) {
   const store = useDataStore()
   const sessionUser = useSessionUser()
   const canWrite = sessionUser?.role === "admin"
@@ -151,7 +151,7 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
                 <TableHead>Employee</TableHead>
                 <TableHead>Department</TableHead>
                 <TableHead>Condition</TableHead>
-                <TableHead>Out Status</TableHead>
+                {showOutStatus ? <TableHead>Out Status</TableHead> : null}
                 <TableHead>Image</TableHead>
                 <TableHead>Document</TableHead>
                 <TableHead>Updated By</TableHead>
@@ -190,6 +190,7 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
                       {asset.condition}
                     </Badge>
                   </TableCell>
+                  {showOutStatus ? (
                   <TableCell>
                     {asset.outStatus ? (
                       <Badge
@@ -202,6 +203,7 @@ export function AssetTable({ assets }: { assets: Asset[] }) {
                       <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
+                  ) : null}
                   <TableCell>
                     <ImageCell asset={asset} />
                   </TableCell>

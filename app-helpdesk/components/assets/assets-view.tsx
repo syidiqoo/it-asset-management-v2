@@ -123,15 +123,25 @@ export function AssetsView({
   ]
 
   const available = React.useMemo(
-    () => filtered.filter((asset) => assetSection(asset) === "available"),
+    () =>
+      filtered.filter(
+        (asset) =>
+          asset.outStatus === null && assetSection(asset) === "available"
+      ),
     [filtered]
   )
   const main = React.useMemo(
-    () => filtered.filter((asset) => assetSection(asset) === "main"),
+    () =>
+      filtered.filter(
+        (asset) => asset.outStatus === null && assetSection(asset) === "main"
+      ),
     [filtered]
   )
   const broken = React.useMemo(
-    () => filtered.filter((asset) => assetSection(asset) === "broken"),
+    () =>
+      filtered.filter(
+        (asset) => asset.outStatus === null && assetSection(asset) === "broken"
+      ),
     [filtered]
   )
   const out = React.useMemo(
