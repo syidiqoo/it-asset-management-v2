@@ -11,7 +11,6 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
-  MonitorSmartphone,
   Settings,
   Smartphone,
   Wifi,
@@ -75,8 +74,12 @@ const subItemClassName = (active: boolean) =>
 function Brand({ version }: { version: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <MonitorSmartphone className="size-4" />
+      <div className="flex size-8 shrink-0 items-center justify-center">
+        <img
+          src="/favicon.ico"
+          alt="IT Helpdesk"
+          className="size-8"
+        />
       </div>
       <div className="leading-tight">
         <p className="text-sm font-semibold leading-snug">

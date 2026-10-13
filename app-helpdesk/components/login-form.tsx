@@ -56,14 +56,21 @@ export function LoginForm() {
   return (
     <div className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-md [--card-spacing:--spacing(8)] shadow-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight">
-            IT Helpdesk Asset Management
-          </CardTitle>
-          <CardDescription>
-            Enter your credentials to continue. Manage office IT assets, SIM
-            cards, and internet data all in one place.
-          </CardDescription>
+        <CardHeader className="flex items-center gap-4 text-center pt-8">
+          <img
+            src="/favicon.ico"
+            alt="IT Helpdesk"
+            className="size-12"
+          />
+          <div>
+            <CardTitle className="text-2xl font-bold tracking-tight">
+              IT Helpdesk Asset Management
+            </CardTitle>
+            <CardDescription>
+              Enter your credentials to continue. Manage office IT assets, SIM
+              cards, and internet data all in one place.
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
