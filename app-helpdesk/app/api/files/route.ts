@@ -1,11 +1,14 @@
 import { fail, ok, requireUser } from "@/lib/server/api"
 import { db } from "@/lib/server/db"
+import { buildImageFileName, compressImage, compressPdf } from "@/lib/server/uploads"
 import {
   UPLOAD_KINDS,
   fileExtension,
   mimeTypeFor,
   type UploadKind,
 } from "@/lib/uploads"
+
+export const runtime = "nodejs"
 
 export async function POST(request: Request) {
   if (!(await requireUser())) return fail("Unauthorized.", 401)
@@ -29,13 +32,36 @@ export async function POST(request: Request) {
     )
   }
 
+  const originalBuffer = Buffer.from(await file.arrayBuffer())
+
+  let data: Uint8Array<ArrayBuffer>
+  let fileName: string
+  let mimeType: string
+
+  if (kind === "image") {
+    // Compress to WebP and rename.
+    data = new Uint8Array(await compressImage(originalBuffer))
+    fileName = buildImageFileName(
+      String(form.get("assetName") ?? ""),
+      String(form.get("section") ?? ""),
+      String(form.get("serialNumber") ?? "")
+    )
+    mimeType = "image/webp"
+  } else {
+    // PDF: shrink with Ghostscript when available, otherwise keep as-is.
+    const compressed = await compressPdf(originalBuffer)
+    data = new Uint8Array(compressed ?? originalBuffer)
+    fileName = file.name
+    mimeType = mimeTypeFor(file.name)
+  }
+
   const created = await db.fileBlob.create({
     data: {
-      fileName: file.name,
-      mimeType: mimeTypeFor(file.name),
-      size: file.size,
+      fileName,
+      mimeType,
+      size: data.length,
       kind,
-      data: Buffer.from(await file.arrayBuffer()),
+      data,
     },
   })
 

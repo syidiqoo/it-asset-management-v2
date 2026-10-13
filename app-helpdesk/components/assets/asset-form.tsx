@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { flattenDepartments } from "@/lib/departments"
+import { assetSection } from "@/lib/assets"
 import {
   UPLOAD_KINDS,
   uploadAccept,
@@ -86,10 +87,17 @@ function initialState(asset?: Asset): FormState {
   }
 }
 
-async function uploadFile(file: File, kind: UploadKind): Promise<string> {
+async function uploadFile(
+  file: File,
+  kind: UploadKind,
+  metadata?: { assetName?: string; section?: string; serialNumber?: string }
+): Promise<string> {
   const body = new FormData()
   body.append("kind", kind)
   body.append("file", file)
+  if (metadata?.assetName) body.append("assetName", metadata.assetName)
+  if (metadata?.section) body.append("section", metadata.section)
+  if (metadata?.serialNumber) body.append("serialNumber", metadata.serialNumber)
 
   const response = await fetch("/api/files", { method: "POST", body })
   const data = await response.json().catch(() => null)
@@ -238,7 +246,22 @@ export function AssetForm({ asset }: { asset?: Asset }) {
     setFormError(null)
 
     try {
-      if (imageFile) input.imageUrl = await uploadFile(imageFile, "image")
+      const section = asset ? assetSection(asset) : "main"
+      const sectionLabel =
+        section === "out"
+          ? "Out Asset"
+          : section === "broken"
+            ? "Broken Asset"
+            : section === "available"
+              ? "Available Asset"
+              : "Main Asset"
+
+      if (imageFile)
+        input.imageUrl = await uploadFile(imageFile, "image", {
+          assetName: form.name.trim(),
+          section: sectionLabel,
+          serialNumber: form.serialNumber.trim(),
+        })
       if (docFile) input.docUrl = await uploadFile(docFile, "document")
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Upload failed.")

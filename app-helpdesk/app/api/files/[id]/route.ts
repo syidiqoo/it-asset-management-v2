@@ -17,7 +17,7 @@ export async function GET(
     headers: {
       "Content-Type": file.mimeType,
       "Content-Disposition": `inline; filename="${encodeURIComponent(file.fileName)}"`,
-      "Cache-Control": "private, max-age=3600",
+      "Cache-Control": "private, max-age=86400",
     },
   })
 }
