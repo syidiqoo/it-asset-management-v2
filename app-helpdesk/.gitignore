@@ -29,6 +29,9 @@
 # sample import files (contoh CSV/XLSX/gambar untuk demo & import)
 /sample-import
 
+# audit tooling screenshots
+/.audit-screenshots
+
 # misc
 .DS_Store
 *.pem
