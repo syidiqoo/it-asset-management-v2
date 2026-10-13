@@ -26,6 +26,9 @@
 # reset-data backups
 /backups
 
+# sample import files (contoh CSV/XLSX/gambar untuk demo & import)
+/sample-import
+
 # misc
 .DS_Store
 *.pem
