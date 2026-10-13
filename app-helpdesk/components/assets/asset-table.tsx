@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table"
 import { AssetPreviewDialog } from "@/components/assets/asset-preview-dialog"
 import { DocumentPreviewDialog } from "@/components/assets/document-preview-dialog"
+import { ImagePreviewDialog } from "@/components/assets/image-preview-dialog"
 import { MoveAssetDialog } from "@/components/assets/move-asset-dialog"
 import { useSessionUser } from "@/components/use-session-user"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
@@ -30,30 +31,38 @@ import {
 import type { Asset } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
-function ImageCell({ asset }: { asset: Asset }) {
+function ImageCell({
+  asset,
+  onPreview,
+}: {
+  asset: Asset
+  onPreview: (url: string, name: string) => void
+}) {
   const [failed, setFailed] = React.useState(false)
 
-  if (!asset.imageUrl || failed) {
-    return <span className="text-muted-foreground">—</span>
-  }
-
-  const url = asset.imageUrl
-
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noreferrer"
-      onClick={(event) => event.stopPropagation()}
-      aria-label={`View image for ${asset.name}`}
-    >
-      <img
-        src={url}
-        alt=""
-        className="size-10 rounded-md border object-cover"
-        onError={() => setFailed(true)}
-      />
-    </a>
+    <div className="flex items-center min-h-10">
+      {!asset.imageUrl || failed ? (
+        <span className="text-muted-foreground">—</span>
+      ) : (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation()
+            onPreview(asset.imageUrl!, asset.name)
+          }}
+          aria-label={`View image for ${asset.name}`}
+          className="focus:outline-none"
+        >
+          <img
+            src={asset.imageUrl}
+            alt=""
+            className="size-10 rounded-md border object-cover"
+            onError={() => setFailed(true)}
+          />
+        </button>
+      )}
+    </div>
   )
 }
 
@@ -93,6 +102,10 @@ export function AssetTable({ assets, showOutStatus }: { assets: Asset[], showOut
   const [moveTarget, setMoveTarget] = React.useState<Asset | null>(null)
   const [pendingDelete, setPendingDelete] = React.useState<Asset | null>(null)
   const [document, setDocument] = React.useState<{
+    url: string
+    name: string
+  } | null>(null)
+  const [imagePreview, setImagePreview] = React.useState<{
     url: string
     name: string
   } | null>(null)
@@ -205,7 +218,10 @@ export function AssetTable({ assets, showOutStatus }: { assets: Asset[], showOut
                   </TableCell>
                   ) : null}
                   <TableCell>
-                    <ImageCell asset={asset} />
+                    <ImageCell
+                      asset={asset}
+                      onPreview={(url, name) => setImagePreview({ url, name })}
+                    />
                   </TableCell>
                   <TableCell>
                     <DocumentCell
@@ -257,6 +273,12 @@ export function AssetTable({ assets, showOutStatus }: { assets: Asset[], showOut
         url={document?.url ?? null}
         title={document?.name}
         onClose={() => setDocument(null)}
+      />
+
+      <ImagePreviewDialog
+        url={imagePreview?.url ?? null}
+        title={imagePreview?.name}
+        onClose={() => setImagePreview(null)}
       />
 
       <ConfirmDeleteDialog
