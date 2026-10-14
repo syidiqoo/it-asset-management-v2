@@ -54,17 +54,19 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-svh items-center justify-center p-6">
-      <Card className="w-full max-w-md [--card-spacing:--spacing(8)] shadow-sm">
+    <div className="relative min-h-svh flex items-center justify-center p-6 overflow-hidden">
+      {/* Background image with gradient + blur overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/avanti3.webp')" }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60 backdrop-blur-sm" />
+
+      <Card className="relative w-full max-w-md [--card-spacing:--spacing(8)] shadow-xl">
         <CardHeader className="flex items-start gap-4 text-center pt-8">
-          <img
-            src="/logo.png"
-            alt="IT Helpdesk"
-            className="size-16 shrink-0"
-          />
           <div>
             <CardTitle className="text-2xl font-bold tracking-tight">
-              IT Helpdesk Asset Management
+              Asset Management
             </CardTitle>
             <CardDescription>
               Enter your credentials to continue. Manage office IT assets, SIM
