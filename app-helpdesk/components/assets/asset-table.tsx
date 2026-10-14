@@ -17,8 +17,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { AssetPreviewDialog } from "@/components/assets/asset-preview-dialog"
-import { DocumentPreviewDialog } from "@/components/assets/document-preview-dialog"
-import { ImagePreviewDialog } from "@/components/assets/image-preview-dialog"
 import { MoveAssetDialog } from "@/components/assets/move-asset-dialog"
 import { useSessionUser } from "@/components/use-session-user"
 import { ConfirmDeleteDialog } from "@/components/pengaturan/confirm-delete-dialog"
@@ -31,13 +29,7 @@ import {
 import type { Asset } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
-function ImageCell({
-  asset,
-  onPreview,
-}: {
-  asset: Asset
-  onPreview: (url: string, name: string) => void
-}) {
+function ImageCell({ asset, onOpen }: { asset: Asset; onOpen: () => void }) {
   const [failed, setFailed] = React.useState(false)
 
   return (
@@ -47,11 +39,8 @@ function ImageCell({
       ) : (
         <button
           type="button"
-          onClick={(event) => {
-            event.stopPropagation()
-            onPreview(asset.imageUrl!, asset.name)
-          }}
-          aria-label={`View image for ${asset.name}`}
+          onClick={onOpen}
+          aria-label={`Open preview for ${asset.name}`}
           className="focus:outline-none"
         >
           <img
@@ -66,28 +55,13 @@ function ImageCell({
   )
 }
 
-function DocumentCell({
-  asset,
-  onPreview,
-}: {
-  asset: Asset
-  onPreview: (url: string, name: string) => void
-}) {
+function DocumentCell({ asset, onOpen }: { asset: Asset; onOpen: () => void }) {
   if (!asset.docUrl) {
     return <span className="text-muted-foreground">—</span>
   }
 
-  const url = asset.docUrl
-
   return (
-    <Button
-      variant="outline"
-      size="xs"
-      onClick={(event) => {
-        event.stopPropagation()
-        onPreview(url, asset.name)
-      }}
-    >
+    <Button variant="outline" size="xs" onClick={onOpen}>
       <FileText />
       PDF
     </Button>
@@ -101,14 +75,6 @@ export function AssetTable({ assets, showOutStatus }: { assets: Asset[], showOut
   const [preview, setPreview] = React.useState<Asset | null>(null)
   const [moveTarget, setMoveTarget] = React.useState<Asset | null>(null)
   const [pendingDelete, setPendingDelete] = React.useState<Asset | null>(null)
-  const [document, setDocument] = React.useState<{
-    url: string
-    name: string
-  } | null>(null)
-  const [imagePreview, setImagePreview] = React.useState<{
-    url: string
-    name: string
-  } | null>(null)
 
   const categoryName = (id: number) =>
     store.categories.find((category) => category.id === id)?.name ?? "—"
@@ -218,15 +184,12 @@ export function AssetTable({ assets, showOutStatus }: { assets: Asset[], showOut
                   </TableCell>
                   ) : null}
                   <TableCell>
-                    <ImageCell
-                      asset={asset}
-                      onPreview={(url, name) => setImagePreview({ url, name })}
-                    />
+                    <ImageCell asset={asset} onOpen={() => setPreview(asset)} />
                   </TableCell>
                   <TableCell>
                     <DocumentCell
                       asset={asset}
-                      onPreview={(url, name) => setDocument({ url, name })}
+                      onOpen={() => setPreview(asset)}
                     />
                   </TableCell>
                   <TableCell className="text-muted-foreground">
@@ -268,18 +231,6 @@ export function AssetTable({ assets, showOutStatus }: { assets: Asset[], showOut
       />
 
       <MoveAssetDialog asset={moveTarget} onClose={() => setMoveTarget(null)} />
-
-      <DocumentPreviewDialog
-        url={document?.url ?? null}
-        title={document?.name}
-        onClose={() => setDocument(null)}
-      />
-
-      <ImagePreviewDialog
-        url={imagePreview?.url ?? null}
-        title={imagePreview?.name}
-        onClose={() => setImagePreview(null)}
-      />
 
       <ConfirmDeleteDialog
         open={pendingDelete !== null}

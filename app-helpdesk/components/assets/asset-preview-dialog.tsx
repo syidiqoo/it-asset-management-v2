@@ -329,8 +329,8 @@ export function AssetPreviewDialog({
               ) : null}
             </header>
 
-            <div className="grid min-h-0 flex-1 gap-4 overflow-y-auto bg-muted/20 p-4 md:grid-cols-[300px_1fr]">
-              <div className="flex min-h-[200px] flex-col items-center justify-center overflow-hidden rounded-lg border bg-muted/40 text-center">
+            <div className="grid min-h-0 flex-1 gap-4 overflow-y-auto bg-muted/20 p-4 md:grid-cols-2">
+              <div className="flex min-h-[200px] flex-col items-center justify-center overflow-hidden rounded-lg border bg-muted/40 text-center md:h-[456px]">
                 <AssetImage
                   key={asset.id}
                   url={asset.imageUrl}
@@ -338,7 +338,7 @@ export function AssetPreviewDialog({
                 />
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 md:h-[456px] md:overflow-y-auto">
                 <Section icon={Info} title="Asset Information">
                   <div className="grid gap-3 sm:grid-cols-2">
                     <Field label="Code">

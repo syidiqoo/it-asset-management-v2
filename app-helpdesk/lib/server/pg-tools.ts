@@ -16,6 +16,15 @@ const COMMAND_TIMEOUT_MS = 300_000
 const PGDMP_MAGIC = "PGDMP"
 const PGDMP_HEADER_BYTES = 8
 
+const ARCHIVE_MIN_RESTORE: Record<number, number> = {
+  12: 11,
+  13: 12,
+  14: 13,
+  15: 16,
+  16: 17,
+  17: 18,
+}
+
 export function parseDatabaseUrl(url = process.env.DATABASE_URL): PgConnection {
   if (!url) throw new Error("DATABASE_URL is not set.")
   const parsed = new URL(url)
@@ -163,7 +172,7 @@ async function archiveMismatch(
   }
 
   if (minor === null) return null
-  const required = minor >= 16 ? 17 : minor === 15 ? 16 : 0
+  const required = ARCHIVE_MIN_RESTORE[minor] ?? 0
   if (required === 0) return null
 
   const restoreMajor = await binaryMajorVersion(binary)
@@ -206,6 +215,11 @@ export async function runPgDump(outFile: string): Promise<void> {
   }
 }
 
+async function resetPublicSchema(): Promise<void> {
+  await db.$executeRawUnsafe('DROP SCHEMA IF EXISTS "public" CASCADE')
+  await db.$executeRawUnsafe('CREATE SCHEMA "public"')
+}
+
 export async function runPgRestore(
   file: string
 ): Promise<{ code: number; stderr: string }> {
@@ -218,9 +232,19 @@ export async function runPgRestore(
   const unsupported = await archiveMismatch(file, binary)
   if (unsupported) return { code: 1, stderr: unsupported }
 
+  try {
+    await resetPublicSchema()
+  } catch (error) {
+    return {
+      code: 1,
+      stderr:
+        error instanceof Error
+          ? `Gagal mengosongkan skema public sebelum restore: ${error.message}`
+          : "Gagal mengosongkan skema public sebelum restore.",
+    }
+  }
+
   const args = [
-    "--clean",
-    "--if-exists",
     "--no-owner",
     "--no-privileges",
     "-h",

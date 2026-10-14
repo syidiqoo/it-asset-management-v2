@@ -56,11 +56,11 @@ export function LoginForm() {
   return (
     <div className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-md [--card-spacing:--spacing(8)] shadow-sm">
-        <CardHeader className="flex items-center gap-4 text-center pt-8">
+        <CardHeader className="flex items-start gap-4 text-center pt-8">
           <img
-            src="/favicon.ico"
+            src="/logo.png"
             alt="IT Helpdesk"
-            className="size-12"
+            className="size-16 shrink-0"
           />
           <div>
             <CardTitle className="text-2xl font-bold tracking-tight">
