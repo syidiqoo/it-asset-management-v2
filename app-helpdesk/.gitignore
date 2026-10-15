@@ -31,6 +31,10 @@
 
 # audit tooling screenshots
 /.audit-screenshots
+attach-report.json
+
+# local one-off scripts (import data, generate icons)
+/scripts
 
 # misc
 .DS_Store
@@ -59,6 +63,3 @@ next-env.d.ts
 # markdown files
 /.md
 *.md
-
-# database documentation (kept tracked despite *.md ignore)
-!docs/DATABASE.md

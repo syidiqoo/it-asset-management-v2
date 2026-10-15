@@ -44,8 +44,8 @@ function ItemTag({ item }: { item: SummaryItem }) {
   const Icon = ITEM_ICONS[item.icon]
   const isSim = item.icon === "sim"
   return (
-    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-      <Icon className="size-3 shrink-0" aria-hidden />
+    <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+      <Icon className="size-2.5 shrink-0" aria-hidden />
       <span className={cn(isSim && "font-mono")}>{item.value}</span>
     </span>
   )
@@ -53,26 +53,99 @@ function ItemTag({ item }: { item: SummaryItem }) {
 
 function PersonBlock({ person }: { person: SummaryPerson }) {
   return (
-    <div className="px-3 py-1.5">
-      <div className="flex items-baseline gap-2">
-        <span className="text-sm font-medium">{person.employee.name}</span>
+    <div className="px-2.5 py-1">
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-xs font-medium">{person.employee.name}</span>
         {person.positionLabel ? (
-          <span className="truncate text-xs text-muted-foreground">
+          <span className="truncate text-[11px] text-muted-foreground">
             {person.positionLabel}
           </span>
         ) : null}
       </div>
       {person.items.length > 0 ? (
-        <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
+        <div className="mt-0.5 flex flex-col gap-0.5">
           {person.items.map((item, index) => (
             <ItemTag key={`${item.label}-${index}`} item={item} />
           ))}
         </div>
-      ) : (
-        <p className="text-xs text-muted-foreground">
-          No assets or SIM cards.
-        </p>
-      )}
+      ) : null}
+    </div>
+  )
+}
+
+function PersonsList({ persons }: { persons: SummaryPerson[] }) {
+  if (persons.length === 0) return null
+  return (
+    <div className="divide-y divide-border/50">
+      {persons.map((person) => (
+        <PersonBlock key={person.employee.id} person={person} />
+      ))}
+    </div>
+  )
+}
+
+function InternetBadges({ internet }: { internet: InternetData[] }) {
+  if (internet.length === 0) return null
+  return (
+    <div className="flex shrink-0 flex-col items-end gap-1">
+      {internet.map((item) => (
+        <Badge
+          key={item.id}
+          variant="outline"
+          className="gap-1 border-sky-500/30 bg-sky-500/10 px-1.5 py-0 text-[11px] text-sky-700 dark:text-sky-300"
+        >
+          <Wifi className="size-2.5" aria-hidden />
+          {item.service}
+          {item.bandwidthMbps !== null ? ` · ${item.bandwidthMbps} Mbps` : ""}
+        </Badge>
+      ))}
+    </div>
+  )
+}
+
+function UnitTreeItem({ unit, isLast }: { unit: SummaryUnit; isLast: boolean }) {
+  return (
+    <div className="relative pl-5">
+      {/* Vertical line continuation */}
+      {!isLast ? (
+        <div className="absolute left-[7px] top-0 bottom-0 w-px bg-border" />
+      ) : null}
+      {/* Horizontal branch */}
+      <div className="absolute left-[7px] top-[14px] h-px w-[14px] bg-border" />
+      {/* Dot */}
+      <div className="absolute left-[4px] top-[11px] size-2 rounded-full border-2 border-primary bg-background" />
+
+      {/* Unit content box */}
+      <div className="overflow-hidden rounded-md border bg-muted/20">
+        <div className="flex items-center gap-1.5 border-b bg-muted/30 px-2.5 py-1.5">
+          <Building2 className="size-3 shrink-0 text-primary" aria-hidden />
+          <span className="truncate text-xs font-semibold">
+            {unit.department.name}
+          </span>
+          {unit.location ? (
+            <span className="truncate text-[11px] text-muted-foreground">
+              · {unit.location}
+            </span>
+          ) : null}
+          <div className="ml-auto">
+            <InternetBadges internet={unit.internet} />
+          </div>
+        </div>
+        <PersonsList persons={unit.persons} />
+
+        {/* Nested sub-units */}
+        {unit.units.length > 0 ? (
+          <div className="space-y-1 p-1.5 pl-0">
+            {unit.units.map((sub, i) => (
+              <UnitTreeItem
+                key={sub.department.id}
+                unit={sub}
+                isLast={i === unit.units.length - 1}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
     </div>
   )
 }
@@ -94,55 +167,43 @@ function DepartmentCard({
 
   return (
     <div className="overflow-hidden rounded-lg border bg-card">
-      <div className="flex items-start gap-2 border-b bg-muted/40 px-3 py-2">
+      {/* Header */}
+      <div className="flex items-start gap-2 border-b bg-muted/40 px-2.5 py-1.5">
         <Building2
           className="mt-0.5 size-3.5 shrink-0 text-primary"
           aria-hidden
         />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold">{name}</p>
+          <p className="truncate text-xs font-semibold">{name}</p>
           {location ? (
-            <p className="truncate text-xs text-muted-foreground">{location}</p>
+            <p className="truncate text-[11px] text-muted-foreground">
+              {location}
+            </p>
           ) : null}
         </div>
-        {internet.length > 0 ? (
-          <div className="flex shrink-0 flex-wrap justify-end gap-1">
-            {internet.map((item) => (
-              <Badge
-                key={item.id}
-                variant="outline"
-                className="gap-1 border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300"
-              >
-                <Wifi className="size-3" aria-hidden />
-                {item.service}
-                {item.bandwidthMbps !== null
-                  ? ` · ${item.bandwidthMbps} Mbps`
-                  : ""}
-              </Badge>
-            ))}
-          </div>
-        ) : null}
+        <InternetBadges internet={internet} />
       </div>
 
       {hasContent ? (
-        <div className="divide-y">
-          {persons.map((person) => (
-            <PersonBlock key={person.employee.id} person={person} />
-          ))}
-          {units.map((unit) => (
-            <div key={unit.department.id} className="p-2">
-              <DepartmentCard
-                name={unit.department.name}
-                location={unit.location}
-                internet={unit.internet}
-                persons={unit.persons}
-                units={unit.units}
-              />
+        <div>
+          {/* Direct employees */}
+          <PersonsList persons={persons} />
+
+          {/* Child units with tree */}
+          {units.length > 0 ? (
+            <div className="space-y-1.5 p-1.5">
+              {units.map((unit, i) => (
+                <UnitTreeItem
+                  key={unit.department.id}
+                  unit={unit}
+                  isLast={i === units.length - 1}
+                />
+              ))}
             </div>
-          ))}
+          ) : null}
         </div>
       ) : (
-        <p className="px-3 py-2 text-xs text-muted-foreground">
+        <p className="px-2.5 py-2 text-[11px] text-muted-foreground">
           No personnel yet.
         </p>
       )}
@@ -166,6 +227,10 @@ function SummarySection({
     return subjects
       .map((subject) => summarizeDepartment(subject, input))
       .filter((card): card is SummaryCard => card !== null)
+      .sort(
+        (a, b) =>
+          b.weight - a.weight || a.title.localeCompare(b.title, "id")
+      )
   }, [root, input])
 
   return (
@@ -174,11 +239,11 @@ function SummarySection({
         type="button"
         onClick={() => setOpen((previous) => !previous)}
         aria-expanded={open}
-        className="flex w-full items-center gap-2.5 px-3 py-2 text-left"
+        className="flex w-full items-center gap-2 px-2.5 py-1.5 text-left"
       >
         <ChevronDown
           className={cn(
-            "size-4 shrink-0 text-muted-foreground transition-transform",
+            "size-3.5 shrink-0 text-muted-foreground transition-transform",
             open && "rotate-180"
           )}
         />
@@ -188,13 +253,13 @@ function SummarySection({
       </button>
 
       {open ? (
-        <div className="border-t p-2">
+        <div className="border-t p-1.5">
           {cards.length === 0 ? (
             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
               No departments in this group yet.
             </p>
           ) : (
-            <div className="grid items-start gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid items-start gap-1.5 sm:grid-cols-2 xl:grid-cols-4">
               {cards.map((card) => (
                 <DepartmentCard
                   key={card.departmentId}
@@ -229,8 +294,10 @@ export function SummaryView() {
 
   const roots = React.useMemo(
     () =>
-      buildDepartmentTree(store.departments).sort((a, b) =>
-        a.name.localeCompare(b.name, "id")
+      buildDepartmentTree(store.departments).sort(
+        (a, b) =>
+          b.children.length - a.children.length ||
+          a.name.localeCompare(b.name, "id")
       ),
     [store.departments]
   )
@@ -244,7 +311,7 @@ export function SummaryView() {
         />
       </StickyHeader>
 
-      <div className="flex flex-col gap-3 p-4 md:p-6">
+      <div className="flex flex-col gap-2 p-3 md:p-4">
         <StoreState
           loading={store.loading}
           error={store.error}

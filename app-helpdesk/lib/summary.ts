@@ -37,6 +37,7 @@ export type SummaryUnit = {
   internet: InternetData[]
   persons: SummaryPerson[]
   units: SummaryUnit[]
+  weight: number
 }
 
 export type SummaryCard = {
@@ -46,6 +47,11 @@ export type SummaryCard = {
   internet: InternetData[]
   persons: SummaryPerson[]
   units: SummaryUnit[]
+  weight: number
+}
+
+function weightOf(persons: SummaryPerson[], units: SummaryUnit[]): number {
+  return persons.length + units.reduce((sum, unit) => sum + unit.weight, 0)
 }
 
 export type SummaryInput = {
@@ -165,9 +171,13 @@ function buildUnit(
   input: SummaryInput
 ): SummaryUnit {
   const persons = buildPersons(employeesByDepartment.get(node.id) ?? [], input)
-  const units = [...node.children]
-    .sort((a, b) => a.name.localeCompare(b.name, "id"))
+  const units = node.children
     .map((child) => buildUnit(child, employeesByDepartment, input))
+    .sort(
+      (a, b) =>
+        b.weight - a.weight ||
+        a.department.name.localeCompare(b.department.name, "id")
+    )
 
   const internet =
     node.locationId === null
@@ -180,6 +190,7 @@ function buildUnit(
     internet,
     persons,
     units,
+    weight: weightOf(persons, units),
   }
 }
 
@@ -193,9 +204,13 @@ export function summarizeDepartment(
 
   const employeesByDepartment = employeesByDepartmentMap(input.employees)
   const persons = buildPersons(employeesByDepartment.get(root.id) ?? [], input)
-  const units = [...root.children]
-    .sort((a, b) => a.name.localeCompare(b.name, "id"))
+  const units = root.children
     .map((child) => buildUnit(child, employeesByDepartment, input))
+    .sort(
+      (a, b) =>
+        b.weight - a.weight ||
+        a.department.name.localeCompare(b.department.name, "id")
+    )
 
   const internet =
     root.locationId === null
@@ -209,5 +224,6 @@ export function summarizeDepartment(
     internet,
     persons,
     units,
+    weight: weightOf(persons, units),
   }
 }
