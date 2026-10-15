@@ -153,9 +153,15 @@ export function FilterBar({
             )
           )}
 
-          <div className="flex items-center gap-1 pb-px">
+          <div className="flex items-center gap-1.5 pb-px">
             {hasActiveFilters(values) ? (
-              <Button variant="ghost" size="icon-sm" onClick={reset} aria-label="Reset filters">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={reset}
+                aria-label="Reset filters"
+                className="size-8 rounded-md transition-colors hover:bg-primary/10 hover:text-primary"
+              >
                 <X className="size-4" />
               </Button>
             ) : null}
@@ -166,7 +172,7 @@ export function FilterBar({
               aria-checked={pinned}
               aria-label={pinned ? "Filters locked" : "Lock filters"}
               onClick={togglePin}
-              className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground aria-checked:text-primary"
+              className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-all duration-150 hover:bg-muted/80 hover:text-foreground aria-checked:bg-primary/10 aria-checked:text-primary"
             >
               {pinned ? <LockKeyhole className="size-4" /> : <Lock className="size-4" />}
             </button>

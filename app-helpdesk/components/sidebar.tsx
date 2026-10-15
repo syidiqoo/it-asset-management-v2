@@ -39,16 +39,33 @@ const MAIN_ITEMS: {
   { href: "/bast", label: "BAST", icon: FileText, adminOnly: true },
 ]
 
-const SETTINGS_ITEMS: { href: string; label: string }[] = [
-  { href: `${SETTINGS_PREFIX}/kategori`, label: "Category" },
-  { href: `${SETTINGS_PREFIX}/employee`, label: "Employee" },
-  { href: `${SETTINGS_PREFIX}/department`, label: "Department" },
-  { href: `${SETTINGS_PREFIX}/position`, label: "Position" },
-  { href: `${SETTINGS_PREFIX}/sim-package`, label: "SIM Package" },
-  { href: `${SETTINGS_PREFIX}/location`, label: "Location" },
-  { href: `${SETTINGS_PREFIX}/user`, label: "User" },
-  { href: `${SETTINGS_PREFIX}/backup-restore`, label: "Backup / Restore" },
-  { href: `${SETTINGS_PREFIX}/delete-data`, label: "Delete Data" },
+const SETTINGS_GROUPS: {
+  group: string
+  items: { href: string; label: string; destructive?: boolean }[]
+}[] = [
+  {
+    group: "Master Data",
+    items: [
+      { href: `${SETTINGS_PREFIX}/kategori`, label: "Category" },
+      { href: `${SETTINGS_PREFIX}/employee`, label: "Employee" },
+      { href: `${SETTINGS_PREFIX}/department`, label: "Department" },
+      { href: `${SETTINGS_PREFIX}/position`, label: "Position" },
+      { href: `${SETTINGS_PREFIX}/location`, label: "Location" },
+      { href: `${SETTINGS_PREFIX}/sim-package`, label: "SIM Package" },
+    ],
+  },
+  {
+    group: "System & Admin",
+    items: [
+      { href: `${SETTINGS_PREFIX}/user`, label: "User Access" },
+      { href: `${SETTINGS_PREFIX}/backup-restore`, label: "Backup / Restore" },
+      {
+        href: `${SETTINGS_PREFIX}/delete-data`,
+        label: "Delete Data",
+        destructive: true,
+      },
+    ],
+  },
 ]
 
 function isActive(pathname: string, href: string) {
@@ -63,29 +80,31 @@ const itemClassName = (active: boolean) =>
       : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
   )
 
-const subItemClassName = (active: boolean) =>
+const subItemClassName = (active: boolean, destructive?: boolean) =>
   cn(
-    "rounded-md px-2.5 py-1.5 text-sm whitespace-nowrap transition-colors",
+    "rounded-md px-2.5 py-1.5 text-xs whitespace-nowrap transition-colors flex items-center justify-between",
     active
       ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
+      : destructive
+      ? "text-rose-400/90 hover:bg-rose-500/10 hover:text-rose-300"
       : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
   )
 
 function Brand({ version }: { version: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex size-12 shrink-0 items-center justify-center">
+      <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 shadow-xs">
         <img
-          src="/logo.png"
+          src="/logo2.png"
           alt="IT Helpdesk"
-          className="size-12"
+          className="size-full object-cover"
         />
       </div>
       <div className="leading-tight">
-        <p className="text-sm font-semibold leading-snug">
+        <p className="text-sm font-semibold leading-snug text-white">
           IT Helpdesk Asset Management
         </p>
-        <p className="text-xs text-sidebar-foreground/70">v{version}</p>
+        <p className="text-xs text-white/70">v{version}</p>
       </div>
     </div>
   )
@@ -187,12 +206,12 @@ export function Sidebar({ version }: { version: string }) {
         </nav>
         {showSettings && settingsExpanded ? (
           <nav className="flex items-center gap-1 overflow-x-auto">
-            {SETTINGS_ITEMS.map((item) => (
+            {SETTINGS_GROUPS.flatMap((g) => g.items).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={pathname === item.href ? "page" : undefined}
-                className={subItemClassName(pathname === item.href)}
+                className={subItemClassName(pathname === item.href, item.destructive)}
               >
                 {item.label}
               </Link>
@@ -224,29 +243,36 @@ export function Sidebar({ version }: { version: string }) {
           ) : null}
 
           {showSettings && settingsExpanded ? (
-            <div className="mt-1 ml-4 flex flex-col gap-0.5 border-l pl-2">
-              {SETTINGS_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={pathname === item.href ? "page" : undefined}
-                  className={subItemClassName(pathname === item.href)}
-                >
-                  {item.label}
-                </Link>
+            <div className="mt-1 ml-3 flex flex-col gap-2.5 border-l border-sidebar-border/60 pl-2">
+              {SETTINGS_GROUPS.map((group) => (
+                <div key={group.group} className="flex flex-col gap-0.5">
+                  <span className="px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/40">
+                    {group.group}
+                  </span>
+                  {group.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-current={pathname === item.href ? "page" : undefined}
+                      className={subItemClassName(pathname === item.href, item.destructive)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
               ))}
             </div>
           ) : null}
         </nav>
 
-        <div className="border-t pt-3">
-          <div className="flex items-center gap-2.5 px-1.5 pb-2">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+        <div className="border-t border-sidebar-border pt-3">
+          <div className="flex items-center gap-2.5 rounded-lg bg-white/5 p-2 border border-white/10 shadow-xs">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-white shadow-xs">
               {initials}
             </div>
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-sm font-medium">{sessionUser?.name ?? "—"}</p>
-              <p className="truncate text-xs text-sidebar-foreground/70">
+            <div className="min-w-0 flex-1 leading-tight">
+              <p className="truncate text-sm font-semibold text-white">{sessionUser?.name ?? "—"}</p>
+              <p className="truncate text-[11px] font-medium text-slate-300">
                 {sessionUser ? ROLE_LABEL[sessionUser.role] : "—"}
               </p>
             </div>
@@ -254,10 +280,10 @@ export function Sidebar({ version }: { version: string }) {
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start text-sidebar-foreground/70"
+            className="mt-2 w-full justify-start text-slate-300 hover:bg-white/10 hover:text-white transition-colors"
             onClick={signOut}
           >
-            <LogOut />
+            <LogOut className="size-4" />
             Log out
           </Button>
         </div>

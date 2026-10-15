@@ -1,3 +1,5 @@
+import * as React from "react"
+import Link from "next/link"
 import type { LucideIcon } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -7,46 +9,61 @@ export function KpiCard({
   label,
   value,
   hint,
-  progress,
   icon: Icon,
+  href,
   className,
 }: {
   label: string
   value: React.ReactNode
   hint?: string
-  progress?: number
   icon?: LucideIcon
+  href?: string
   className?: string
 }) {
-  return (
-    <Card size="sm" className={cn("h-full", className)}>
-      <CardContent className="flex h-full flex-col gap-1.5">
-        <div className="flex items-start justify-between gap-2">
-          <p className="text-xs font-medium text-muted-foreground">{label}</p>
+  const content = (
+    <Card
+      size="sm"
+      className={cn(
+        "group relative flex h-full flex-col justify-between overflow-hidden border transition-all duration-150 hover:border-accent/40 hover:shadow-sm",
+        href && "cursor-pointer",
+        className
+      )}
+    >
+      {/* Subtle top indicator line */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-accent" />
+
+      <CardContent className="flex flex-col gap-2 p-3.5 pt-4">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+            {label}
+          </p>
           {Icon ? (
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary transition-transform group-hover:scale-105">
               <Icon className="size-3.5" />
             </span>
           ) : null}
         </div>
 
-        <p className="text-2xl font-semibold tabular-nums">{value}</p>
+        <div className="flex items-baseline gap-1.5">
+          <p className="text-2xl font-bold tracking-tight tabular-nums">
+            {value}
+          </p>
+        </div>
 
         {hint ? (
-          <p className="text-xs text-muted-foreground">{hint}</p>
+          <p className="line-clamp-1 text-xs text-muted-foreground">{hint}</p>
         ) : null}
-
-        {progress === undefined ? null : (
-          <div className="mt-auto h-1.5 overflow-hidden rounded-full bg-muted pt-0">
-            <div
-              className="h-full rounded-full bg-primary"
-              style={{
-                width: `${Math.min(Math.max(progress, 0), 100)}%`,
-              }}
-            />
-          </div>
-        )}
       </CardContent>
     </Card>
   )
+
+  if (href) {
+    return (
+      <Link href={href} className="block h-full no-underline">
+        {content}
+      </Link>
+    )
+  }
+
+  return content
 }

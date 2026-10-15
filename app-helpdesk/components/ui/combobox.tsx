@@ -13,7 +13,7 @@ export function Combobox({
   onValueChange,
   placeholder,
   emptyLabel,
-  emptyText = "Tidak ada data.",
+  emptyText = "No data.",
   id,
   disabled,
   className,
@@ -69,7 +69,7 @@ export function Combobox({
       <ComboboxPrimitive.InputGroup
         data-slot="combobox-input-group"
         className={cn(
-          "flex h-9 w-full items-center gap-1 rounded-lg border border-input bg-transparent pr-1.5 pl-2.5 text-sm transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 has-disabled:cursor-not-allowed has-disabled:opacity-50 dark:bg-input/30",
+          "flex h-9 w-full items-center gap-1 rounded-lg border border-input bg-transparent pr-1.5 pl-2.5 text-sm transition-colors hover:bg-muted/50 hover:border-border focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 has-disabled:cursor-not-allowed has-disabled:opacity-50 dark:bg-input/30",
           className
         )}
       >
@@ -82,7 +82,7 @@ export function Combobox({
         {emptyLabel !== undefined && value !== "" ? (
           <ComboboxPrimitive.Clear
             data-slot="combobox-clear"
-            aria-label="Kosongkan"
+            aria-label="Clear"
             className="flex size-5 shrink-0 items-center justify-center rounded text-muted-foreground outline-none hover:text-foreground"
           >
             <XIcon className="size-3.5" />
@@ -90,7 +90,7 @@ export function Combobox({
         ) : null}
         <ComboboxPrimitive.Trigger
           data-slot="combobox-trigger"
-          aria-label="Buka daftar"
+          aria-label="Open list"
           className="flex size-5 shrink-0 items-center justify-center rounded text-muted-foreground outline-none"
         >
           <ChevronDownIcon className="size-4" />
@@ -117,7 +117,7 @@ export function Combobox({
                   key={item}
                   value={item}
                   data-slot="combobox-item"
-                  className="relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
+                  className="relative mx-0.5 my-0.5 flex w-full cursor-default items-center gap-1.5 rounded-md py-1.5 pl-2 pr-8 text-sm outline-hidden select-none transition-colors data-highlighted:bg-accent data-highlighted:text-accent-foreground"
                 >
                   {labelByValue.get(item) ?? item}
                   <ComboboxPrimitive.ItemIndicator

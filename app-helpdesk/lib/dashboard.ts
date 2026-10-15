@@ -1,10 +1,10 @@
 import { CONDITIONS, type Asset, type Condition } from "@/lib/types"
 
 export const CONDITION_HEX: Record<Condition, string> = {
-  Good: "#10b981",
-  Fair: "#f59e0b",
-  Damaged: "#ef4444",
-  "Under Repair": "#3b82f6",
+  Good: "#4aa8c4",
+  Fair: "#1282a2",
+  Damaged: "#034078",
+  "Under Repair": "#001f54",
 }
 
 function emptyConditionCounts(): Record<Condition, number> {
